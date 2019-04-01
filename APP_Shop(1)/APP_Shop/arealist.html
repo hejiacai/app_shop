@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title>选择城市</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+		<script src="js/mui.min.js"></script>
+		<script src="js/app.js"></script>
+		<script src="js/template.js"></script>
+		<script type="text/javascript" src="js/flexible.debug.js"></script>
+		<script type="text/javascript" src="js/flexible_css.debug.js"></script>
+		<script charset="utf-8" src="http://map.qq.com/api/js?v=2.exp"></script>
+		<!--标准mui.css-->
+		<link rel="stylesheet" href="css/mui.min.css">
+		<!--App自定义的css-->
+		<link rel="stylesheet" type="text/css" href="css/store.css" />
+		<link rel="stylesheet" href="css/style.css" />
+		<style>
+			.mui-row.mui-fullscreen>[class*="mui-col-"] {
+				height: 100%;
+			}
+			
+			.mui-col-xs-3,
+			.mui-control-content {
+				overflow-y: auto;
+				height: 100%;
+			}
+			
+			.mui-segmented-control .mui-control-item {
+				line-height: 50px;
+				width: 100%;
+			}
+			
+			.mui-segmented-control.mui-segmented-control-inverted .mui-control-item.mui-active {
+				background-color: #fff;
+				color: #fe5722;
+			}
+		</style>
+	</head>
+
+	<body>
+		<header class="mui-bar mui-bar-nav bg-orage" id="header">
+			<div class="home-header">
+				<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"><span>返回</span></a>
+				<h1 class="mui-title">选择城市</h1>
+			</div>
+		</header>
+		<div class="mui-content mui-row mui-fullscreen" id="content">
+			<div class="mui-col-xs-3">
+				<div id="province" class="mui-segmented-control mui-segmented-control-inverted mui-segmented-control-vertical bg-gray">
+
+				</div>
+			</div>
+			<div id="city" class="mui-col-xs-9 citylist">
+
+			</div>
+		</div>
+		<script>
+			var controls = document.getElementById("province");
+			var contents = document.getElementById("city");
+			var pagename = "";
+			var citylocation = "";
+			var cityname = "",
+				obj = null;
+			var immersedIos=isIphoneX();	
+			mui.init({
+				swipeBack: true //启用右滑关闭功能
+			});
+
+			mui.plusReady(function() {
+				//判断是否是iphone X 
+				if(immersedIos){
+					document.getElementById("header").className+=" Xheader"; 
+					document.getElementById("content").className+=" Xmui-content";
+				} 	 
+				pagename = plus.webview.currentWebview().pageid;
+				LoadData(0);
+				citylocation = new qq.maps.CityService({
+					complete: function(results) {
+						var lat = results.detail.latLng.lat;
+						var lng = results.detail.latLng.lng;
+						cityname = results.detail.name;
+						fxshop.addClass(obj, 'active');
+						var storeaddress = plus.webview.getWebviewById("nearstore");
+						mui.fire(storeaddress, "ChangeCity", {
+							cityname: cityname,
+							lat: lat,
+							lng: lng,
+							pageid: pagename
+						});
+						setTimeout(function() {
+							plus.webview.currentWebview().close()
+						}, 200);
+					}
+				});
+			});
+
+			function LoadCity(parentid) {
+				LoadData(parentid);
+			}
+
+			function ShowProvince(provicedata) {
+				var html = [];
+				provicedata.forEach(function(item, index, array) {
+					html.push("<a class='mui-control-item' onclick='LoadCity(" + item.RegionId + ")'>" + item.RegionName + "</a>");
+				});
+				controls.innerHTML = html.join("");
+				controls.querySelector('.mui-control-item').classList.add('mui-active');
+				LoadData(provicedata[0].RegionId);
+
+			}
+
+			function ShowCity(provicedata) {
+				var html = [];
+				provicedata.forEach(function(item, index, array) {
+					html.push("<div class='cityinfo' onclick='ChooseCity(\"" + item.RegionName + "\",this)'>" + item.RegionName + "</div>");
+				});
+				contents.innerHTML = html.join("");
+				contents.querySelector('.cityinfo').classList.add('active');
+			}
+
+			function LoadData(pid) {
+				var result = [];
+				mui.ajax(fxshop.goUrl('GetRegionList'), {
+					dataType: "json",
+					type: "post",
+					data: {
+						parentId: pid
+					},
+					success: function(res) {
+						if(res.Status == "OK") {
+							if(pid <= 0) { //省级
+								ShowProvince(res.Regions);
+							} else {
+								ShowCity(res.Regions);
+							}
+						}
+					},
+					error: function(ex) {
+						mui.toast(ex);
+					}
+				});
+				return result;
+			}
+
+			function ChooseCity(cname, current) {
+				cityname = cname;
+				obj = current;
+				citylocation.searchCityByName(cityname);
+
+			}
+		</script>
+
+	</body>
+
+</html>

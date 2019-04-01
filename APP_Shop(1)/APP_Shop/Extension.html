@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<meta name="format-detection" content="telephone=no,email=no" />
+		<title>我的分销</title>
+
+		<link rel="stylesheet" href="css/mui.min.css">
+		<link rel="stylesheet" href="css/swiper.min.css">
+		<link rel="stylesheet" href="css/style.css" />
+
+		<script src="js/mui.js" type="text/javascript"></script>
+		<script src="js/app.js" type="text/javascript"></script>
+		<script type="text/javascript" src="js/template.js"></script>
+		<script src="js/flexible.debug.js" type="text/javascript"></script>
+		<script src="js/flexible_css.debug.js" type="text/javascript"></script>
+	</head>
+
+	<body>
+		<header class="mui-bar mui-bar-nav" id="header">
+			<div class="home-header">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"><span>返回</span></a>
+			<a id="menu" class="iconfont _more mui-pull-right" href="#topPopover"></a>
+			<h1 class="mui-title">我的分销</h1>
+			</div>
+		</header>
+ 
+ <!--右上角弹出菜单-->
+		<div id="topPopover" class="mui-popover">
+			<div class="mui-popover-arrow"></div>
+			<div class="mui-scroll-wrapper">
+				<div class="mui-scroll" id="navbar">
+					<ul class="mui-table-view nav-bar">
+						<li data-page="home"><i class="iconfont home"></i>首页</li>
+						<li data-page="category"><i class="iconfont fenlei"></i>分类</li>
+						<li data-page="shopcart"><i class="iconfont icon__cart"></i>购物车</li>
+						<li data-page="user"><i class="iconfont icon__my"></i>个人中心</li>				
+					</ul>
+				</div>
+			</div>
+
+		</div>		
+		
+ 
+ 
+ 
+		<div id="extensiondiv" class="mui-content mui-hidden" style="background: #F0F0F0;">
+
+			<img id="imgextension" style="width: 100%;" />
+			<div class="mui-col-xs-12 overflow Extentsion morefight" id="Invitation">分享我的专属链接</div>
+		</div>
+		<ul class="mui-share mui-list-inline" id="share">
+			<li data-id="weixin" data-scene="WXSceneSession">
+				<img src="images/icon_wechat.png" />
+				<span class="mui-subtitle">微信</span>
+			</li>
+			<li data-id="weixin" data-scene="WXSceneTimeline">
+				<img src="images/icon_wxTimeLine.png" />
+				<span class="mui-subtitle">朋友圈</span>
+			</li>
+			<li data-id="qq">
+				<img src="images/icon_qq.png" />
+				<span class="mui-subtitle">QQ</span>
+			</li>
+			<li data-id="sinaweibo">
+				<img src="images/icon_weibo.png" />
+				<span class="mui-subtitle">新浪微博</span>
+			</li>
+			<div id="cancel">
+				<a class="cancel">取消</a>
+			</div>
+
+		</ul>
+
+		<script>
+			mui.init();
+			var sessionid = SiteSetting.getSiteInfo().UserInfo.sessionid;
+			var requesturl = apiURL + "appShop/SplittinRule";
+			var shareData = {
+				title: '',
+				href: '',
+				content: '',
+				imgurl:''
+			};
+			var immersedIos=isIphoneX();
+			showNav();
+			mui.plusReady(function() {
+				//判断是否是iphone X 
+				if(immersedIos){
+					document.getElementById("header").className+=" Xheader"; 
+					document.getElementById("extensiondiv").className+=" Xmui-content";
+				} 	 
+				mui.ajax(requesturl + "?sessionid=" + sessionid, {
+					dataType: "html",
+					type: "post",
+					success: function(res) {
+						if(res.indexOf('sessionid过期') >= 0) {
+							plus.webview.currentWebview().close();
+							fxshop.openVW("login");
+						} else {
+							
+							var patt = /<input[^>]+id=['"]([^'"]+)['"][^>]+value=['"]([^'"]+)['"]+/g;
+							var pattimg = /<img[^>]+id=['"]([^'"]+)['"][^>]+src=['"]([^'"]+)['"]+/g;
+							var temp;
+							
+							while((temp = pattimg.exec(res)) != null) {
+								var keyname = temp[1];
+								var value = temp[2];
+								if(keyname=="userReferralQRCode"){
+									value=apiURL.substr(0,apiURL.length-1)+value;
+									document.getElementById("imgextension").src = value;
+								}
+							}
+							
+							while((temp = patt.exec(res)) != null) {
+								var keyname = temp[1];
+								var value = temp[2];
+								if(keyname == "hidExtendSharePic") {	
+									
+									shareData.imgurl=value;
+								}
+								if(keyname == "hidExtendShareUrl") {
+									shareData.href = value;
+								}
+								if(keyname == "hidExtendShareTitle") {
+									shareData.title = value;
+								}
+								if(keyname == "hidExtendShareDetail") {
+									shareData.content = value;
+								}
+								shareData.title = "我的分销";
+							}
+						}
+						//匹配图片
+
+					},
+					error: function(ex) {
+						mui.toast(ex);
+					},
+					complete: function() {
+						if(!document.getElementById("imgextension").src) {
+							plus.webview.currentWebview().hide();
+							setTimeout(function(){
+								plus.webview.currentWebview().close();
+							},1000);
+							fxshop.OpenWapWeb(requesturl,'我要分销');			
+						}else{
+							fxshop.removeClass(document.getElementById("extensiondiv"),"mui-hidden");
+						}
+					}
+				});
+
+			});
+
+			//分享推廣鏈接
+			document.getElementById("Invitation").addEventListener("tap", function(e) {
+				document.getElementById('share').style.display = "block";
+				loadShare(shareData);
+			});
+		</script>
+	</body>
+
+</html>

@@ -1,0 +1,83 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title>终端绑定</title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<link href="../css/mui.min.css" rel="stylesheet" />
+		<link rel="stylesheet" href="../css/style.css" />
+		<link rel="stylesheet" href="css/terminal_binding.css" />
+	</head>
+
+	<body>
+		<header class="mui-bar mui-bar-nav" id="header">
+			<div class="home-header">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<h1 class="mui-title">确认激活</h1>
+			</div>
+		</header>
+		<div class="mui-content">
+			<div class="terminal_body" id="content">
+			    
+			</div>
+			<div class="terminal_binding_button" id="button">
+				<button type="button" id="sub">确认激活</button>
+			</div>
+		</div>
+		<script type="text/html" id="text">
+			<div class="terminal_content">
+		    	<div class="terminal_content_title">
+		    		<div class="terminal_content_title_left">
+		    			<span>{{PosBrandName}}</span>
+		    			<span>{{PosTermModel}}</span>
+		    		</div>
+		    		<span>型号：{{PosTermType}}</span>
+		    	</div>
+		    	<div class="terminal_content_num">S N：{{PosSnNo}}</div>
+		    </div>
+		</script>
+		<script type="text/javascript" src="../js/flexible.debug.js" ></script>
+		<script type="text/javascript" src="../js/flexible_css.debug.js" ></script>
+		<script src="../js/mui.min.js"></script>
+		<script type="text/javascript" src="../js/art-template.js" ></script>
+		<script type="text/javascript" src="../js/app.js" ></script>
+		<script type="text/javascript">
+			mui.init();
+			var datas;
+			mui.plusReady(function(){
+				var self=plus.webview.currentWebview();
+				datas=self.datas;
+				var html=template("text",datas);
+				document.getElementById("content").innerHTML=html;
+			})
+			document.getElementById("sub").addEventListener('tap',function(){
+				if(datas.ActivationType==1){
+					mui.toast("您已经激活了该终端");
+					return false;
+				}
+				mui.ajax('http://pos.wulilu.cn/AppShop/PostApi.ashx',{
+					type: 'post',
+					data:{
+						action:'PostTerminalActivation',
+						sessionid:'c2a0c65fdd414216bf3ae93b79cddb25',
+						TerminalId:datas.id,
+						SN_Number:datas.PosSnNo,
+					},
+					success:function(data){
+						mui.toast(data.Result);
+						setTimeout(function(){
+							fxshop.openVW('terminal_binding');
+						},1500);
+					},
+					error:function(xhr,type,errorThrown){
+						mui.toast("网络请求超时，请重新加载");
+					}
+				})
+			})
+		</script>
+	</body>
+
+</html>

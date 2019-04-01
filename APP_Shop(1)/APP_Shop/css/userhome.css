@@ -1,0 +1,165 @@
+/*2018-03-06*/
+/*公用样式*/
+@font-face {
+	font-family: 'iconfont';
+	src: url('../fonts/iconfont.ttf') format('truetype');
+}
+.iconfont {
+	font-family: "iconfont" !important;
+	font-size: 0.64rem;
+	font-style: normal;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+}
+.icon_3:before { content: "\e69e"; }
+
+.icon_4:before { content: "\e69f"; }
+
+.icon_7:before { content: "\e6a0"; }
+
+.icon__wallet:before { content: "\e662"; }
+
+.icon__package:before { content: "\e657"; }
+
+.icon__comment:before { content: "\e64c"; }
+
+.icon__shipping:before { content: "\e65d"; }
+
+.icon__service-1:before { content: "\e65e"; }
+
+.arrow_right:before { content: "\e664"; }
+
+.pd24{padding: 0.32rem;}
+.pl24{padding-left: 0.32rem;}
+.pr24{padding-right: 0.32rem;}
+.pt24{padding-top: 0.32rem;}
+.pb24{padding-bottom: 0.32rem;}
+.fl{float: left;}
+.fr{float: right;}
+.bg{ background: #f7f7f7;}
+.header{ background: url(../images/headbg.png) left top no-repeat; background-size: 100% auto;}
+.sign_set{ overflow: hidden; color: #fff; padding: 0.64rem 0.32rem 0.32rem 0.32rem;}
+.signbox{ float: left; width:1.6rem;}
+.signbox span{ font-size:0.32rem; padding-top: 0.15rem; line-height:0.53rem; width:0.96rem; float: left;}
+.sign{ float: left; display: inline-block;}
+.user_center{ float: left; width:6.13rem; margin: 0 auto; text-align: center; font-size: 0.45rem;}
+.set{ float: right; width: 1.6rem;}
+.set .notice{ float: left; width: 0.64rem; margin-right: 0.32rem;}
+.set .seticon{ float: right; width: 0.64rem;}
+.userInfoBox{ border-radius: 0.32rem; background: #fff; margin: 0 0.32rem; padding: 0.32rem; padding-right: 0; overflow: hidden;
+-moz-box-shadow:0px 16px 24px rgba(255,87,34,.1); -webkit-box-shadow:0px 16px 24px rgba(255,87,34,.1); box-shadow:0px 16px 24px rgba(255,87,34,.1);
+}
+.Info{ padding-bottom: 0.32rem; overflow: hidden;}
+.userImg{ float: left; width:1.7rem; margin-right: 0.32rem;}
+.userImg img{ border-radius: 100%; border: 2px solid rgba(255,255,255, 0.2); width: 100%;}
+.userInfo{ float: left; margin-top: 0.21rem;}
+.userInfo h2{ font-size: 0.42rem; color: #212121; margin-bottom: 0.1rem; line-height: 0.53rem;}
+.pointsBox{ overflow: hidden; margin-bottom: 0.21rem;}
+.pointsBox div{float:left; font-size: 0.32rem; line-height: 0.53rem; border-radius:0.53rem; height: 0.53rem; padding: 0.1rem 0.21rem; margin-right: 0.21rem;}
+.pointsBox .member{ background: #fff8e1; border:1px #ffc107 solid; color: #ffb300;line-height: 0.65rem; height: 0.65rem;padding: 0 0.5rem;}
+.pointsBox .point{  color: #ff8f00;
+    background:#ffecb3; /* 一些不支持背景渐变的浏览器 */  
+    background:-moz-linear-gradient(top, #ffecb2, #ffd550);  
+    background:-webkit-gradient(linear, 0 0, 0 bottom, from(#ffecb2), to(#ffd550));  
+    background:-o-linear-gradient(top, #ffd54f, #ffd550);
+    background:linear-gradient(to top, #ffd54f, #ffd550); padding-left: 0.1rem!important;  }
+.pointsBox .point img{    width: 0.42rem;
+    height: 0.42rem;
+    margin-right: 0.1rem;
+    float: left;
+    margin-top: 0.05rem;}
+.pointsBox .point span{ margin-right: 0.1rem;
+    display: inline-block;
+    line-height:0.53rem;}
+.Distribution{ display:none; float: right; color: #fff; font-size: 0.32rem; line-height: 0.53rem; border-radius: 24px 0 0 24px; padding: 0.21rem 0.32rem;
+ 	background:#f57c00; /* 一些不支持背景渐变的浏览器 */  
+    background:-moz-linear-gradient(top, #f57c00, #ff9800);  
+    background:-webkit-gradient(left, 0 0, 0 bottom, from(#f57c00), to(#ff9800));  
+    background:-o-linear-gradient(right, #f57c00, #ff9800);
+    background: linear-gradient(to right, #f57c00, #ff9800); /* 标准的语法 */
+}
+.Collection_Consultation{padding: 0.32rem 1.28rem 0.32rem 1.28rem; margin-right: 0.32rem; border-top: 1px #f0f0f0 solid;}
+.Collection,.Consultation{width: 2.77rem;}
+.Consultation{ text-align: right;}
+.Collection span,.Consultation span{ width: 1.04rem; text-align: center; line-height: 0.64rem; font-size: 0.48rem; color: #212121; display:inherit;}
+.Collection em,.Consultation em{ width: 1.04rem; font-size: 0.29rem; color: #bdbdbd; line-height: 0.53rem;}
+.Consultation span{ width: 2.35rem; text-align: right;}
+
+/*我的订单*/
+.user_order{ padding:0 0.32rem; margin: 0.32rem 0; background: #fff;}
+.user_order .hd{ padding: 0.32rem 0; border-bottom: 1px #f7f7f7 solid; line-height: 0.53rem; overflow: hidden;}
+.user_order .hd span{ float: left; font-size: 0.4rem; color:#212121;}
+.user_order .hd a{ color: #747474; font-size: 0.37rem; float:right;}
+.user_order .hd a em{}
+.order_num{ padding: 0.32rem 0; overflow: hidden; width: 100%;}
+.order_num li{ float: left; width: 20%; text-align: center; position: relative;}
+.order_num li em{ position: absolute; background: #ff5252; border-radius: 0.32rem; right:0.32rem; top:0; color: #fff; padding: 0.05rem 0.16rem; display:none;}
+.order_num li div{ display:block; width: 100%; font-size: 0.58rem; padding: 0.1rem 0;}
+.order_num li span{ font-size: 0.32rem; color: #424242;}
+
+/*个人中心常用功能*/
+.commonBox{ padding: 0 0.32rem; background: #fff; overflow: hidden;}
+.commonBox .hd{ padding: 0.32rem 0; line-height: 0.53rem; font-size: 0.4rem; color: #212121;}
+.commonList{ overflow: hidden;}
+.commonList ul li{ float: left; width: 33.3%; display: block; text-align: center; border-top: 1px #f7f7f7 solid; padding: 0.32rem 0;}
+.commonList ul li { display: inline-block;}
+.commonList ul li img{width:auto; height:0.42rem; text-align: center; vertical-align: middle; overflow: hidden; margin: 0.1rem auto;}
+.commonList ul li img.height36{height:0.48rem;}
+.commonList ul li img.height40{height:0.53rem;}
+.commonList ul li span{ font-size: 0.32rem; color: #515151; line-height: 0.53rem; display: block;}
+.commonList ul li em{ display: block; color: #515151; font-size: 0.29rem; line-height: 0.53rem; height: 0.53rem; }
+.commonList ul li em.fontstyle{ color: #ff5252; font-size: 0.29rem; line-height: 0.53rem; display: block;
+background-image: -webkit-gradient(linear, 0 0, 0 bottom, from(#9c27b0), to(#e91e63));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+.commonList ul li.lastheight{ padding-bottom: 0!important;}
+.height24{ background: #F7F7F7; overflow: hidden; height: 0.32rem;}
+
+.icon_close {
+    width: 0.26rem;
+    height: 0.26rem;
+    background: url(../images/icon_close.png);
+    margin: 0.53rem 0.8rem 0 0;
+    background-size: 100% 100%;
+    display: inline-block;
+    float: right;
+}
+
+.member_tips {
+    position: fixed;
+    top: 64px;
+    color: red;
+    left: 0;
+    width: 100%;
+    height: 1.2rem;
+    line-height: 1.2rem;
+    color: #fff;
+    background: rgba(255,193,7,0.9);
+    padding: 0 0.5rem 0 0.5rem;
+}
+.Xmember_tips{ top: 88px!important;}
+.mui-hidden {
+	display: none!important
+}
+    .member_tips a {
+        color: #fff;
+        font-size: 0.32rem;
+    }    
+
+.icon_warning {
+    width: 0.6rem;
+    height: 0.6rem;
+    background: url(../images/icon_warning.png);
+    margin: 0.30rem 0.25rem 0 0;
+    background-size: 100% 100%;
+    display: inline-block;
+    float: left;
+}    
+
+.right_more{ color:#C2C2C2; font-size:0.4rem;}
+/*iphone x*/
+
+.Xheader{
+	padding-top: 18px!important; 
+}

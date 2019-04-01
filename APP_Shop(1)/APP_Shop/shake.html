@@ -1,0 +1,249 @@
+<!DOCTYPE HTML>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<meta name="format-detection" content="telephone=no,email=no" />
+		<title>摇一摇</title>
+
+		<link rel="stylesheet" href="css/mui.min.css">
+		<link rel="stylesheet" href="css/style.css" />
+
+		<script src="js/mui.js" type="text/javascript"></script>
+		<script src="js/app.js" type="text/javascript"></script>
+		<script type="text/javascript" src="js/template.js"></script>
+		<script src="js/flexible.debug.js" type="text/javascript"></script>
+		<script src="js/flexible_css.debug.js" type="text/javascript"></script>
+	</head>
+
+	<body>
+		<header class="mui-bar mui-bar-nav">
+			<div class="home-header">
+				<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+				<a id="menu" class="iconfont _more mui-pull-right" href="#topPopover"></a>
+				<h1 class="mui-title">摇一摇抽奖</h1>
+			</div>
+		</header>
+
+		<!--右上角弹出菜单-->
+		<div id="topPopover" class="mui-popover">
+			<div class="mui-popover-arrow"></div>
+			<div class="mui-scroll-wrapper">
+				<div class="mui-scroll" id="navbar">
+					<ul class="mui-table-view nav-bar">
+						<li data-page="home"><i class="iconfont home"></i>首页</li>
+						<li data-page="category"><i class="iconfont fenlei"></i>分类</li>
+						<li data-page="shopcart"><i class="iconfont icon__cart"></i>购物车</li>
+						<li data-page="user"><i class="iconfont icon__my"></i>个人中心</li>
+					</ul>
+				</div>
+			</div>
+
+		</div>
+
+		<div class="mui-content shake-content" style="background: url(images/lottery_bg.png) no-repeat center;" id="shakecontent">
+
+			<!--圆与手型-->
+			<div class="try mui-text-center"><img src="images/lottery_sprite.png"></div>
+
+			<!--次数-->
+			<div class="num mui-text-center">
+				<div class="margin-b24">当前可用积分：<span id="spscore">0</span></div>
+				<code>你还拥有<b id="spcount">N</b>次机会</code>
+			</div>
+
+			<!--            
+			<div id="shakepannel" class="shake-pannel mui-hidden">
+				<div class="con  mui-text-center">
+					<div class="conimg">
+						<div class="name">恭喜你，中奖啦！</div>
+						<div class="shake-winning">
+							<div><code id="winresult">10</code><span id="shaketype">积分</span></div>
+							<div id="resultname"></div>
+						</div>
+					</div>
+					<button class="mui-btn" onclick="Shake()">继续摇一摇</button>
+				</div>
+			</div>-->
+
+			<div id="shakepannel" class="shake-pannel mui-hidden">
+				<div class="con  mui-text-center">
+					<div class="conimg">
+						<div class="name">恭喜你，中奖啦！</div>
+						<div class="shake-winning">
+							<div><span>¥</span><code id="codenum">10</code><span id="sptype">优惠劵</span></div>
+							<div id="couptip">满100元减20元</div>
+						</div>
+					</div>
+					<button class="mui-btn" onclick="Shake()">继续摇一摇 </button>
+				</div>
+			</div>
+
+			<!--记录-->
+			<div class="shake-bottom mui-text-center">
+				<button class="mui-btn" onclick="ShowWinning()"></button>
+			</div>
+
+		</div>
+	</body>
+	<script>
+		var p = null;
+		var iLast = 2,
+			MAX = 20;
+		var t = null;
+		var isshake = true;
+		var sessionid = SiteSetting.getSiteInfo().UserInfo.sessionid;
+		var points = 0;
+		// H5 plus事件处理
+		function plusReady() {
+			if(fxshop.isLogin()) {
+				points = SiteSetting.getSiteInfo().UserInfo.points;
+				document.getElementById("spscore").innerText = points;
+			}
+
+			// 锁定只能竖屏显示
+			plus.screen.lockOrientation('portrait-primary');
+			
+			var waiting = plus.nativeUI.showWaiting();
+			mui.ajax(fxshop.goUrl('getDepletePoints'),{ 
+				type:'get',
+				dataType:'json',
+				success:function(res){
+					var depletePoints = res.Result.Points;
+					var times = depletePoints == 0 ? '无数' : (points/depletePoints).toFixed(0);
+					document.getElementById('spcount').innerText = times;
+				},
+				error:function(error){
+					plus.nativeUI.toast(error);
+				},
+				complete:function(){
+					waiting.close();
+					watchAcceleration();
+				}
+			});
+		}
+			
+		if(window.plus) {
+			plusReady();
+		} else {
+			document.addEventListener('plusready', plusReady, false);
+		}
+		// 监听DOMContentLoaded事件
+		document.addEventListener('DOMContentLoaded', function() {
+			/*up=document.getElementById('up');
+			down=document.getElementById('down');
+			offset=up.offsetHeight/2;*/
+		}, false);
+		// 解锁并关闭
+		var _back = window.back;
+		
+		function watchAcceleration(){
+			// 监听加速度
+			plus.accelerometer.watchAcceleration(function(a) {
+				if(!isshake) {
+					return;
+				}
+				if(!p && (Math.abs(a.xAxis) + Math.abs(a.yAxis) + Math.abs(a.zAxis) > MAX)) {
+					// Play audio
+					p = plus.audio.createPlayer('_www/images/shake.wav');
+					p.play();
+					setTimeout(function() {
+						// Change background image
+						mui.ajax(fxshop.goUrl("lotteryDraw"), {
+							datatype: "json",
+							type: "post",
+							data: {
+								"sessionid": sessionid
+							},
+							success: function(res) {
+								if(res["ErrorResponse"]) {
+									mui.toast(res.ErrorResponse.ErrorMsg);
+									return;
+								}
+								var integral = res.Result.integral; //积分
+								var type = res.Result.type; //获奖类型
+								var content = res.Result.content; //奖励结果
+								var time = res.Result.times; //可抽奖次数
+								var name = res.Result.name;
+
+								var site = SiteSetting.getSiteInfo();
+								site.UserInfo.points = integral;
+								SiteSetting.setSiteInfo(site);
+
+								document.getElementById("spscore").innerText = integral;
+								document.getElementById("spcount").innerText = time;
+
+								if(type == 1) {
+									document.getElementById("codenum").innerText = content;
+									document.getElementById("sptype").innerText = "分";
+									document.getElementById("couptip").innerText = "";
+								} else {
+									document.getElementById("codenum").innerText = content;
+									document.getElementById("sptype").innerText = "优惠券";
+									document.getElementById("couptip").innerText = name;
+								}
+								fxshop.removeClass(document.getElementById("shakepannel"), "mui-hidden");
+								isshake = false;
+
+							},
+							error: function() {
+
+							},
+							complete: function() {
+								// Stop play audio
+								p.stop();
+								delete p;
+								p = null;
+
+							}
+						});
+					}, 2000);
+					// Animation
+					/*offset=up.offsetHeight/2;
+					up.style.webkitTransform = 'translateY(-'+offset+'px)';
+					up.style.msTransform = 'translateY(-'+offset+'px)';
+					down.style.webkitTransform = 'translateY('+offset+'px)';
+					down.style.msTransform = 'translateY('+offset+'px)';
+					if(t){
+						clearTimeout(t);
+					}
+					t = setTimeout(function(){
+						t = null;
+						up.style.webkitTransform = '';
+						up.style.msTransform = '';
+						down.style.webkitTransform = '';
+						down.style.msTransform = '';
+					}, 700 );*/
+				}
+			}, function(e) {
+				//outSet('Watch failed: '+e.message);
+			}, {
+				frequency: 100
+			});
+		}
+
+		function unlockback() {
+			plus.screen.unlockOrientation();
+			_back();
+		}
+		window.back = unlockback;
+
+		function ShowWinning() {
+			if(!fxshop.isLogin()) {
+				mui.toast("请先登录")
+				return;
+			}
+			var requesturl = apiURL + "AppShop/DrawingBox.aspx?SessionId=" + sessionid;
+			fxshop.OpenWapWeb(requesturl, "中奖记录");
+		}
+
+		function Shake() {
+			fxshop.addClass(document.getElementById("shakepannel"), "mui-hidden");
+			isshake = true;
+		}
+	</script>
+
+</html>

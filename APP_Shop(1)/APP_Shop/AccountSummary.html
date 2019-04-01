@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<meta name="format-detection" content="telephone=no,email=no" />
+		<title>预付款管理</title>
+		<link href="css/mui.min.css" rel="stylesheet" />
+		<link href="css/style.css" rel="stylesheet" />
+		<script type="text/javascript" src="js/flexible.debug.js"></script>
+		<script type="text/javascript" src="js/flexible_css.debug.js"></script>
+		<script type="text/javascript" src="js/mui.min.js"></script>
+		<script type="text/javascript" src="js/app.js"></script>
+		<script type="text/javascript" src="js/template.js"></script>
+	</head>
+
+	<script>
+		var siteifno = SiteSetting.getSiteInfo(),
+			doc = document;
+		var immersedIos=isIphoneX();	
+		mui.init({});
+		mui.plusReady(function() {
+			//判断是否是iphone X 
+				if(immersedIos){
+					document.getElementById("header").className+=" Xheader"; 
+					document.getElementById("content").className+=" Xmui-content";
+				} 	 
+			mui.ajax(fxshop.goUrl('AdvanceInfo'), {
+				data: {
+					SessionId: siteifno.UserInfo.sessionid,
+				},
+				dataType: 'json',
+				type: 'get',
+				success: function(data) {
+					var result = data.Result;
+					if(data.ErrorResponse != undefined) {
+						plus.nativeUI.toast(data.ErrorResponse.ErrorMsg);
+						fxshop.openVW('login');
+						return;
+					}
+					doc.getElementById('allMoney').innerText = result.Balance - result.RequestBalance;
+					doc.getElementById('Balance').innerText = result.Balance;
+					doc.getElementById('RequestBalance').innerText = result.RequestBalance;
+				},
+				error: function(xhr, type, errorThrown) {
+					plus.nativeUI.toast('请求失败，请检查网络')
+				}
+			});
+
+			BindEvent();
+		})
+
+		//绑定事件
+		function BindEvent() {
+			doc.getElementById('deposit').addEventListener('tap', function() {
+				if(fxshop.isLogin()) {
+					var requesturl = apiURL + "appshop/RequestBalanceDraw";
+					fxshop.OpenWapWeb(requesturl,"提现");
+				} else {
+					mui.toast('您还未登录,请先登录！');
+					return;
+				}
+			});
+
+			doc.getElementById('Rechargeable').addEventListener('tap', function() {
+				if(fxshop.isLogin()) {
+					var requesturl = apiURL + "appshop/RechargeRequest";
+					fxshop.OpenWapWeb(requesturl,"充值");
+				} else {
+					mui.toast('您还未登录,请先登录！');
+					return;
+				}
+			});
+
+			doc.getElementById('details').addEventListener('tap', function() {
+				if(fxshop.isLogin()) {
+					fxshop.openVW('AccountSummaryDetails');
+				} else {
+					mui.toast('您还未登录,请先登录！');
+					return;
+				}
+			});
+			
+			doc.getElementsByClassName('total-cash')[0].style.display= siteifno.UserInfo.EnableBulkPaymentAdvance ? 'block' : 'none';
+			doc.getElementById('deposit').style.display = doc.getElementsByClassName('total-cash')[0].style.display;
+			if(doc.getElementById('deposit').style.display=='block'){
+				doc.getElementById('Rechargeable').style.width = '50%';
+			}else{
+				doc.getElementById('Rechargeable').style.width = '100%';
+			}
+			
+		}
+	</script>
+
+	<body>
+ 
+		<header class="mui-bar mui-bar-nav" id="header">
+			<div class="home-header">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"><span>返回</span></a>
+			<a id="menu" class="iconfont _more mui-pull-right" href="#topPopover"></a>
+			<h1 class="mui-title">预付款管理</h1>
+			</div>
+		</header>		
+
+<!--右上角弹出菜单-->
+		<div id="topPopover" class="mui-popover">
+			<div class="mui-popover-arrow"></div>
+			<div class="mui-scroll-wrapper">
+				<div class="mui-scroll" id="navbar">
+					<ul class="mui-table-view nav-bar">
+						<li data-page="home"><i class="iconfont home"></i>首页</li>
+						<li data-page="category"><i class="iconfont fenlei"></i>分类</li>
+						<li data-page="shopcart"><i class="iconfont icon__cart"></i>购物车</li>
+						<li data-page="user"><i class="iconfont icon__my"></i>个人中心</li>				
+					</ul>
+				</div>
+			</div>
+
+		</div>		
+		
+		
+		
+		<div class="mui-content" id="content">
+			<div class="top-balance">
+				<div class="balance-box">
+					<span class="mui-left">可用余额</span>
+					<span class="money-detail" id="details">查看明细</span>
+				</div>
+				<div class="money">¥<span id="allMoney">0.00</span></div>
+			</div>
+			<div class="total-cash">
+				<div class="total-money">
+					<span><i></i>总资产</span>
+					<em><b class="font32 mr8">¥</b><i id="Balance">0.00</i></em>
+				</div>
+				<div class="cash-money mui-left">
+					<span><b></b>提现冻结</span>
+					<em><b class="font32 mr8">¥</b><i id="RequestBalance">0.00</i></em>
+				</div>
+			</div>
+
+			<div class="total-cashBtn">
+				<span id="deposit">提现</span>
+				<span id="Rechargeable">充值</span>
+			</div>
+		</div>
+	</body>
+
+</html>

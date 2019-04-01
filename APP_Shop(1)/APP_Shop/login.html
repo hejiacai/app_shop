@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html class="ui-page-login">
+
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<meta name="format-detection" content="telephone=no,email=no" />
+		<title>登录</title>
+		<link href="css/mui.min.css" rel="stylesheet" />
+		<link href="css/style.css" rel="stylesheet" />
+		<link href="css/account.css" rel="stylesheet" />
+		<script type="text/javascript" src="js/flexible.debug.js"></script>
+		<script type="text/javascript" src="js/flexible_css.debug.js"></script>
+		<script type="text/javascript" src="js/mui.min.js"></script>
+		<script type="text/javascript" src="js/app.js"></script>
+
+	</head>
+
+	<body>
+
+		<style>
+			.mui-content {
+				height: auto;
+				top: 0;
+				position: relative;
+			}
+			
+			.mui-input-row .mui-btn {
+				float: left;
+			}
+			
+			.TabRegBox {
+				position: absolute;
+				width: 93%;
+				left: 0.32rem;
+				top: 420px;
+			}
+			
+			.mui-slider {
+				position: static;
+			}
+			
+			.mui-input-row .mui-input-password~.mui-icon-eye {
+				color: #DBDBDB;
+			}
+			
+			.mui-input-row {
+				padding: 0.1rem 0.32rem;
+			}
+			
+			.input-half {
+				width: 4rem;
+			}
+			
+			.mui-input-group .mui-input-row {
+				height: auto!important
+			}
+			
+			.mui-input-group .mui-input-row:after {
+				left: 0.32rem;
+			}
+			
+			.mui-input-row .mui-btn {
+				padding: 0.32rem 0;
+				width: 2.13rem;
+				margin-right: 0.21rem;
+				line-height: 0.53rem;
+				font-size: 0.42rem;
+				text-align: left;
+			}
+		</style>
+
+		<header class="mui-bar mui-bar-nav" id="header">
+			<div class="home-header">
+				<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"><span>返回</span></a>
+				<a id="menu" class="iconfont _more mui-pull-right" href="#topPopover"></a>
+				<h1 class="mui-title">登录</h1>
+			</div>
+		</header>
+
+		<!--右上角弹出菜单-->
+		<div id="topPopover" class="mui-popover">
+			<div class="mui-popover-arrow"></div>
+			<div class="mui-scroll-wrapper">
+				<div class="mui-scroll" id="navbar">
+					<ul class="mui-table-view nav-bar">
+						<li data-page="home"><i class="iconfont home"></i>首页</li>
+						<li data-page="category"><i class="iconfont fenlei"></i>分类</li>
+						<li data-page="shopcart"><i class="iconfont icon__cart"></i>购物车</li>
+						<li data-page="user"><i class="iconfont icon__my"></i>个人中心</li>
+					</ul>
+				</div>
+			</div>
+
+		</div>
+
+		<div class="mui-content" id="content" style="display: block;">
+			<div id='login-form' class="mui-input-group">
+				<div class="mui-input-row">
+					<label>账号</label>
+					<input id='account' type="text" class="mui-input-clear mui-input" placeholder="用户名/手机号">
+				</div>
+				<div class="mui-input-row mui-password">
+					<label>密码</label>
+					<input id='password' type="password" class="mui-input-password mui-input" placeholder="请输入密码">
+				</div>
+			</div>
+
+			<div class="mui-content-padded">
+				<button id='login' class="mui-btn mui-btn-block login">登录</button>
+				<div class="link-area">
+					<a id='regButton' class="mui-pull-left">注册账号</a>
+					<a id='forgetPassword' class="mui-pull-right">忘记密码</a>
+				</div>
+			</div>
+
+			<div class="mui-content-padded oauth-area" style="top:120%">
+				<div class="Quick-login">
+					<em></em>
+					<span>快捷登录</span>
+					<em class="mui-pull-right"></em>
+				</div>
+
+			</div>
+		</div>
+
+		<!--
+	作者：419634501@qq.com
+	时间：2018-03-12
+	描述：手机绑定注册层
+-->
+		<div class="mui-content transparent" id="registerphonetab" style="display: none;">
+
+			<div class="mui-input-group">
+				<div class="mui-input-row">
+					<label>手机号码</label>
+					<input id='phoneAccount' type="number" class="mui-input-clear mui-input" placeholder="请输入手机号">
+				</div>
+				<div class="mui-input-row">
+					<label>图形验证</label>
+					<input id='phoneImgCode' type="text" class="mui-input input-half">
+					<div class="imgCodeSrc">
+						<img src="" width="50" height="25" />
+						<a>换一张</a>
+					</div>
+				</div>
+				<div class="mui-input-row">
+					<label>手机验证</label>
+					<input id='phoneCode' type="number" class="mui-input input-half">
+					<a class="input-btn getPhoneCode" id="getCode">获取验证码</a>
+				</div>
+				<div class="mui-input-row mui-password">
+					<label>设置密码</label>
+					<input id='phonepassword_confirm' type="password" class="mui-input-password mui-input">
+				</div>
+			</div>
+
+			<div class="pt24" style="margin-top:0.42rem;">
+				<div id='reg' class="mui-btn mui-btn-block mui-btn-danger login">立即绑定</div>
+			</div>
+
+		</div>
+
+		<!--
+	作者：419634501@qq.com
+	时间：2018-03-12
+	描述： 绑定账号注册
+-->
+		<div class="mui-content" id="registerlogin" style="display: none;">
+			<div id='register-form' class="mui-input-group">
+				<div class="mui-input-row">
+					<label>账号</label>
+					<input id='registeraccount' type="text" class="mui-input-clear mui-input" placeholder="用户名/手机号">
+				</div>
+				<div class="mui-input-row mui-password">
+					<label>密码</label>
+					<input id='registerpwd' type="password" class="mui-input-password mui-input" placeholder="请输入密码">
+				</div>
+				<div class="mui-content-padded" style="margin-top: 0.32rem;">
+					<button id='btnaccount' class="mui-btn mui-btn-block login">立即绑定</button>
+
+				</div>
+			</div>
+		</div>
+
+		<!--
+	作者：419634501@qq.com
+	时间：2018-03-12
+	描述： 绑定关联层
+-->
+		<div class="mui-content" id="registerrelation" style="display: none;">
+			<div class="wx_headerimg">
+				<img src="" id="wx_img">
+			</div>
+			<div id='register-relation' class="pd24 font32">
+				<h1 class="mui-input-row">亲爱的用户，<span class="colorRed" id="spusername">游刃有余</span></h1>
+				<div class="font32">为了给你更好的服务，请关联一个：已绑定手机号的账号</div>
+				<div>
+					<div class="pt12 pb12 font-style">没有账号？</div>
+					<button id='registerphone' class="mui-btn mui-btn-block login">快速注册</button>
+					<div class="pb12 font-style">已有账号？</div>
+					<button id='relationregister' class="mui-btn mui-btn-block border-orage">立即关联</button>
+				</div>
+			</div>
+		</div>
+
+		<script>
+			var dataAuth = {};
+			var toMain;
+			(function($, doc) {
+
+				var immersedIos = isIphoneX();
+				$.init({
+					swipeBack: true
+				});
+				$.plusReady(function() {
+					//判断是否是iphone X 
+					if(immersedIos) {
+						document.getElementById("header").className += " Xheader";
+						document.getElementById("content").className += " Xmui-content";
+					}
+					showNav();
+					var siteifno = SiteSetting.getSiteInfo(),
+						ws = plus.webview.currentWebview();
+					params = ws.params;
+					toMain = function() {
+						$.fire(plus.webview.getWebviewById('userhome.html'), 'updateData');
+					    $.fire(plus.webview.getWebviewById(plus.webview.getLaunchWebview().id), 'updateData');
+						//fxshop.openVW(plus.webview.getLaunchWebview().id);
+						$.fire(plus.webview.getWebviewById('shopcart.html'), 'updateData');
+						//fxshop.openVW('userhome');
+						SetWapUserInfo();
+						if(isEmptyObject(params)) {
+							setTimeout(function() {
+								ws.close();
+							}, 300)
+						} else {
+							if(params.fireId && !params.id) {
+								$.fire(plus.webview.getWebviewById(params.fireId), 'updateData');
+								setTimeout(function() {
+									ws.close();
+								}, 300)
+							} else {
+								if(params.fireId) {
+									$.fire(plus.webview.getWebviewById(params.fireId), 'updateData');
+								}
+								fxshop.openVW(params.id, params.extras);
+								setTimeout(function() {
+									ws.close('none');
+								}, 1000)
+							}
+						}
+					};
+					//第三方登录
+					var auths = {};
+					var oauthArea = doc.querySelector('.oauth-area');
+					plus.oauth.getServices(function(services) {
+						for(var i in services) {
+							var service = services[i];
+							if(fxshop.ios()) {
+								if(service.id == 'qq' && !fxshop.isQQInstalled()) {
+									continue;
+								}
+								if(service.id == 'weixin' && !fxshop.isWXInstalled()) {
+									continue;
+								}
+							}
+							if(service.id == 'qq' || service.id == 'weixin' || service.id == 'sinaweibo') {
+								auths[service.id] = service;
+								var btn = document.createElement('div');
+								btn.setAttribute('class', 'oauth-btn');
+								btn.authId = service.id;
+								btn.innerHTML = '<img src="images/' + service.id + '.png" />'
+								oauthArea.appendChild(btn);
+							}
+						}
+
+						$(oauthArea).on('tap', '.oauth-btn', function() {
+							var auth = auths[this.authId],
+								w = plus.nativeUI.showWaiting('', {
+									padlock: true
+								});
+
+							auth.logout();
+							if(auth.id == 'qq') {
+								w.close();
+							}
+							auth.login(function() {
+								auth.getUserInfo(function() {
+									var name = auth.userInfo.nickname || auth.userInfo.name,
+										headimgurl = (auth.userInfo.figureurl_qq_2 || auth.userInfo.figureurl_qq_1) || auth.userInfo.headimgurl.replace('/0', '/132');
+									dataAuth = {
+										oauthType: auth.id,
+										oauthOpenId: auth.authResult.openid,
+										UnionId: auth.authResult.unionid || '',
+										oauthAvatar: headimgurl,
+										oauthNickName: name,
+									};
+									var UnionId = dataAuth.UnionId;
+									if(UnionId == undefined) {
+										UnionId = '';
+									}
+									$.ajax(fxshop.goUrl('regiester'), {
+										data: dataAuth,
+										dataType: 'json',
+										type: 'get',
+										timeout: 10000,
+										success: function(data) {
+											w.close();
+											if(data.ErrorResponse != undefined) {
+												plus.nativeUI.toast(data.ErrorResponse.ErrorMsg);
+												return;
+											} else {
+												console.log("信任登录："+JSON.stringify(data.Result));
+												//mui.fire(plus.webview.getWebviewById('userhome.html'), 'updateData');
+												plus.nativeUI.toast(auth.description + "登录成功");
+												return fxshop.createState(data.Result, function() {
+													document.getElementById("wx_img").src = headimgurl;
+													document.getElementById("spusername").innerText = name;
+													if(!data.Result.IsBindUser) { //是否绑定，为false做跳转
+														ControlePannel("registerrelation");
+													} else {
+														toMain();
+													}
+
+												});
+											}
+										},
+										error: function(xhr, type, errorThrown) {
+											w.close();
+											plus.nativeUI.toast('请求失败，请检查网络')
+										}
+									});
+
+								}, function(e) {
+									w.close();
+									plus.nativeUI.toast("获取用户信息失败");
+								});
+							}, function(e) {
+								w.close();
+								plus.nativeUI.toast("登录认证失败");
+							});
+						});
+					}, function(e) {
+						oauthArea.style.display = 'none';
+						plus.nativeUI.toast("获取登录认证失败");
+					});
+
+					var loginButton = doc.getElementById('login');
+					var accountBox = doc.getElementById('account');
+					var passwordBox = doc.getElementById('password');
+					var reg = doc.getElementById('reg');
+					var regBtn = document.getElementById("regButton");
+					regButton.addEventListener('tap', function() {
+						fxshop.openVW('register');
+					}, false);
+					var forgetButton = doc.getElementById('forgetPassword');
+					loginButton.addEventListener('tap', function() {
+						var loginInfo = {
+							account: accountBox.value,
+							password: passwordBox.value
+						};
+						fxshop.login(loginInfo, function(err) {
+							if(err) {
+								plus.nativeUI.toast(err);
+								return;
+							}
+							toMain();
+						});
+					});
+					reg.addEventListener('tap', function() {
+						var cellphone = document.getElementById("phoneAccount").value;
+						var phonecode = document.getElementById("phoneCode").value;
+						var pwd = document.getElementById("phonepassword_confirm").value;
+
+						if(!fxshop.checkPhone(cellphone)) {
+							plus.nativeUI.toast("输入手机格式不正确");
+							return;
+						}
+						if(phonecode.length <= 0) {
+							plus.nativeUI.toast("手机验证码不允许为空！");
+							return;
+						}
+						if(pwd.length <= 0) {
+							plus.nativeUI.toast("请设置登录密码！");
+							return;
+						}
+						mui.ajax(fxshop.goUrl('CellPhoneRegister'), {
+							data: ({
+								referralUserId: 0,
+								cellphone: cellphone,
+								verifyCode: phonecode,
+								password: pwd,
+								unionId: dataAuth.UnionId,
+								oauthType: dataAuth.oauthType,
+								oauthOpenId: dataAuth.oauthOpenId,
+								oauthNickName: dataAuth.oauthNickName,
+								oauthAvatar: dataAuth.oauthAvatar
+							}),
+							dataType: 'json',
+							type: 'get',
+							timeout: 10000,
+							success: function(data) {
+								if(!data.Result) {
+									mui.toast(data.msg);
+									return;
+								}
+								plus.nativeUI.toast("绑定成功");
+								plus.webview.currentWebview().close();
+								console.log(JSON.stringify(data.Result));
+								fxshop.createState(data.Result,function(){
+								toMain();
+							});
+							}
+						});
+					}, false);
+					forgetButton.addEventListener('tap', function() {
+						fxshop.openVW('forget_password');
+					}, false);
+
+					window.addEventListener('resize', function() {
+						oauthArea.style.display = document.body.clientHeight > 400 ? 'block' : 'none';
+					}, false);
+
+					BineEvent();
+					getImgCode();
+				});
+			}(mui, document));
+			//根据id控制层级显示
+			function ControlePannel(pannelid) {
+				var eml = document.getElementById(pannelid);
+				var controlobject = document.querySelectorAll(".mui-content");
+				for(var k = 0; k < controlobject.length; k++) {
+					if(controlobject[k].id != pannelid) {
+						controlobject[k].style.display = "none";
+					} else {
+						controlobject[k].style.display = "block";
+					}
+				}
+
+			}
+
+			function BineEvent() {
+				GetPhoneCode(); //获取验证码
+				BindPhoneRegister(); //立即手机绑定注册
+				BindUserAccount(); //关联账号注册
+				mui('.imgCodeSrc').on('tap', 'a', function() {
+					getImgCode();
+				})
+			}
+
+			//点击关联账号
+			function BindUserAccount() {
+				document.getElementById("btnaccount").addEventListener("tap", function() {
+					var accountname = document.getElementById("registeraccount").value;
+					var pwd = document.getElementById("registerpwd").value;
+					if(accountname.length <= 0) {
+						plus.nativeUI.toast("请输入账号");
+						return;
+					}
+					if(pwd.length <= 0) {
+						plus.nativeUI.toast("请输入密码");
+						return;
+					}
+					mui.ajax(fxshop.goUrl('OpenIdBindUser'), {
+						data: ({
+							referralUserId: 0,
+							username: accountname,
+							password: pwd,
+							unionId: dataAuth.UnionId,
+							oauthType: dataAuth.oauthType,
+							oauthOpenId: dataAuth.oauthOpenId,
+							oauthNickName: dataAuth.oauthNickName,
+							oauthAvatar: dataAuth.oauthAvatar
+						}),
+						dataType: 'json',
+						type: 'get',
+						timeout: 10000,
+						success: function(data) {
+							if(!data.Result) {
+								mui.toast(data.msg);
+								return;
+							}
+							mui.toast("绑定成功");
+							plus.webview.currentWebview().close();
+							fxshop.createState(data.Result,function(){
+								toMain();
+							});					
+						}
+					});
+
+				});
+			}
+
+			//跳转到立即注册手机的页面
+			function BindPhoneRegister() {
+				document.getElementById("registerphone").addEventListener("tap", function() {
+					ControlePannel("registerphonetab");
+				});
+
+				document.getElementById("relationregister").addEventListener("tap", function() {
+					ControlePannel("registerlogin");
+				});
+			}
+			//获取手机短信验证
+			function GetPhoneCode() {
+				var flag = false,
+					contact, getTabCode, TabcontactEl, imgCode;
+				mui('.mui-content').on('tap', '.getPhoneCode', function() {
+
+					contact = document.getElementById("phoneAccount").value
+					getTabCode = document.getElementById("getCode");
+					TabcontactEl = document.getElementById('phoneCode');
+					imgCode = document.getElementById("phoneImgCode").value;
+					if(flag)
+						return;
+					if(!imgCode) {
+						plus.nativeUI.toast('请输入图形验证码');
+						return;
+					}
+
+					if(contact.length != 11) {
+						plus.nativeUI.toast('手机号码为11位');
+						return;
+					}
+					mui.ajax(fxshop.goUrl('SendVerifyCode'), {
+						data: ({
+							SessionId: "",
+							Phone: contact,
+							imgcode: imgCode
+						}),
+						dataType: 'json',
+						type: 'get',
+						timeout: 10000,
+						success: function(data) {
+							if(data.success == "false") {
+								plus.nativeUI.toast('图形验证码输入错误！');
+								return;
+							}
+							if(data.Success.Status) {
+								plus.nativeUI.toast('验证码已发送，请注意查收');
+								flag = true;
+								var total = 120;
+								time = setInterval(function() {
+									if(total > 0) {
+										total--;
+										getTabCode.innerText = total + 's后可重发';
+									} else {
+										getTabCode.innerText = '重新发送';
+										clearInterval(time);
+										flag = false;
+									}
+								}, 1000)
+							} else {
+								plus.nativeUI.toast(data.Success.Msg);
+							}
+						}
+					});
+				});
+			}
+
+			function getImgCode() {
+				var imgcodes = document.querySelectorAll(".imgCodeSrc img");
+				imgcodes[0].src = apiURL + 'VerifyCodeImage?t=' + new Date();
+			}
+		</script>
+
+	</body>
+
+</html>

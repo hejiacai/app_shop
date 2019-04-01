@@ -1,0 +1,382 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title>终端查询</title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<link href="../css/mui.min.css" rel="stylesheet" />
+		<link rel="stylesheet" href="../css/mui.picker.min.css" />
+		<link rel="stylesheet" href="../css/mui.poppicker.css" />
+		<link rel="stylesheet" href="../css/style.css" />
+		<link rel="stylesheet" href="css/terminal_select.css" />
+	</head>
+
+	<body>
+		<header class="mui-bar mui-bar-nav" id="header">
+			<div class="home-header">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<h1 class="mui-title">终端查询</h1>
+			</div>
+		</header>
+		<div class="mui-content">
+			<div class="terminal_select_title">
+				<img src="../images/cxtj.png"/>
+				<span>查询条件</span>
+				<span class="terminal_select_title_span">(非必填)</span>
+			</div>
+		    <div class="terminal_select_body">
+		    	<div class="terminal_select_content">
+		    		<span>机器品牌</span>
+		    		<div class="terminal_select_content_right" id="brand_add">
+		    			<span id="brand_result">不限</span>
+		    			<img src="../images/select_right.png"/>
+		    		</div>
+		    	</div>
+		    	<div class="terminal_select_content">
+		    		<span>机器类型</span>
+		    		<div class="terminal_select_content_right" id="type_add">
+		    			<span id="type_result">不限</span>
+		    			<img src="../images/select_right.png"/>
+		    		</div>
+		    	</div>
+		    	<div class="terminal_select_content">
+		    		<span>机器型号</span>
+		    		<div class="terminal_select_content_right" id="model_add">
+		    			<span id="model_result">不限</span>
+		    			<img src="../images/select_right.png"/>
+		    		</div>
+		    	</div>
+		    	<div class="terminal_select_content">
+		    		<span class="terminal_select_content_left">代理商名字</span>
+		    		<div class="terminal_select_content_right">
+		    			<input type="text" placeholder="请输入代理商名字" id="StoreName"/>
+		    		</div>
+		    	</div>
+		    	<div class="terminal_select_content">
+		    		<span class="terminal_select_content_left">平台账号</span>
+		    		<div class="terminal_select_content_right">
+		    			<input type="number" placeholder="请输入平台账号" id="PlatformAccount"/>
+		    		</div>
+		    	</div>
+		    	<div class="terminal_select_content">
+		    		<span>SN:</span>
+		    		<div class="terminal_select_content_right1">
+		    			<input type="number" placeholder="请输入SN" class="select_time_content" id="SN_StartingNumber"></input>
+				    	<span class="select_time_div">~</span>
+				    	<input type="number" placeholder="请输入SN" class="select_time_content" id="SN_EndNumber"></input>
+		    		</div>
+		    	</div>
+		    	<div class="terminal_select_content">
+		    		<span>是否激活:</span>
+		    		<div class="terminal_select_content_right" id="activation_add">
+		    			<span id="activation_result">不限</span>
+		    			<img src="../images/select_right.png"/>
+		    		</div>
+		    	</div>
+		    	<div class="terminal_select_content1">
+		    		<div class="time_choice">
+						<img src="../images/time_choice.png"/>
+						<span>日期选择</span>
+					</div>
+				    <div class="select_time">
+				    	<div   class="select_time_content" id="time_result">请选择日期</div>
+				    	<div class="select_time_div">至</div>
+				    	<div  class="select_time_content" id="time_result1">请选择日期</div>
+				    </div>
+		    	</div>
+		    </div>
+		    
+		    <div class="terminal_select_button">
+		    	<button type="button" id="select_button">查询</button>
+		    </div>
+		    
+		</div>
+		<script type="text/javascript" src="../js/flexible.debug.js" ></script>
+		<script type="text/javascript" src="../js/flexible_css.debug.js" ></script>
+		<script src="../js/mui.min.js"></script>
+		<script type="text/javascript" src="../js/mui.picker.min.js" ></script>
+		<script type="text/javascript" src="../js/mui.poppicker.js" ></script>
+		<script type="text/javascript" src="../js/jquery-1.8.3.min.js" ></script>
+		<script type="text/javascript" src="../js/app.js" ></script>
+		<script type="text/javascript">
+			mui.init();
+			mui.plusReady(function(){
+//				mui.ajax('http://pos.wulilu.cn/AppShop/PostApi.ashx?action=GetTerminalManagement',{
+//					type: 'post',
+//					data:{
+//						sessionid:'c2a0c65fdd414216bf3ae93b79cddb25',
+//					},
+//					success:function(data){
+//						console.info(data);
+//						var te_datas=data.Result;
+//						console.info(te_datas.RecordCount)
+//					},
+//					error:function(xhr,type,errorThrown){
+//						mui.toast("网络请求超时，请重新加载");
+//					}
+//				})
+			})
+			
+			document.getElementById("select_button").addEventListener('tap',function(){
+				
+				var MachineBrand=$('#brand_add').data('id');
+				var MachineType=$('#type_add').data('id');
+				var MachineTermModel=$('#model_add').data('id');
+				var StoreName=$('#StoreName').val();
+				var PlatformAccount=$('#PlatformAccount').val();
+				var SN_StartingNumber=$('#SN_StartingNumber').val();
+				var SN_EndNumber=$('#SN_EndNumber').val();
+				var Is_Activation=$('#activation_result').data('type');
+				var Activation_StartingTime=$('#time_result').text();
+				var Activation_EndTime=$('#time_result1').text();
+				if(Activation_StartingTime=='请选择日期'){
+					Activation_StartingTime=null;
+				}
+				if(Activation_EndTime=='请选择日期'){
+					Activation_EndTime=null;
+				}
+				if(Is_Activation==undefined){
+					Is_Activation='';
+				}
+				mui.ajax('http://pos.wulilu.cn/AppShop/PostApi.ashx?action=GetTerminalQuery',{
+					dataType: 'json',
+					type: 'post',
+					timeout: 10000,
+					data:{
+						sessionid:'c2a0c65fdd414216bf3ae93b79cddb25',
+						MachineBrand:MachineBrand,
+						MachineType:MachineType,
+						MachineTermModel:MachineTermModel,
+						StoreName:StoreName,
+						PlatformAccount:PlatformAccount,
+						SN_EndNumber:SN_EndNumber,
+						Is_Activation:Is_Activation,
+						Activation_StartingTime:Activation_StartingTime,
+						Activation_EndTime:Activation_EndTime,
+						pageIndex:1
+					},
+					success:function(data){
+						console.info(JSON.stringify(data));
+						var datas=data.Result;
+						fxshop.openVW('terminal_select_result',{datas:datas});
+					},
+					error:function(xhr,type,errorThrown){
+						mui.toast("网络请求超时，请重新加载");
+					}
+				})
+				
+			})
+			//选择是否激活
+			document.getElementById("activation_add").addEventListener('tap',function(){
+				var picker = new mui.PopPicker();
+				var this_result1=$(this);
+				var this_result=document.getElementById("activation_result");
+				picker.setData([
+					{value:'',text:'不限'},
+					{value:1,text:'是'},
+					{value:0,text:'否'},
+					]);
+				picker.show(function (selectItems) {
+					if(selectItems[0].text=='不限'){
+						this_result1.css('color','#949494');
+					}else{
+						this_result1.css('color','black');
+					}
+					this_result.innerText=selectItems[0].text;
+					$('#activation_result').data('type',selectItems[0].value);
+				})
+
+			})
+			
+			//选择机器型号
+			document.getElementById("model_add").addEventListener('tap',function(){
+				var this_result1=$(this);
+				mui.ajax('http://pos.wulilu.cn/AppShop/PostApi.ashx?action=GetAuxiliary',{
+					dataType: 'json',
+					type: 'get',
+					timeout: 10000,
+					data:{
+						sessionid:'c2a0c65fdd414216bf3ae93b79cddb25',
+						Auxiliary_Type:1003
+					},
+					success:function(data){
+						console.info(JSON.stringify(data))
+						res=data.Result;
+						var datas=[];
+						for (var i=0;i<res.length;i++) {
+							var item={};
+							item['value']=res[i].cid;
+							item['text']=res[i].name;
+							datas.push(item);
+						}
+						var picker = new mui.PopPicker();
+						var this_result=document.getElementById("model_result");
+						picker.setData(datas);
+						picker.show(function (selectItems) {
+							if(selectItems[0].text=='不限'){
+								this_result1.css('color','#949494');
+							}else{
+								this_result1.css('color','black');
+								this_result1.data('id',selectItems[0].value);
+							}
+							this_result.innerText=selectItems[0].text;
+						})
+					},
+					error:function(xhr,type,errorThrown){
+						mui.toast("网络请求超时，请重新加载");
+					}
+				})
+//				var picker = new mui.PopPicker();
+//				var this_result1=$(this);
+//				var this_result=document.getElementById("model_result");
+//				picker.setData([
+//					{value:'bx',text:'不限'},
+//					{value:'zz',text:'智子'},
+//					]);
+//				picker.show(function (selectItems) {
+//					if(selectItems[0].text=='不限'){
+//						this_result1.css('color','#949494');
+//					}else{
+//						this_result1.css('color','black');
+//					}
+//					this_result.innerText=selectItems[0].text;
+//				})
+
+			})
+			
+			//选择机器类型
+			document.getElementById("type_add").addEventListener('tap',function(){
+				var this_result1=$(this);
+				mui.ajax('http://pos.wulilu.cn/AppShop/PostApi.ashx?action=GetAuxiliary',{
+					dataType: 'json',
+					type: 'get',
+					timeout: 10000,
+					data:{
+						sessionid:'c2a0c65fdd414216bf3ae93b79cddb25',
+						Auxiliary_Type:1002
+					},
+					success:function(data){
+						res=data.Result;
+						var datas=[];
+						for (var i=0;i<res.length;i++) {
+							var item={};
+							item['value']=res[i].cid;
+							item['text']=res[i].name;
+							datas.push(item);
+						}
+						var picker = new mui.PopPicker();
+						var this_result=document.getElementById("type_result");
+						picker.setData(datas);
+						picker.show(function (selectItems) {
+							if(selectItems[0].text=='不限'){
+								this_result1.css('color','#949494');
+							}else{
+								this_result1.css('color','black');
+								this_result1.data('id',selectItems[0].value);
+							}
+							this_result.innerText=selectItems[0].text;
+						})
+					},
+					error:function(xhr,type,errorThrown){
+						mui.toast("网络请求超时，请重新加载");
+					}
+				})
+//				var picker = new mui.PopPicker();
+//				var this_result1=$(this);
+//				var this_result=document.getElementById("type_result");
+//				picker.setData([
+//					{value:'bx',text:'不限'},
+//					{value:'zz',text:'智子'},
+//					]);
+//				picker.show(function (selectItems) {
+//					if(selectItems[0].text=='不限'){
+//						this_result1.css('color','#949494');
+//					}else{
+//						this_result1.css('color','black');
+//					}
+//					this_result.innerText=selectItems[0].text;
+//				})
+
+			})
+			//选择品牌
+			document.getElementById("brand_add").addEventListener('tap',function(){
+				var this_result1=$(this);
+				mui.ajax('http://pos.wulilu.cn/AppShop/PostApi.ashx?action=GetAuxiliary',{
+					dataType: 'json',
+					type: 'get',
+					timeout: 10000,
+					data:{
+						sessionid:'c2a0c65fdd414216bf3ae93b79cddb25',
+						Auxiliary_Type:1001
+					},
+					success:function(data){
+						res=data.Result;
+						var datas=[];
+						for (var i=0;i<res.length;i++) {
+							var item={};
+							item['value']=res[i].cid;
+							item['text']=res[i].name;
+							datas.push(item);
+						}
+						var picker = new mui.PopPicker();
+						var this_result=document.getElementById("brand_result");
+						picker.setData(datas);
+						picker.show(function (selectItems) {
+							if(selectItems[0].text=='不限'){
+								this_result1.css('color','#949494');
+							}else{
+								this_result1.css('color','black');
+								this_result1.data('id',selectItems[0].value);
+							}
+							this_result.innerText=selectItems[0].text;
+						})
+					},
+					error:function(xhr,type,errorThrown){
+						mui.toast("网络请求超时，请重新加载");
+					}
+				})
+//				var picker = new mui.PopPicker();
+//				picker.show(function (selectItems) {
+//					if(selectItems[0].text=='不限'){
+//						this_result1.css('color','#949494');
+//					}else{
+//						this_result1.css('color','black');
+//					}
+//					this_result.innerText=selectItems[0].text;
+//				})
+
+			})
+			mui(".select_time").on('tap','.select_time_content',function(){
+				var this_result=this;
+				var this_result1=$(this);
+				var dtpicker  = new  mui.DtPicker({
+	      			type:'date',
+	      			"beginYear":2010,
+        			"endDate": 2050,//设置结束日期    //真正的是10.21
+	      		});
+	      		dtpicker .show(function(rs) {
+						/*
+						 * rs.value 拼合后的 value
+						 * rs.text 拼合后的 text
+						 * rs.y 年，可以通过 rs.y.vaue 和 rs.y.text 获取值和文本
+						 * rs.m 月，用法同年
+						 * rs.d 日，用法同年
+						 * rs.h 时，用法同年
+						 * rs.i 分（minutes 的第二个字母），用法同年
+						 */
+						this_result.innerText = rs.y.text + '-' + rs.m.text + '-' + rs.d.text;
+						this_result1.css('color','black');
+						/*
+						 * 返回 false 可以阻止选择框的关闭
+						 * return false;
+						 */
+//						 dtpicker.dispose();
+				});
+			})
+		</script>
+	</body>
+
+</html>

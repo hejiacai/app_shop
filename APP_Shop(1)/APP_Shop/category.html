@@ -1,0 +1,99 @@
+﻿<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title>分类模板一</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<link rel="stylesheet" href="css/mui.min.css">
+		<link href="css/style.css" rel="stylesheet" />
+
+	</head>
+	<style>
+		 
+			.mui-segmented-control .mui-control-item {
+				line-height: 48px;
+				width: 100%;
+			}
+			.mui-table-view:after{ height: auto;}
+	 		input[type=search]:focus{ text-align: center;}
+	 		.home-header,header.mui-bar,.mui-bar.mui-bar-nav:before { background:rgb(245, 245, 245)!important;}
+			.mui-search.mui-active:before{ left:24px;}	
+		</style>
+	<body>
+ 
+ 		<header class="mui-bar mui-bar-nav">
+			<div class="home-header">
+				<div class="search-box" id="seach-box">
+					<label class="iconfont -search search-color" id="search_btn"></label>
+						<input type="search" class="mui-input-clear search-input" placeholder="请输入搜索关键字" id="keywordsText">
+					</div>
+ 			</div>
+		</header>	
+		
+			<!--第一套模板分类-->
+				<div class="mui-content" id="categoryBox">
+					<ul class="mui-table-view mui-table-view-chevron catelist1" id="catelist">
+
+					</ul>
+				</div>
+ 
+	</body>
+		<script type="text/javascript" src="js/flexible.debug.js"></script>
+		<script type="text/javascript" src="js/flexible_css.debug.js"></script>
+		<script type="text/javascript" src="js/mui.min.js"></script>
+		<script type="text/javascript" src="js/app.js"></script>
+		<script type="text/javascript" src="js/template.js"></script>	
+		<script>
+			mui.init({});
+ 
+			var pid=0;
+			var immersedIos=isIphoneX();
+			mui.plusReady(function() {
+				//判断是否是iphone X 
+				if(immersedIos) {
+					document.getElementById("seach-box").className += " Xsearch";
+					document.getElementById("search_btn").className +=" Xsearchbtn"
+				}
+				mui.ajax(fxshop.goUrl('getCategories'), {
+					data:{
+						"pid":pid
+					},
+					dataType: 'json',
+					type: 'get',
+					success: function(data) {
+						var result = data.Result;						
+						var TopCategory = {
+							TopCategory: result
+						};
+						document.getElementById("catelist").innerHTML = template('firstCateList', TopCategory);
+					}
+				});
+			});
+ 
+		function searchCate(keywords,cid)
+		{
+			fxshop.openVW('search-result',{'keywords': keywords,'pid':cid});
+		}		
+		
+		document.getElementById('keywordsText').addEventListener('tap',function(){
+			fxshop.openVW('search');
+		});				
+		
+		</script>
+		
+		<script type="text/html" id="firstCateList">
+
+			{{each TopCategory as firstcategory}}
+			<li class="cate1-li">
+					<div class="img" onclick="searchCate('','{{firstcategory.cid}}')"><img src="{{firstcategory.icon}}"></div>
+					<span  onclick="searchCate('','{{firstcategory.cid}}')">{{firstcategory.name}}</span>
+				
+			</li>
+			{{/each}}
+
+		</script>
+
+</html>

@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<meta name="format-detection" content="telephone=no,email=no" />
+		<title>火拼团列表</title>
+
+		<link rel="stylesheet" href="css/mui.min.css">
+		<link rel="stylesheet" href="css/swiper.min.css">
+		<link rel="stylesheet" href="css/style.css" />
+		<link rel="stylesheet" href="css/mescroll.min.css">
+
+		<script src="js/mui.js" type="text/javascript"></script>
+		<script src="js/mescroll.min.js"></script>
+		<script src="js/app.js" type="text/javascript"></script>
+		<script type="text/javascript" src="js/template.js"></script>
+		<script src="js/swiper.min.js" type="text/javascript"></script>
+		<script src="js/flexible.debug.js" type="text/javascript"></script>
+		<script src="js/flexible_css.debug.js" type="text/javascript"></script>
+	</head>
+	<style>
+		header.mui-bar{z-index: 999;}
+ 
+ 
+	</style>
+
+	<body>
+		<header class="mui-bar mui-bar-nav" id="header">
+			<div class="home-header">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<a id="menu" class="iconfont _more mui-pull-right" href="#topPopover"></a>
+			<h1 class="mui-title">火拼团列表</h1>
+			</div>
+		</header>
+		
+<!--右上角弹出菜单-->
+		<div id="topPopover" class="mui-popover">
+			<div class="mui-popover-arrow"></div>
+			<div class="mui-scroll-wrapper">
+				<div class="mui-scroll" id="navbar">
+					<ul class="mui-table-view nav-bar">
+						<li data-page="home"><i class="iconfont home"></i>首页</li>
+						<li data-page="category"><i class="iconfont fenlei"></i>分类</li>
+						<li data-page="shopcart"><i class="iconfont icon__cart"></i>购物车</li>
+						<li data-page="user"><i class="iconfont icon__my"></i>个人中心</li>				
+					</ul>
+				</div>
+			</div>
+
+		</div>		
+		
+		
+
+		
+		<div class="mui-content" id="content">
+			<div id="webview" style="position: relative;">
+			<div style="background: #F0F0F0;" id="mescroll" class="mescroll">
+				<div class="group-list-content overflow" id="List">
+	
+						<div class="emptyrush-show mui-text-center">
+							<img src="images/tuan.png" />
+							<h4 class="font32 margin-t24">商城暂时没有火拼团活动</h4>
+						</div>
+	
+						<div class="pull-loading">
+							<div class="mui-icon mui-spinner"></div>正在加载...
+						</div>
+	
+					</div>
+			</div>
+			</div>
+		</div>
+	</body>
+	<script>
+		var isEnd = false,
+			pageindex = 0,
+			List = document.getElementById('List');
+		var mescroll=null;
+		var immersedIos=isIphoneX();
+		mui.init({
+			swipeBack: true
+		});
+
+		mui.plusReady(function() {
+			//判断是否是iphone X 
+				if(immersedIos){
+					document.getElementById("header").className+=" Xheader"; 
+					document.getElementById("content").className+=" Xmui-content";
+				} 	 
+			 	mescroll = new MeScroll("mescroll", { //第一个参数"mescroll"对应上面布局结构div的id
+	       		//如果您的下拉刷新是重置列表数据,那么down完全可以不用配置,具体用法参考第一个基础案例
+	       		//解析: down.callback默认调用mescroll.resetUpScroll(),而resetUpScroll会将page.num=1,再触发up.callback
+				down: {
+					callback: reloadPage //下拉刷新的回调,别写成downCallback(),多了括号就自动执行方法了
+				},
+				up: {
+					callback: loadPage //上拉加载的回调
+				}
+			});
+		//	mescroll.hideUpScroll();
+		//	ShowRushList();
+			BindEvent();
+		});
+
+		function ShowRushList() {
+			setTimeout(function() {
+				loadPage('reset');
+			}, 300);
+		}
+
+		function BindEvent() {
+			showNav();
+			mui("#List").on("tap", ".mui-card", function() {
+				var activeId = this.dataset.activeid;
+				var pid = this.dataset.pid;
+				fxshop.openVW("rushgroupdetail", {
+					"activeid": activeId,
+					"pid":pid
+				});
+			});
+		}
+
+		function reloadPage() {
+			isEnd = false;
+			pageindex = 0;
+			loadPage('reset');
+		}
+
+		function loadPage(re) {
+			var self = this;
+			if(!isEnd) {
+				pageindex++;
+				mui.ajax(fxshop.goUrl("FightGroupActivityList"), {
+					data: {
+						pageIndex: pageindex,
+						pageSize: 100
+					},
+					dataType: 'json',
+					type: 'post',
+					timeout: 10000,
+					success: function(data) {
+						if(data.Result.List.length < 10) {
+							isEnd = true;
+						}
+						if(re) {
+							List.innerHTML = template('tempactive', data);
+							mescroll.scrollTo(44);
+							
+						} else {
+							List.insertAdjacentHTML('beforeend', template('tempactive', data));
+							//self.endPullupToRefresh(isEnd);
+						}
+mescroll.endSuccess(data.Result.List.length, !isEnd);
+						/*if(data.Result.List.length > 0) {
+							document.querySelector('.mui-pull-bottom-pocket').style.opacity = 1;
+						} else {
+							document.querySelector('.mui-pull-bottom-pocket').style.opacity = 0;
+							List.innerHTML = '<div class="emptyrush-show mui-text-center">' +
+								'<img src="images/tuan.png" />' +
+								'<h4 class="font32 margin-t24">商城暂时没有火拼团活动</h4></div>';
+						}*/
+
+					},
+					error: function(xhr, type, errorThrown) {
+						mescroll.endErr();
+						if(pageindex == 1) {
+							reloadPage();
+						} else {
+							plus.nativeUI.toast('请求失败，请检查网络重试');
+							//self.endPullupToRefresh(isEnd);
+							pageindex--;
+						}
+					}
+				});
+			} else {
+				//self.endPullupToRefresh(isEnd);
+			}
+		}
+	</script>
+	<script id="tempactive" type="text/html">
+		{{each Result.List as item}}
+
+		<div class="mui-card overflow item" data-activeid="{{item.ActivityId}}" data-pid="{{item.ProductId}}">
+			<!--图片-->
+			<div class="mui-card-content">
+				<img src="{{item.ActivityImage}}" alt="" width="100%">
+					{{if item.Status!=1}}
+				<div class="mui-open-state">
+					<button type="button" class="mui-btn mui-btn-outlined"><i class="iconfont icon__star"></i>&nbsp;{{item.StatusText}}</button>
+					</q>
+					</q>
+				</div>
+				{{/if}}
+			</div>
+			<!--列表信息-->
+			<div class="mui-row">
+				<div class="mui-col-xs-9 tuan-details-bd">
+					<li class="mui-table-view-cell name">
+						{{item.ProductName}}
+					</li>
+					<li class="mui-table-view-cell price">
+						火拼价：¥<span>{{item.FightPrice}}</span><i>¥{{item.SalePrice}}</i>
+					</li>
+				</div>
+				<div class="mui-col-xs-3">
+					<div class="swiper-tuan-num2 tuan-num mui-text-center">
+						<div>{{item.MaxJoinCount}}</div>人团</div>
+				</div>
+			</div>
+		</div>
+		{{/each}}
+	</script>
+
+</html>

@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<meta name="format-detection" content="telephone=no,email=no" />
+		<title>注册页面</title>
+
+		<link href="css/mui.min.css" rel="stylesheet" />
+		<link href="css/style.css" rel="stylesheet" />
+		<link href="css/account.css" rel="stylesheet" />
+		<script type="text/javascript" src="js/mui.min.js"></script>
+		<script src="js/app.js"></script>
+		<script type="text/javascript" src="js/flexible.debug.js"></script>
+		<script type="text/javascript" src="js/flexible_css.debug.js"></script>
+
+	</head>
+
+	<style>
+		.mui-content {
+			height: auto;
+			top: 0;
+			position: relative;
+		}
+		
+		.mui-input-row .mui-btn {
+			float: left;
+		}
+		
+		.mui-content-padded {
+			position: relative;
+			width: 93%;
+			border: 0;
+		}
+		
+		.TabRegBox {
+			position: absolute;
+			width: 93%;
+			left: 0.32rem;
+			top: 420px;
+		}
+		
+		.mui-slider {
+			position: static;
+		}
+		
+		.mui-input-row .mui-input-password~.mui-icon-eye {
+			color: #DBDBDB;
+		}
+		
+		.mui-input-row {
+			padding: 0.1rem 0.32rem;
+		}
+		
+		.mui-input-group .mui-input-row {
+			height: auto!important
+		}
+		
+		.mui-input-group .mui-input-row:after {
+			left: 0.32rem;
+		}
+		
+		.mui-input-row .mui-btn {
+			padding: 0.32rem 0;
+			width: 2.13rem;
+			margin-right: 0.21rem;
+			line-height: 0.53rem;
+			font-size: 0.42rem;
+			text-align: left;
+		}
+	</style>
+
+	<body>
+
+		<header class="mui-bar mui-bar-nav" id="header">
+			<div class="home-header">
+				<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+				<h1 class="mui-title">注册</h1>
+			</div>
+		</header>
+		<div class="registbox mui-content">
+			<div class="transparent" id="transparent">
+				<div class="mui-input-group" id="nomarlReg">
+					<div class="mui-input-row">
+						<label>账号</label>
+						<input id='account' type="email" class="mui-input-clear mui-input" placeholder="请输入账号">
+					</div>
+					<div class="mui-input-row mui-password">
+						<label>密码</label>
+						<input id='password' type="password" class="mui-input-password mui-input" placeholder="请输入密码">
+					</div>
+
+					<div class="mui-input-row mui-password">
+						<label>确认</label>
+						<input id='password_confirm' type="password" class="mui-input-password mui-input" placeholder="请确认密码">
+					</div>
+
+				</div>
+
+				<div class="mui-input-group" id="phoneReg">
+					<div class="mui-input-row">
+						<label>手机号</label>
+						<input id='phoneAccount' type="number" class="mui-input-clear mui-input" placeholder="请输入手机号">
+					</div>
+					<div class="mui-input-row mui-password">
+						<label>密码</label>
+						<input id='phonepassword' type="password" class="mui-input-password mui-input">
+					</div>
+					<div class="mui-input-row mui-password">
+						<label>重复密码</label>
+						<input id='phonepassword_confirm' type="password" class="mui-input-password mui-input">
+					</div>
+					<div class="mui-input-row">
+						<label>图形验证码</label>
+						<input id='phoneImgCode' type="text" class="mui-input input-half">
+						<div class="imgCodeSrc">
+							<img src="" width="50" height="25" />
+							<a>换一张</a>
+						</div>
+					</div>
+					<div class="mui-input-row">
+						<label>手机验证</label>
+						<input id='phoneCode' type="number" class="mui-input input-half">
+						<a class="input-btn getPhoneCode" id="getCode">获取验证码</a>
+					</div>
+				</div>
+
+			</div>
+
+			<div id="slider" class="mui-content mui-slider">
+				<div id="sliderSegmentedControl" class="mui-slider-indicator mui-segmented-control mui-segmented-control-inverted">
+					<a class="mui-control-item mui-active" href="#item1mobile" id="tab1">
+						邮箱注册
+					</a>
+					<a class="mui-control-item" href="#item2mobile" id="tab2">
+						手机注册
+					</a>
+				</div>
+
+				<div class="mui-tab-content">
+					<div id="item1mobile" class="mui-slider-item mui-control-content mui-active">
+						<div class="mui-input-group" id="Tabemailreg">
+							<div class="mui-input-row">
+								<label>账号</label>
+								<input id='TabAccount' type="email" class="mui-input-clear mui-input" placeholder="请输入账号">
+							</div>
+							<div class="mui-input-row mui-password">
+								<label>密码</label>
+								<input id='TabPassword' type="password" class="mui-input-password mui-input" placeholder="请输入密码">
+							</div>
+
+							<div class="mui-input-row mui-password">
+								<label>确认密码</label>
+								<input id='TabPassword_sure' type="password" class="mui-input-password mui-input" placeholder="请确认密码">
+							</div>
+
+						</div>
+
+					</div>
+					<div id="item2mobile" class="mui-slider-item mui-control-content">
+						<div class="mui-input-group" id="Tabtelreg">
+							<div class="mui-input-row">
+								<label>手机号</label>
+								<input id='Tabtelaccount' type="number" class="mui-input-clear mui-input" placeholder="请输入手机号">
+							</div>
+							<div class="mui-input-row mui-password">
+								<label>密码</label>
+								<input id='TabtelPassword' type="password" class="mui-input-password mui-input">
+							</div>
+							<div class="mui-input-row mui-password">
+								<label>重复密码</label>
+								<input id='TabtelPassword_confirm' type="password" class="mui-input-password mui-input">
+							</div>
+							<div class="mui-input-row">
+								<label>图形验证码</label>
+								<input id='TabtelImgCode' type="text" class="mui-input input-half">
+								<div class="imgCodeSrc">
+									<img src="" width="50" height="25" />
+									<a>换一张</a>
+								</div>
+							</div>
+							<div class="mui-input-row">
+								<label>手机验证</label>
+								<input id='TabPhoneCode' type="number" class="mui-input input-half">
+								<a class="input-btn getPhoneCode" id="getTabCode">获取验证码</a>
+							</div>
+						</div>
+
+					</div>
+				</div>
+
+			</div>
+
+			<!--真实姓名，生日，性别-->
+			<div class="mui-input-group" id="nameReg">
+				<div class="mui-input-row" id="nameBox">
+					<label>真实姓名</label>
+					<input id='NameAccount' type="text" class="mui-input-clear mui-input" placeholder="请输入真实姓名">
+				</div>
+
+				<div class="mui-input-row mui-password" id="sexBox">
+					<label>性别</label>
+					<div id='sex' class="ui-input mui-input-age"></div>
+				</div>
+				<div class="mui-input-row mui-password" id="ageBox">
+					<button id='showNomarlage' class="mui-btn mui-btn-block" type='button'>出生日期</button>
+					<div id='age' class="mui-input mui-input-age"></div>
+				</div>
+
+			</div>
+
+			<div class="mui-content-padded">
+				<div id='reg' class="mui-btn mui-btn-block mui-btn-danger login">注册</div>
+			</div>
+
+		</div>
+		<script>
+			var realName = document.getElementById("NameAccount").value;
+			var sex = document.getElementById("sex").innerText;
+			var age = document.getElementById("age").innerText;
+			var immersedIos = isIphoneX();
+			var imgcodes = document.querySelectorAll(".imgCodeSrc img");
+			var siteinfo;
+			var accountBox = document.getElementById('account'),
+				passwordBox = document.getElementById('password'),
+				passwordConfirmBox = document.getElementById('password_confirm');
+			var phoneAccount = document.getElementById("phoneAccount"),
+				phonePassWord = document.getElementById('phonepassword'),
+				imgCode = document.getElementById("phoneImgCode").value;
+			phoneCode = document.getElementById("phoneCode");
+			var getTabCode,
+				TabcontactEl,
+				contact,
+				flag = false;
+			mui.init();
+			mui.plusReady(function() {
+				//判断是否是iphone X 
+				if(immersedIos) {
+					document.getElementById("header").className += " Xheader";
+					document.getElementById("transparent").className += " XRegister-content";
+					document.getElementById("slider").className += " XRegister-content";
+				}
+				BindEvent();
+				siteinfo = SiteSetting.getSiteInfo();
+				var nomarlReg = document.getElementById('nomarlReg'),
+					phoneReg = document.getElementById('phoneReg');
+
+				//判断是否选中真实姓名，生日，性别
+				if(siteinfo.Site.RegisterExtendInfo != '') {
+					var array = new Array;
+					array = siteinfo.Site.RegisterExtendInfo.split(',');
+					var length = array.length;
+					var hasRealName = false;
+					var hasSex = false;
+					var hasBirthday = false;
+					for(var i = 0; i < array.length; i++) {
+
+						if(array[i] == 'RealName') {
+							hasRealName = true;
+						}
+
+						if(array[i] == 'Sex') {
+							hasSex = true;
+						}
+						if(array[i] == 'Birthday') {
+							hasBirthday = true;
+						}
+					}
+					if(!hasRealName) {
+						document.getElementById('nameBox').style.display = "none";
+					} else {
+						document.getElementById('nameBox').style.display = "block";
+					}
+					if(!hasSex) {
+						document.getElementById('sexBox').style.display = "none";
+					} else {
+						document.getElementById('sexBox').style.display = "block";
+					}
+					if(!hasBirthday) {
+						document.getElementById('ageBox').style.display = 'none';
+					} else {
+						document.getElementById('ageBox').style.display = 'block';
+					}
+				} else {
+					document.getElementById("nameReg").style.display = "none";
+				}
+
+				if(siteinfo.Site.IsSuportEmailRegister && siteinfo.Site.IsSuportPhoneRegister) {
+					document.getElementById('slider').style.display = 'block';
+					document.getElementById('transparent').style.display = 'none';
+				} else if(siteinfo.Site.IsSuportEmailRegister) {
+					phoneReg.parentNode.removeChild(phoneReg);
+				} else {
+					nomarlReg.parentNode.removeChild(nomarlReg);
+				}
+
+				getImgCode();
+			});
+
+			mui('.registbox').on('tap', '.getPhoneCode', function() {
+				if(siteinfo.Site.IsSuportEmailRegister && siteinfo.Site.IsSuportPhoneRegister) {
+					contact = document.getElementById("Tabtelaccount").value
+					getTabCode = document.getElementById("getTabCode");
+					TabcontactEl = document.getElementById('TabPhoneCode');
+					imgCode = document.getElementById("TabtelImgCode").value;
+				} else {
+					contact = document.getElementById("phoneAccount").value
+					getTabCode = document.getElementById("getCode");
+					TabcontactEl = document.getElementById('phoneCode');
+					imgCode = document.getElementById("phoneImgCode").value;
+				} 
+				if(flag)
+					return;
+				if(!imgCode) {
+					plus.nativeUI.toast('请输入图形验证码');
+					return;
+				}
+
+				if(contact.length != 11) {
+					plus.nativeUI.toast('手机号码为11位');
+					return;
+				}
+				mui.ajax(fxshop.goUrl('SendVerifyCode'), {
+					data: ({
+						SessionId: "",
+						Phone: contact,
+						imgcode: imgCode
+					}),
+					dataType: 'json',
+					type: 'get',
+					timeout: 10000,
+					success: function(data) {
+						if(data.ErrorResponse != undefined) {
+								plus.nativeUI.toast(data.ErrorResponse.ErrorMsg);
+								return;
+						}
+						if(data.success=="false"){							
+							plus.nativeUI.toast('图形验证码错误');
+							return;
+						}else if(data.Success.Status) {
+							plus.nativeUI.toast('验证码已发送，请注意查收');
+							flag = true;
+							var total = 120;
+							time = setInterval(function() {
+								if(total > 0) {
+									total--;
+									getTabCode.innerText = total + 's后可重发';
+								} else {
+									getTabCode.innerText = '重新发送';
+									clearInterval(time);
+									flag = false;
+								}
+							}, 1000)
+						} else {
+							plus.nativeUI.toast(data.Success.Msg);
+						}
+					}
+				});
+			});
+
+			function getImgCode() {
+				if(siteinfo.Site.IsSuportEmailRegister && siteinfo.Site.IsSuportPhoneRegister) {
+					imgcodes[1].src = apiURL + 'VerifyCodeImage?d=' + Date();
+				} else {
+					imgcodes[0].src = apiURL + 'VerifyCodeImage?d=' + Date();
+				}
+			}
+			mui('.imgCodeSrc').on('tap', 'a', function() {
+				getImgCode();
+			})
+
+			function BindEvent() {
+				//出生年月日
+				document.getElementById("age").addEventListener('tap', function() {
+					var dDate = new Date();
+					dDate.setFullYear(1900, 01, 16);
+					var minDate = new Date();
+					minDate.setFullYear(1900, 01, 01);
+					var maxDate = new Date();
+					maxDate.setFullYear(2016, 11, 31);
+					plus.nativeUI.pickDate(function(e) {
+						var d = e.date;
+						document.getElementById('age').innerText = d.getFullYear() + "-" + (d.getMonth() + 1) + "-" + d.getDate();
+					});
+				});
+
+				//选择性别
+				document.getElementById('sex').addEventListener('tap', function() {
+					var btnArray = [{
+						title: "男"
+					}, {
+						title: "女"
+					}];
+					plus.nativeUI.actionSheet({
+						buttons: btnArray
+					}, function(event) {
+						var index = event.index;
+						switch(index) {
+							case 1:
+								document.getElementById('sex').innerText = '男'
+								break;
+							case 2:
+								document.getElementById('sex').innerText = '女'
+								break;
+						}
+					});
+				}, false);
+			}
+
+			//注册
+			mui('.registbox').on('tap', '#reg', function() {
+				//普通注册
+				if(document.getElementById('transparent').style.display!="none"){
+					if(siteinfo.Site.IsSuportEmailRegister) {
+					var regInfo = {
+						account: accountBox.value,
+						password: passwordBox.value,
+					};
+					var passwordConfirm = passwordConfirmBox.value;
+					if(passwordConfirm != regInfo.password) {
+						plus.nativeUI.toast('密码两次输入不一致');
+						return;
+					}
+
+					fxshop.reg(regInfo, function(err, data) {
+						if(err) {
+							plus.nativeUI.toast(err);
+							return;
+						}
+						plus.nativeUI.toast('注册成功');
+						plus.webview.currentWebview().close();
+					});
+					return;
+				} else {
+					var contact = phoneAccount.value,
+						data = {};
+					if(contact.length != 11) {
+						plus.nativeUI.toast('手机号码为11位');
+						return;
+					}
+					mui.ajax(fxshop.goUrl('regiester'), {
+						data: {
+							userName: phoneAccount.value,
+							password: phonePassWord.value,
+							verifyCode: phoneCode.value,
+							RealName: realName,
+							sex: sex,
+							birthDay: age,
+						},
+						dataType: 'json',
+						type: 'post',
+						timeout: 10000,
+						success: function(data) {
+							if(data.ErrorResponse != undefined) {
+								plus.nativeUI.toast(data.ErrorResponse.ErrorMsg);
+								return;
+							} else {
+								plus.nativeUI.toast('注册成功');
+								plus.webview.currentWebview().close();
+								siteinfo.UserInfo = data.Result;
+								SiteSetting.setSiteInfo(siteinfo);
+								if(plus.webview.getWebviewById("login.html")){
+									plus.webview.getWebviewById("login.html").close(); 
+								}
+								if(plus.webview.getWebviewById("appauto")){
+									plus.webview.getWebviewById("appauto").close();
+								}
+								mui.fire(plus.webview.getWebviewById('userhome.html'), 'updateData');
+							}
+						},
+						error: function(xhr, type, errorThrown) {
+							plus.nativeUI.toast('注册失败，请检查网络');
+						}
+					})
+					return;
+				}
+
+				}
+				
+				//tab注册
+				var tab1 = true;
+				tab1 = document.getElementById('item1mobile').getAttribute('class') == 'mui-slider-item mui-control-content mui-active';
+				if(tab1) {
+					var tabemail = document.getElementById('TabAccount'),
+						tabpassword = document.getElementById('TabPassword'),
+						tabpasswordsurebox = document.getElementById('TabPassword_sure');
+					var tabregInfo = {
+						account: tabemail.value,
+						password: tabpassword.value,
+					};
+					var tabpasswordagain = tabpasswordsurebox.value;
+
+					if(tabpasswordagain != tabregInfo.password) {
+						plus.nativeUI.toast('密码两次输入不一致');
+						return;
+					};
+
+					fxshop.reg(tabregInfo, function(err, data) {
+						if(err) {
+							plus.nativeUI.toast(err);
+							return;
+						}
+						plus.nativeUI.toast('注册成功');
+						plus.webview.currentWebview().close();
+					});
+
+				} else {
+					//tab手机注册
+					var TabTelAccount = document.getElementById('Tabtelaccount'),
+						TabTelPasswordBox = document.getElementById('TabtelPassword'),
+						TabTelPasswordConfirmBox = document.getElementById('TabtelPassword_confirm');
+					var TabTelPhoneCode = document.getElementById("TabPhoneCode"),
+						time;
+
+					if(TabTelAccount.value.length != 11) {
+						plus.nativeUI.toast('请输入正确的手机号');
+						return;
+					};
+					if(TabTelPasswordBox.value.length < 6) {
+						plus.nativeUI.toast('密码最短为 6 个字符');
+						return;
+					};
+					if(TabTelPasswordConfirmBox.value != TabTelPasswordBox.value) {
+						plus.nativeUI.toast('密码两次输入不一致');
+						return;
+					};
+					if(TabTelPhoneCode.value < 4) {
+						plus.nativeUI.toast('验证码不正确！');
+						return;
+					};
+
+					mui.ajax(fxshop.goUrl('regiester'), {
+						data: {
+							userName: TabTelAccount.value,
+							password: TabTelPasswordBox.value,
+							verifyCode: TabTelPhoneCode.value,
+							RealName: realName,
+							sex: sex,
+							birthDay: age,
+						},
+						dataType: 'json',
+						type: 'post',
+						timeout: 10000,
+						success: function(data) {
+							if(data.ErrorResponse != undefined) {
+								plus.nativeUI.toast(data.ErrorResponse.ErrorMsg);
+								return;
+							} else {
+								plus.nativeUI.toast('注册成功');
+								plus.webview.currentWebview().close();
+								siteinfo.UserInfo = data.Result;
+								SiteSetting.setSiteInfo(siteinfo); 
+								
+								if(plus.webview.getWebviewById("login.html")){
+									plus.webview.getWebviewById("login.html").close(); 
+								}
+								if(plus.webview.getWebviewById("appauto")){
+									plus.webview.getWebviewById("appauto").close();
+								}
+								
+								mui.fire(plus.webview.getWebviewById('userhome.html'), 'updateData');
+							}
+						},
+						error: function(xhr, type, errorThrown) {
+							plus.nativeUI.toast('注册失败，请检查网络');
+						}
+					});
+				}
+			});
+		</script>
+
+	</body>
+
+</html>

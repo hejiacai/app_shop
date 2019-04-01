@@ -1,0 +1,51 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="css/mui.min.css" rel="stylesheet" />
+		<script src="js/mui.min.js"></script>
+		<script type="text/javascript" src="js/app.js"></script>
+	</head>
+
+	<script type='text/javascript'>
+		(function(m, ei, q, i, a, j, s) {
+			m[i] = m[i] || function() {
+				(m[i].a = m[i].a || []).push(arguments)
+			};
+			j = ei.createElement(q),
+				s = ei.getElementsByTagName(q)[0];
+			j.async = true;
+			j.charset = 'UTF-8';
+			j.src = 'https://static.meiqia.com/dist/meiqia.js?_=t';
+			s.parentNode.insertBefore(j, s);
+		})(window, document, 'script', '_MEIQIA');
+		_MEIQIA('entId', meiqiaEid);
+		_MEIQIA('withoutBtn');
+		_MEIQIA('allSet', function() {
+			var name = SiteSetting.getSiteInfo().UserInfo.realName; 
+			_MEIQIA('metadata', {
+				name: name // 美洽默认字段
+			});
+			_MEIQIA('showPanel');
+			_MEIQIA('getPanelVisibility', function(visibility) {
+				if(visibility === 'visible') {
+					console.log('聊天窗口处于显示状态');
+				} else {
+					console.log('聊天窗口处于隐藏状态');
+					plus.webview.currentWebview().close();
+				}
+			});
+		});
+		mui.init();
+		mui.plusReady(function() {
+
+		});
+	</script>
+
+	<body>
+	</body>
+
+</html>

@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<meta name="format-detection" content="telephone=no,email=no" />
+		<title>账号管理</title>
+		<link href="css/mui.min.css" rel="stylesheet" />
+		<link href="css/style.css" rel="stylesheet" />
+		<script type="text/javascript" src="js/flexible.debug.js"></script>
+		<script type="text/javascript" src="js/flexible_css.debug.js"></script>
+		<script type="text/javascript" src="js/mui.min.js"></script>
+		<script type="text/javascript" src="js/app.js"></script>
+	</head>
+
+	<body>
+		<header class="mui-bar mui-bar-nav" id="header">
+			<div class="home-header">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"><span>返回</span></a>
+			<a id="menu" class="iconfont _more mui-pull-right" href="#topPopover"></a>
+			<h1 class="mui-title">账号管理</h1>
+			</div>
+		</header>
+
+<!--右上角弹出菜单-->
+		<div id="topPopover" class="mui-popover">
+			<div class="mui-popover-arrow"></div>
+			<div class="mui-scroll-wrapper">
+				<div class="mui-scroll" id="navbar">
+					<ul class="mui-table-view nav-bar">
+						<li data-page="home"><i class="iconfont home"></i>首页</li>
+						<li data-page="category"><i class="iconfont fenlei"></i>分类</li>
+						<li data-page="shopcart"><i class="iconfont icon__cart"></i>购物车</li>
+						<li data-page="user"><i class="iconfont icon__my"></i>个人中心</li>				
+					</ul>
+				</div>
+			</div>
+
+		</div>		
+
+		<div class="mui-content" id="content">
+			<div class="account-box">
+				<div class="phone" id="bindphoneBox">
+					<span>绑定手机号</span>
+					<div class="account-right" id="bindphone">
+						<span class="colorRed">未绑定</span>
+						<em class="iconfont arrow_right font28"></em>
+					</div>
+					<div class="account-right mui-hidden" id="bindphonefinish">
+						<span class="color51" id="phonenum"></span>
+						<em class="iconfont arrow_right font28"></em>
+					</div>
+				</div>
+				<div class="phone-label">为了保证账户安全，请及时绑定手机</div>
+
+				<div class="phone" id="bindEmailBox">
+					<span>绑定邮箱</span>
+					<div class="account-right" id="bindEmail">
+						<span class="colorRed">未绑定</span>
+						<em class="iconfont arrow_right font28"></em>
+					</div>
+					<div class="account-right mui-hidden" id="bindEmailfinish">
+						<span class="color51" id="name"></span>
+						<em class="iconfont arrow_right font28"></em>
+					</div>
+				</div>
+				<div class="phone-label">若验证邮箱停用，请及时更换绑定</div>
+
+				<div class="phone" id="password">
+					<span>登录密码</span>
+					<div class="account-right">
+						<span class="colorDB">修改账户登录密码</span>
+						<em class="iconfont arrow_right font28"></em>
+					</div>
+				</div>
+
+				<div class="phone" id="TranPassword">
+					<span>交易密码</span>
+					<div class="account-right">
+						<em class="iconfont arrow_right font28"></em>
+					</div>
+				</div>
+				<div class="phone-label">为了保证资金安全，请妥善保管交易密码</div>
+
+				<div class="phone" id="userinfo">
+					<span>个人信息</span>
+					<div class="account-right">
+						<span class="colorDB">修改个人基本信息</span>
+						<em class="iconfont arrow_right font28"></em>
+					</div>
+				</div>
+			</div>
+
+			<div class="exitBtn" id="exit">退出登录</div>
+
+		</div>
+
+		<script>
+			var doc = document,
+				siteifno = SiteSetting.getSiteInfo();
+			var immersedIos=isIphoneX();	
+			mui.init({});
+			mui.plusReady(function() {
+				//判断是否是iphone X 
+				if(immersedIos){
+					document.getElementById("header").className+=" Xheader"; 
+					document.getElementById("content").className+=" Xmui-content";
+				} 	 
+				if(siteifno.UserInfo.Cellphone) {
+					fxshop.removeClass(document.getElementById("bindphonefinish"), "mui-hidden");
+					fxshop.addClass(document.getElementById("bindphone"), "mui-hidden");
+					document.getElementById("phonenum").innerText = siteifno.UserInfo.Cellphone;
+				}
+				if(siteifno.UserInfo.Email){
+					fxshop.removeClass(document.getElementById("bindEmailfinish"), "mui-hidden");
+					fxshop.addClass(document.getElementById("bindEmail"), "mui-hidden");
+					document.getElementById("name").innerText = siteifno.UserInfo.Email;
+				}
+				BindEvent();
+			});
+
+			function BindEvent() {
+				showNav();
+				doc.getElementById('bindphoneBox').addEventListener('tap', function() {
+					fxshop.openVW('BindPhone');
+				});
+
+				doc.getElementById('bindEmailBox').addEventListener('tap', function() {
+					fxshop.openVW('BindEmail');
+				});
+
+				doc.getElementById('password').addEventListener('tap', function() {
+					var requesturl = apiURL + "appshop/SetPassword";
+					fxshop.OpenWapWeb(requesturl, '修改密码');
+				});
+
+				doc.getElementById('TranPassword').addEventListener('tap', function() {
+					var requesturl = apiURL + "appshop/UpdateTranPassword";
+					fxshop.OpenWapWeb(requesturl, '修改交易密码');
+				});
+
+				doc.getElementById('userinfo').addEventListener('tap', function() {
+					var requesturl = apiURL + "appshop/UserProfile";
+					fxshop.OpenWapWeb(requesturl, '个人信息');
+				});
+
+				doc.getElementById('exit').addEventListener('tap', function() {
+					var btnArray = ['取消', '确认'];
+					mui.confirm('确定要注销账号吗？', '', btnArray, function(e) {
+						if(e.index == 1) {
+							ClearWapLogin();
+							setTimeout(function(){
+								plus.webview.currentWebview().close();
+							},300);
+						}
+					})
+				});
+
+			}
+
+			function ClearWapLogin() {
+				mui.ajax(fxshop.goUrl("logout"), {
+					dataType: 'json',
+					type: 'get',
+					timeout: 10000,
+					success: function(data) {
+						
+						siteifno.UserInfo = null;
+						SiteSetting.setSiteInfo(siteifno);
+						SetWapUserInfo(); 
+						mui.fire(plus.webview.getWebviewById('shopcart.html'), 'updateData');
+						mui.fire(plus.webview.getWebviewById(plus.webview.getLaunchWebview().id), "updateData", {
+							'shopcartnum': 0
+						});
+						
+					},
+					complete:function(){
+						mui.fire(plus.webview.getWebviewById("userhome.html"), "pagereload");
+					}
+				});
+			}
+		</script>
+
+	</body>
+
+</html>

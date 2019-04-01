@@ -1,0 +1,106 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<meta name="format-detection" content="telephone=no,email=no" />
+		<title>消息列表</title>
+
+		<link rel="stylesheet" href="css/mui.min.css">
+		<link rel="stylesheet" href="css/style.css" />
+
+		<script src="js/mui.js" type="text/javascript"></script>
+		<script src="js/app.js" type="text/javascript"></script>
+		<script type="text/javascript" src="js/template.js"></script>
+		<script src="js/flexible.debug.js" type="text/javascript"></script>
+		<script src="js/flexible_css.debug.js" type="text/javascript"></script>
+	</head>
+	
+	<body>
+		<header class="mui-bar mui-bar-nav" id="header">
+			<div class="home-header">
+				<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+				<h1 class="mui-title">消息</h1>
+			</div>
+		</header>
+		<div id="message-content" class="mui-content">
+		</div>
+		<script type="text/javascript">
+			var immersedIos=isIphoneX();
+			mui.init()
+			mui.plusReady(function() {
+				//判断是否是iphone X 
+				if(immersedIos){
+					document.getElementById("header").className+=" Xheader"; 
+					document.getElementById("message-content").className+=" Xmui-content";
+				} 	 
+				var sessionid = fxshop.isLogin() ? SiteSetting.getSiteInfo().UserInfo.sessionid : '';
+				mui.ajax(fxshop.goUrl('AppPushListForUser'), {
+					dataType: "json",
+					type: "get",
+					data: {
+						"SessionID": sessionid
+					},
+					success: function(res) {
+						if(res["ErrorResponse"] != undefined) {
+							mui.toast(res.ErrorResponse.ErrorMsg);
+							return;
+						}
+
+						document.getElementById("message-content").innerHTML = template("message-body", {
+							"MessageList": res.Result.List
+						});
+						mui('.message-list').on('tap', '.message-cell', function(e) {
+							if(this.dataset.messagetype == 4) {
+								var productid = getProductId(this.dataset.messageextras);
+								fxshop.openVW('product-detail', {
+									'productid': productid
+								});
+							} else {
+								fxshop.OpenWapWeb(this.dataset.messageextras, '消息详情');
+							}
+						});
+					},
+					error: function(error) {
+
+					}
+				});
+			});
+
+			function getProductId(extras) {
+				var productid = extras;
+				if(extras.indexOf('ProductDetails') > 0) {
+					var temp = extras.split('productId=');
+					productid = temp[temp.length - 1];
+				} else if(extras.indexOf('product_detail')) {
+					var temp = extras.split('product_detail/');
+					productid = temp[temp.length - 1];
+				}
+
+				return productid;
+			}
+		</script>
+		<script type="text/html" id="message-body">
+			<ul class="message-list">
+				{{each MessageList as message}}
+				<li class="message-cell mui-navigate-right" data-messageType="{{message.Type}}" data-messageExtras="{{message.Extras}}">
+					<img src="{{message.Type == 1 ? 'images/icon_message_type_link.png' : (message.Type == 2 ? 'images/icon_message_type_special.png' : (message.Type == 3 ? 'images/icon_message_type_party.png' : 'images/icon_message_type_product.png'))}}" class="image" />
+					<div class="detail-body">
+						<div class="message-title mui-ellipsis">
+							<em class="title">{{message.PushTitle}}</em>
+							<span>{{message.PushSendTime}}</span>
+						</div>
+						<p class="message-description mui-ellipsis">{{message.PushContent}}</p>
+					</div>
+					<div class="mui-clearfix"></div>
+				</li>
+				{{/each}}
+			</ul>
+		</script>
+	</body>
+
+</html>

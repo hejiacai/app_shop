@@ -1,0 +1,157 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title>业绩统计</title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<link href="../css/mui.min.css" rel="stylesheet" />
+		<link rel="stylesheet" href="../css/style.css" />
+		<link rel="stylesheet" href="css/achievement_index.css" />
+		<script type="text/javascript" src="../js/flexible.debug.js" ></script>
+		<script type="text/javascript" src="../js/flexible_css.debug.js" ></script>
+		<style>
+			.added{
+				height: 5.28rem;
+				flex-wrap: wrap;
+			}
+			.added_content{
+				height: 1.76rem;
+				border-bottom: 1px solid #F4F4F4;
+			}
+		</style>
+	</head>
+
+	<body>
+		<header class="mui-bar mui-bar-nav" id="header">
+			<div class="home-header">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<h1 class="mui-title">业绩统计</h1>
+			</div>
+		</header>
+		<div class="mui-content">
+		    <div class="yesterday_added">昨日新增</div>
+		    <div class="added" id="content"></div>
+		    
+		    <div class="achievement_list">
+		    	<div class="achievement_content" data-index = "1">
+		    		<img src="../images/jycx.png"/>
+		    		<span>交易查询</span>
+		    	</div>
+		    	<div class="achievement_content" data-index = "2">
+		    		<img src="../images/tjcx.png"/>
+		    		<span>统计分析</span>
+		    	</div>
+		    	<div class="achievement_content" data-index = "3">
+		    		<img src="../images/frcx.png"/>
+		    		<span>分润查询</span>
+		    	</div>
+		    	<div class="achievement_content" data-index = "4">
+		    		<img src="../images/jh.png"/>
+		    		<span>激活返现查询</span>
+		    	</div>
+		    	<div class="achievement_content" data-index = "5">
+		    		<img src="../images/zdbd.png"/>
+		    		<span>终端绑定</span>
+		    	</div>
+		    	<div class="achievement_content" data-index = "6">
+		    		<img src="../images/tc.png"/>
+		    		<span>终端查询</span>
+		    	</div>
+		    	<div class="achievement_content" data-index = "7">
+		    		<img src="../images/zdgl.png"/>
+		    		<span>终端管理</span>
+		    	</div>
+		    	<div class="achievement_content" data-index = "8">
+		    		<img src="../images/dlsgl.png"/>
+		    		<span>代理商管理</span>
+		    	</div>
+		    </div>
+		</div>
+		<script type="text/html" id="text">
+			<div class="added_content">
+	    		<span>日交易量</span>
+	    		<span class="added_content_span">{{TradingYesterday}}</span>
+	    	</div>
+	    	<div class="added_content">
+	    		<span>日分润</span>
+	    		<span class="added_content_span">{{Yesterday}}</span>
+	    	</div>
+	    	<div class="added_content">
+	    		<span>激活数量</span>
+	    		<span class="added_content_span">{{ActivatedYesterday}}</span>
+	    	</div>
+	    	<div class="added_content">
+	    		<span>激活奖励</span>
+	    		<span class="added_content_span">{{ActivationReward}}</span>
+	    	</div>
+	    	<div class="added_content">
+	    		<span>商户数量</span>
+	    		<span class="added_content_span">{{NumberMerchants}}</span>
+	    	</div>
+	    	<div class="added_content">
+	    		<span>其他奖励</span>
+	    		<span class="added_content_span">{{OtherRewards}}</span>
+	    	</div>
+		</script>		
+		<script src="../js/mui.min.js"></script>
+		<script type="text/javascript" src="../js/art-template.js" ></script>
+		<script type="text/javascript" src="../js/app.js" ></script>
+		<script type="text/javascript">
+			mui.init();
+			mui.plusReady(function(){
+				mui.ajax('http://pos.wulilu.cn/AppShop/PostApi.ashx?action=GetPerformance',{
+					dataType: 'json',
+					type: 'post',
+					timeout: 10000,
+					data:{
+						sessionid:'c2a0c65fdd414216bf3ae93b79cddb25',
+					},
+					success:function(data){
+						console.info(JSON.stringify(data));
+						var datas=data.Result;
+						var html=template("text",datas);
+						document.getElementById("content").innerHTML=html;
+						
+					},
+					error:function(xhr,type,errorThrown){
+						mui.toast("网络请求超时，请重新加载");
+					}
+				})
+			})
+			mui(".achievement_list").on('tap','.achievement_content',function(){
+				var index=this.dataset.index;
+				switch(index){
+					
+					case "1":
+						fxshop.openVW('trade_select');
+						break;
+					case "2":
+						fxshop.openVW('statistics_analysis');
+						break;
+					case "3":
+						fxshop.openVW('share_select');
+						break;
+					case "4":
+						fxshop.openVW('activation_select');
+						break;
+					case "5":
+						fxshop.openVW('terminal_binding');
+						break;
+					case "6":
+						fxshop.openVW('terminal_select');
+						break;
+					case "7":
+						fxshop.openVW('terminal_distribution');
+						break;
+					case "8":
+						fxshop.openVW('agent_manage');
+						break;
+				}
+			})
+		</script>
+	</body>
+
+</html>

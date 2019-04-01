@@ -1,0 +1,46 @@
+{
+	"APP_Shop/main.html": {
+		"resources": [
+			"APP_Shop/home.html"
+		],
+		"refer": [
+			"APP_Shop/nearstorelist.html",
+			"APP_Shop/userhome.html",
+			"APP_Shop/categoryTemp4.html",
+			"APP_Shop/home.html",
+			"APP_Shop/storehome1.html",
+			"APP_Shop/shopcart.html",
+			"APP_Shop/storeproduct-detail.html",
+			"APP_Shop/product-detail.html",
+			"APP_Shop/skuProduct.html",
+			"APP_Shop/Fight_sku_Product.html"
+		]
+	},
+	"APP_Shop/index.html": {
+		"refer": [
+			"APP_Shop/guide.html",
+			"APP_Shop/main.html"
+		]
+	},
+	"APP_Shop/guide.html": {
+		"refer": [
+			"APP_Shop/main.html"
+		]
+	},
+	"APP_Shop/userhome.html": {
+		"refer": [
+			"APP_Shop/login.html",
+			"APP_Shop/AccountManagement.html"
+		]
+	},
+	"APP_Shop/home.html": {
+		"refer": [
+			"APP_Shop/achievement/achievement_index.html"
+		]
+	},
+	"APP_Shop/achievement/achievement_index.html": {
+		"refer": [
+			"APP_Shop/achievement/trade_select.html"
+		]
+	}
+}

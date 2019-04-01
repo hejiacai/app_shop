@@ -1,0 +1,100 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title>终端激活</title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<link href="../css/mui.min.css" rel="stylesheet" />
+		<link rel="stylesheet" href="../css/style.css" />
+		<link rel="stylesheet" href="css/terminal_binding.css" />
+		<style>
+			#menu{
+				font-size: 0.8rem;
+			}
+		</style>
+	</head>
+
+	<body>
+		<header class="mui-bar mui-bar-nav" id="header">
+			<div class="home-header">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<!--<a id="menu" class=" mui-pull-right mui-icon mui-icon-plusempty"></a>-->
+			<h1 class="mui-title">终端激活</h1>
+			</div>
+		</header>
+		<div class="mui-content">
+			<div class="terminal_body" id="content">
+			    
+			</div>
+		</div>
+		<script id="text" type="text/html">
+			{{each List as value i}}
+			<div class="terminal_content" data-id ="{{value.TerminalId}}">
+		    	<div class="terminal_content_title">
+		    		<div class="terminal_content_title_left">
+		    			<span>{{value.PosBrandName}}</span>
+		    			<span>{{value.PosTermModel}}</span>
+		    		</div>
+		    		<span>型号：{{value.PosTermType}}</span>
+		    	</div>
+		    	<div class="terminal_content_num">S N：{{value.PosSnNo}}</div>
+		    </div>
+		    {{/each}}
+		</script>
+		<script type="text/javascript" src="../js/flexible.debug.js" ></script>
+		<script type="text/javascript" src="../js/flexible_css.debug.js" ></script>
+		<script src="../js/mui.min.js"></script>
+		<script type="text/javascript" src="../js/art-template.js" ></script>
+		<script type="text/javascript" src="../js/app.js" ></script>
+		<script type="text/javascript">
+			mui.init();
+			mui.plusReady(function(){
+				mui.ajax('http://pos.wulilu.cn/AppShop/PostApi.ashx',{
+					type: 'post',
+					data:{
+						action:'GetTerminalActivateIndex',
+						sessionid:'c2a0c65fdd414216bf3ae93b79cddb25',
+						pageIndex:1,
+					},
+					success:function(data){
+						var datas=data.Result;
+						var html=template("text",datas);
+						document.getElementById("content").innerHTML=html;
+					},
+					error:function(xhr,type,errorThrown){
+						mui.toast("网络请求超时，请重新加载");
+					}
+				})
+			})
+			mui(".terminal_body").on('tap','.terminal_content',function(){
+				var id=this.dataset.id;
+				mui.ajax('http://pos.wulilu.cn/AppShop/PostApi.ashx',{
+					type: 'post',
+					data:{
+						action:'GetTerminalDetails',
+						sessionid:'c2a0c65fdd414216bf3ae93b79cddb25',
+						TerminalId:id,
+					},
+					success:function(data){
+						var datas=data.Result;
+						datas['id']=id;
+						fxshop.openVW("terminal_confirm_binding",{datas:datas});
+					},
+					error:function(xhr,type,errorThrown){
+						mui.toast("网络请求超时，请重新加载");
+					}
+				})
+				
+			})
+			
+			document.getElementById("menu").addEventListener('tap',function(){
+				fxshop.openVW("terminal_binding_select");
+			})
+			
+		</script>
+	</body>
+
+</html>

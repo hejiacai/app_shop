@@ -1,0 +1,243 @@
+<!DOCTYPE HTML>
+<html>
+
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+		<meta name="HandheldFriendly" content="true" />
+		<meta name="MobileOptimized" content="320" />
+		<title>网页</title>
+		<link href="css/mui.min.css" rel="stylesheet" />
+		<link rel="stylesheet" href="css/style.css" />
+		<script src="js/mui.min.js"></script>
+		<script src="js/app.js"></script>
+		<script src="js/flexible.debug.js" type="text/javascript"></script>
+		<script src="js/flexible_css.debug.js" type="text/javascript"></script>
+
+	</head>
+
+	<style> 
+	</style>
+
+	<body>
+		<header id="header" class="mui-bar mui-bar-nav">
+			<div class="home-header">
+				<a class="mui-icon mui-icon-left-nav mui-pull-left" id="go_back"></a>
+				<a id="menu" class="iconfont _more mui-pull-right" onclick="showAppNav()"></a>
+				<h1 class="mui-title">
+				
+				</h1>
+			</div>
+		</header>
+
+		
+		<script type="text/javascript" charset="utf-8">
+			mui.init();
+			var webWV = null;
+			var requrl = "";
+			var topHeight = "";
+			var shareDate;
+			var wurl = "";
+			var immersedIos=isIphoneX();
+			var shares;
+			mui.plusReady(function() { 
+				shares = initShare();
+				//plus.storage.setItem('appuserkey',himall.getState().userkey);
+				plus.storage.removeItem('alreayFresh');
+				topHeight = 44;
+				var titlename = "";
+				if(plus.navigator.isImmersedStatusbar()) {
+					topHeight = Math.round(plus.navigator.getStatusbarHeight()) + topHeight;
+				}
+				//判断是否是iphone X 
+				if(immersedIos){
+					document.getElementById("header").className += " Xheader";
+					topHeight = 84;
+				} 	 
+				setTimeout(function() {
+					loadPage();
+				}, 200);
+			//	shares = initShare();
+			});
+
+			function loadPage(requesturl, title) {
+				var ws = plus.webview.currentWebview(),
+					w = plus.nativeUI.showWaiting('', {
+						padlock: true
+					});
+				ws.addEventListener("close", function(e) {
+					showMQView();
+				});
+				var wtitle = ws.name;
+				wurl = ws.link;
+				if(title) {
+					wtitle = title;
+				}
+				if(requesturl) {
+					wurl = requesturl;
+				}
+				document.querySelector('.mui-title').innerText = wtitle;
+
+				wurl = encodeURI(wurl);
+				
+				webWV = plus.webview.create(wurl, "webShow", {
+					top: topHeight + 'px',
+					bottom: 0,
+					opacity: 0,
+					bounce: 'vertical'
+				});
+				titlename = ws.name;
+				ws.append(webWV); 
+				setTimeout(function() {
+					w.close();
+					webWV.setStyle({
+						opacity: 1
+					});
+				}, 1300);
+
+			}
+
+			document.addEventListener("OpenUrl", function(e) {
+				var pagename = e.detail.pagename;
+				var parms = e.detail.extend;
+				if(parms != undefined && parms != null) {
+					if(pagename == "storeproduct-detail") {
+
+						var temp = JSON.parse(parms);
+
+						ShowStoreProdduct(temp.productid, temp.storeid);
+					} else if(pagename == "product-detail") {
+						var temp = JSON.parse(parms);
+						showProduct(temp.productid);
+					} else if(pagename == "storehome1") { //门店首页
+						plus.webview.currentWebview().close();
+						var temp = JSON.parse(parms);
+						mui.fire(plus.webview.getWebviewById(plus.webview.getLaunchWebview().id), "updateMenu", {
+							"href": "storehome1.html",
+							"storeid": temp.storeid
+						});
+						fxshop.openVW(plus.webview.getLaunchWebview().id);
+					} else {
+						fxshop.openVW(pagename, JSON.parse(parms));
+					}
+
+				} else {
+					if(pagename == "shopcart" || pagename == "home" || pagename == "userhome" || pagename == "category") {
+						plus.webview.currentWebview().close();
+						mui.fire(plus.webview.getWebviewById(plus.webview.getLaunchWebview().id), "gohome", {
+							'pagename': pagename
+						});
+						fxshop.openVW(plus.webview.getLaunchWebview().id);
+					} else if(pagename == "nearstorelist") {
+						mui.fire(plus.webview.getWebviewById(plus.webview.getLaunchWebview().id), "updateMenu", {
+							"href": "nearstorelist.html"
+						});
+						fxshop.openVW(plus.webview.getLaunchWebview().id);
+					} else {
+						fxshop.openVW(pagename);
+					}
+
+				}
+			});
+			//监听支付方式
+			document.addEventListener('PayOrders', function(e) {
+
+				var typeId = e.detail.typeid;
+				var payurl = e.detail.payurl;
+
+				setTimeout(function() {
+					payOrder(typeId, payurl, 'success', 'error');
+				}, 200);
+
+			});
+
+			document.addEventListener("updateTitle", function(e) {
+				if(e.detail.title) {
+					document.querySelector('.mui-title').innerText = e.detail.title;
+				}
+
+			});
+			//监听修改跳转过来的链接
+			document.addEventListener("UpdateWapPage", function(e) {
+				var updatename = e.detail.name;
+				var updateurl = e.detail.url;
+				loadPage(updateurl, updatename);
+			});
+
+			document.addEventListener("RefreshOrderList", function() {
+				//plus.webview.currentWebview().close();
+				mui.fire(plus.webview.getWebviewById("order-list"), "UpdateDataOrder");
+				fxshop.openVW("order-list");
+			});
+			//监听个人中心数据变化
+			document.addEventListener('updateUserData', function(e) {
+				mui.fire(plus.webview.getWebviewById('userhome.html'), 'updateData');
+				mui.fire(plus.webview.getWebviewById('shopcart.html'), 'updateData');
+			});
+			
+			//监听购物车数据变化
+			document.addEventListener('updateshopcart', function(e) {
+				console.log("succ");
+				mui.fire(plus.webview.getWebviewById('shopcart.html'), 'updateData');
+			});
+
+			//			document.addEventListener("ClosePage", function() {
+			//				plus.webview.currentWebview().close();
+			//			});
+
+			/*document.addEventListener("getCurrentUrl",function(e){
+				var requrl=e.ulrs;
+			});*/
+
+			document.getElementById("go_back").addEventListener("tap", function() {
+				webWV.canBack(function(event) {
+					var canBack = event.canBack;
+					if(canBack && !BackPage()) {
+						webWV.back();
+					} else {
+						mui.back();
+						showMQView();
+					}
+				});
+			});
+
+			function showMQView() {
+				if(wurl.indexOf("meiqia") != -1) {
+					mui.fire(plus.webview.getWebviewById(plus.webview.getLaunchWebview().id), 'showMQView');
+				}
+			}
+
+			function showAppNav() {
+				mui.fire(plus.webview.getWebviewById('webShow'), 'showAppNav');
+			};
+
+			//监听推广分享
+			
+			document.addEventListener('ShareRefress', function(e) {
+				console.log(JSON.stringify(e));
+				var shareId = e.detail.id;
+				var scene = e.detail.scene;
+				var share = shares[shareId];
+				var params = e.detail.shareparem;
+			
+				if(share) {
+					if(share.authenticated) {
+						shareMessage(share, scene, params);
+					} else {
+						share.authorize(function() {
+							shareMessage(share, scene, params);
+						}, function(e) {
+							mui.toast("认证授权失败：" + e.code + " - " + e.message);
+			
+						});
+					}
+				} else {
+					mui.toast("无法获取分享服务，请检查manifest.json中分享插件参数配置，并重新打包")
+				}
+			
+			});
+		</script>
+
+	</body>
+
+</html>

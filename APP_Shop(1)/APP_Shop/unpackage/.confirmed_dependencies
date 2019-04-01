@@ -1,0 +1,464 @@
+{
+	"shopcart.html": {
+		"href": "shopcart.html",
+		"resources": [
+			"images/reduce.png",
+			"images/add.png",
+			"images/shopcart-empty.png",
+			"css/mui.min.css",
+			"css/swiper.min.css",
+			"css/style.css",
+			"css/mescroll.min.css",
+			"js/mui.js",
+			"js/mescroll.min.js",
+			"js/app.js",
+			"js/template.js",
+			"js/swiper.min.js",
+			"js/flexible.debug.js",
+			"js/flexible_css.debug.js"
+		],
+		"refer": [
+			"appauto.html",
+			"product-detail.html"
+		],
+		"priority": 0
+	},
+	"skuProduct.html": {
+		"href": "skuProduct.html",
+		"resources": [
+			"js/mui.min.js",
+			"js/app.js",
+			"js/template.js",
+			"js/flexible.debug.js",
+			"js/flexible_css.debug.js",
+			"css/mui.min.css",
+			"css/style.css"
+		],
+		"refer": [
+			"shopcart.html",
+			"appauto.html"
+		],
+		"priority": 0
+	},
+	"category.html": {
+		"href": "category.html",
+		"resources": [
+			"js/flexible.debug.js",
+			"js/flexible_css.debug.js",
+			"js/mui.min.js",
+			"js/app.js",
+			"js/template.js",
+			"css/mui.min.css",
+			"css/style.css"
+		],
+		"refer": [
+			"search-result.html"
+		],
+		"priority": 0
+	},
+	"login.html": {
+		"href": "login.html",
+		"resources": [
+			"css/mui.min.css",
+			"css/style.css",
+			"css/account.css",
+			"js/flexible.debug.js",
+			"js/flexible_css.debug.js",
+			"js/mui.min.js",
+			"js/app.js"
+		],
+		"refer": [
+			"userhome.html",
+			"shopcart.html"
+		],
+		"priority": 0
+	},
+	"userhome.html": {
+		"href": "userhome.html",
+		"resources": [
+			"css/userhome.css",
+			"css/mescroll.min.css",
+			"js/flexible.debug.js",
+			"js/flexible_css.debug.js",
+			"js/mescroll.min.js",
+			"js/mui.min.js",
+			"js/app.js",
+			"images/default_img.jpg",
+			"images/icon_deposit.png",
+			"images/icon_point.png",
+			"images/icon_coupn.png",
+			"images/icon_envelopes.png",
+			"images/icon_prize.png",
+			"images/icon_extension.png",
+			"images/icon_fight.png",
+			"images/icon_address.png",
+			"images/icon_about.png",
+			"images/sign_coin.png"
+		],
+		"refer": [
+			"login.html",
+			"Point.html",
+			"AccountSummary.html",
+			"appauto.html",
+			"order-list.html",
+			"MyFavorites.html",
+			"aboutus.html",
+			"FightGroups.html",
+			"Extension.html",
+			"AccountManagement.html",
+			"messageList.html"
+		],
+		"priority": 0
+	},
+	"categoryTemp2.html": {
+		"href": "categoryTemp2.html",
+		"resources": [
+			"js/flexible.debug.js",
+			"js/flexible_css.debug.js",
+			"js/mui.min.js",
+			"js/app.js",
+			"js/template.js",
+			"css/mui.min.css",
+			"css/style.css",
+			"images/order_null.png"
+		],
+		"refer": [],
+		"priority": 0
+	},
+	"categoryTemp3.html": {
+		"href": "categoryTemp3.html",
+		"resources": [
+			"js/flexible.debug.js",
+			"js/flexible_css.debug.js",
+			"js/mui.min.js",
+			"js/app.js",
+			"js/template.js",
+			"css/mui.min.css",
+			"css/style.css"
+		],
+		"refer": [],
+		"priority": 0
+	},
+	"storehome.html": {
+		"href": "storehome.html",
+		"resources": [
+			"css/mui.min.css",
+			"css/swiper.min.css",
+			"js/mui.min.js",
+			"js/app.js",
+			"js/template.js",
+			"js/flexible.debug.js",
+			"js/flexible_css.debug.js",
+			"js/swiper.min.js",
+			"css/store.css",
+			"css/style.css"
+		],
+		"refer": [],
+		"priority": 0
+	},
+	"storehome1.html": {
+		"href": "storehome1.html",
+		"resources": [
+			"css/mui.min.css",
+			"css/swiper.min.css",
+			"js/mui.min.js",
+			"js/app.js",
+			"js/template.js",
+			"js/flexible.debug.js",
+			"js/flexible_css.debug.js",
+			"js/swiper.min.js",
+			"css/store.css",
+			"css/style.css"
+		],
+		"refer": [],
+		"priority": 0
+	},
+	"storeproduct-detail.html": {
+		"href": "storeproduct-detail.html",
+		"resources": [
+			"js/mui.js",
+			"js/app.js",
+			"js/template.js",
+			"js/swiper.min.js",
+			"js/delayimg.min.js",
+			"js/flexible.debug.js",
+			"js/flexible_css.debug.js",
+			"js/jquery-1.8.3.min.js",
+			"js/jquery.scrollLoading.min.js",
+			"images/ic_map.png",
+			"css/mui.min.css",
+			"css/swiper.min.css",
+			"css/style.css",
+			"images/icon_wechat.png",
+			"images/icon_wxTimeLine.png",
+			"images/icon_qq.png",
+			"images/icon_weibo.png"
+		],
+		"refer": [
+			"storehome1.html"
+		],
+		"priority": 0
+	},
+	"product-detail.html": {
+		"href": "product-detail.html",
+		"resources": [
+			"js/mui.js",
+			"js/app.js",
+			"js/template.js",
+			"js/swiper.min.js",
+			"js/delayimg.min.js",
+			"js/flexible.debug.js",
+			"js/flexible_css.debug.js",
+			"js/jquery-1.8.3.min.js",
+			"js/jquery.scrollLoading.min.js",
+			"images/img_only_phone.png",
+			"images/ic_supplier.png",
+			"images/icon_service_online.png",
+			"css/mui.min.css",
+			"css/swiper.min.css",
+			"css/style.css",
+			"images/icon_wechat.png",
+			"images/icon_wxTimeLine.png",
+			"images/icon_qq.png",
+			"images/icon_weibo.png"
+		],
+		"refer": [
+			"proStroeInfo.html",
+			"appauto.html",
+			"shopcart.html"
+		],
+		"priority": 0
+	},
+	"nearstorelist.html": {
+		"href": "nearstorelist.html",
+		"resources": [
+			"css/mui.min.css",
+			"js/mui.min.js",
+			"js/app.js",
+			"js/template.js",
+			"js/flexible.debug.js",
+			"js/flexible_css.debug.js",
+			"css/style.css",
+			"css/store.css"
+		],
+		"refer": [
+			"storehome1.html"
+		],
+		"priority": 0
+	},
+	"home.html": {
+		"href": "home.html",
+		"resources": [
+			"js/mui.min.js",
+			"js/mescroll.min.js",
+			"js/app.js",
+			"js/template.js",
+			"js/flexible.debug.js",
+			"js/flexible_css.debug.js",
+			"js/swiper.min.js",
+			"js/home.js",
+			"css/mui.min.css",
+			"css/swiper.min.css",
+			"css/mescroll.min.css",
+			"css/style.css",
+			"images/icon_like.png"
+		],
+		"refer": [
+			"home.html",
+			"nearstorelist.html",
+			"userhome.html",
+			"shopcart.html",
+			"storehome1.html",
+			"category.html",
+			"search.html",
+			"barcode.html",
+			"achievement/achievement_index.html",
+			"appauto.html"
+		],
+		"priority": 0
+	},
+	"storelist.html": {
+		"href": "storelist.html",
+		"resources": [
+			"css/mui.min.css",
+			"css/swiper.min.css",
+			"js/mui.min.js",
+			"js/app.js",
+			"js/template.js",
+			"js/flexible.debug.js",
+			"js/flexible_css.debug.js",
+			"js/swiper.min.js",
+			"css/store.css",
+			"css/style.css"
+		],
+		"refer": [
+			"storehome1.html"
+		],
+		"priority": 0
+	},
+	"categoryTemp4.html": {
+		"href": "categoryTemp4.html",
+		"resources": [
+			"js/flexible.debug.js",
+			"js/flexible_css.debug.js",
+			"js/mui.min.js",
+			"js/app.js",
+			"js/template.js",
+			"css/mui.min.css",
+			"css/style.css"
+		],
+		"refer": [
+			"search-result.html",
+			"search.html"
+		],
+		"priority": 0
+	},
+	"index.html": {
+		"href": "index.html",
+		"resources": [
+			"css/mui.min.css",
+			"js/mui.min.js",
+			"js/app.js",
+			"images/blank.gif"
+		],
+		"refer": [
+			"category.html",
+			"userhome.html",
+			"categoryTemp2.html",
+			"categoryTemp3.html",
+			"storehome.html",
+			"login.html",
+			"storeproduct-detail.html",
+			"product-detail.html",
+			"home.html",
+			"storelist.html",
+			"categoryTemp4.html",
+			"main.html",
+			"guide.html"
+		],
+		"priority": 0
+	},
+	"main.html": {
+		"resources": [
+			"home.html"
+		],
+		"refer": [
+			"product-detail.html",
+			"home.html",
+			"userhome.html",
+			"storehome1.html",
+			"shopcart.html",
+			"categoryTemp4.html",
+			"skuProduct.html",
+			"storeproduct-detail.html",
+			"nearstorelist.html",
+			"Fight_sku_Product.html",
+			"categoryTemp3.html",
+			"categoryTemp2.html",
+			"category.html"
+		]
+	},
+	"search.html": {
+		"refer": [
+			"search-result.html"
+		],
+		"resources": []
+	},
+	"guide.html": {
+		"refer": [
+			"main.html"
+		]
+	},
+	"achievement/achievement_index.html": {
+		"refer": [
+			"achievement/share_select.html",
+			"achievement/trade_select.html",
+			"achievement/terminal_manage.html",
+			"achievement/agent_manage.html",
+			"achievement/activation_select.html",
+			"achievement/terminal_select.html",
+			"achievement/terminal_binding.html",
+			"achievement/statistics_analysis.html",
+			"achievement/terminal_distribution.html"
+		]
+	},
+	"achievement/share_select.html": {
+		"refer": [
+			"achievement/transaction_stream.html",
+			"achievement/share_details.html"
+		]
+	},
+	"MyFavorites.html": {
+		"refer": [
+			"editFavorites.html"
+		]
+	},
+	"AccountSummary.html": {
+		"refer": [
+			"AccountSummaryDetails.html"
+		]
+	},
+	"AccountManagement.html": {
+		"refer": [
+			"BindPhone.html"
+		]
+	},
+	"achievement/trade_select.html": {
+		"refer": [
+			"achievement/transaction_stream.html"
+		]
+	},
+	"achievement/transaction_stream.html": {
+		"refer": [
+			"achievement/stream_details.html"
+		]
+	},
+	"achievement/share_details.html": {
+		"refer": [
+			"achievement/share_result.html"
+		]
+	},
+	"achievement/terminal_manage.html": {
+		"refer": [
+			"achievement/terminal_distribution.html"
+		]
+	},
+	"achievement/terminal_distribution.html": {
+		"refer": [
+			"achievement/withdraw_distribution.html",
+			"achievement/terminal_manage.html"
+		]
+	},
+	"achievement/agent_manage.html": {
+		"refer": [
+			"achievement/transaction_stream.html",
+			"achievement/agent_select_result.html"
+		]
+	},
+	"achievement/terminal_binding.html": {
+		"refer": [
+			"achievement/terminal_binding_select.html",
+			"achievement/terminal_confirm_binding.html"
+		]
+	},
+	"achievement/activation_select.html": {
+		"refer": [
+			"achievement/activation_details.html"
+		]
+	},
+	"achievement/terminal_select.html": {
+		"refer": [
+			"achievement/terminal_select_result.html"
+		]
+	},
+	"achievement/activation_details.html": {
+		"refer": [
+			"achievement/activation_result.html"
+		]
+	},
+	"achievement/agent_select_result.html": {
+		"refer": [
+			"achievement/agent_authority_manage.html"
+		]
+	}
+}

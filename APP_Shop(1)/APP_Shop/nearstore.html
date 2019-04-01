@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title>附近门店</title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+		<link rel="stylesheet" href="css/mui.min.css">
+		<link rel="stylesheet" href="css/store.css">
+		<link rel="stylesheet" href="css/style.css" />
+		<script src="js/mui.min.js"></script>
+		<script src="js/app.js"></script>
+		<script src="js/template.js"></script>
+		<script type="text/javascript" src="js/flexible.debug.js"></script>
+		<script type="text/javascript" src="js/flexible_css.debug.js"></script>
+		<script src="http://map.qq.com/api/js?v=2.exp&libraries=convertor"></script>
+
+		<script src="https://3gimg.qq.com/lightmap/components/geolocation/geolocation.min.js"></script>
+	</head>
+
+	<body>
+
+		<header class="mui-bar mui-bar-nav" id="header">
+			<div class="home-header">
+				<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"><span>返回</span></a>
+				<h1 class="mui-title">重新定位</h1>
+			</div>
+		</header>
+
+		<div class="mui-content" id="content">
+			<div class="city-box bgf">
+				<div class="city">
+					<span id="changecity">长沙市</span><span class="iconfont icon-"></span>
+				</div>
+				<form onsubmit="return false;">
+
+					<div class="search" style="width:70%;">
+						<input id="keywordsText" type="search" placeholder="请输入地址"></div>
+				</form>
+			</div>
+
+			<!--下拉刷新容器-->
+
+			<div id="pullrefresh" class="">
+				<!--数据列表-->
+				<div class="mui-scroll">
+					<div class="address-list">
+						<div class="group">
+							<div class="group-title">当前门店</div>
+							<div class="group-item font32 pd24-horizontal bg-white" style="line-height: 1.28rem;">
+								<span class="mui-text-left item-txt" id="divcurrtaddress"></span>
+								<div class="iconfont icon-2" id="ChooseLocation">
+									<span>重新定位</span>
+								</div>
+							</div>
+						</div>
+						<div id="shippaddress">
+
+						</div>
+						<div id="list">
+
+						</div>
+					</div>
+				</div>
+			</div>
+
+		</div>
+		<script>
+			var siteinfo = SiteSetting.getSiteInfo();
+			var isexpend = false;
+			var pageindex = 1,
+				pagesize = 100,
+				currentaddress = {}, //当前位置
+				keyWord = "", //搜索关键字
+				pagename = "",
+				lat = siteinfo.Location.lat,
+				lng = siteinfo.Location.lng,
+				cityName = siteinfo.Location.city;
+			var mask = mui.createMask(); //遮罩层
+			var keywordsText = document.getElementById("keywordsText");
+			var immersedIos=isIphoneX();
+			function GetNearAddressApi() {
+				document.getElementById("divcurrtaddress").innerText = currentaddress.address;
+				reloadPage();
+			}
+
+			mui.plusReady(function() {
+				//判断是否是iphone X 
+				if(immersedIos){
+					document.getElementById("header").className+=" Xheader"; 
+					document.getElementById("content").className+=" Xmui-content";
+				} 	 
+				pagename = plus.webview.currentWebview().pageid;
+				keyWord = siteinfo.Location.address;
+				BindEvent();
+				GetLocation();
+				if(fxshop.isLogin()) {
+					GetShippAddress();
+				}
+
+			});
+
+			function GetShippAddress() {
+				mui.ajax(fxshop.goUrl('GetUserShippingAddress'), {
+					dataType: "json",
+					type: "get",
+					timeout: 10000,
+					data: {
+						justHasLatLng: true,
+						sessionid: siteinfo.UserInfo.sessionid
+					},
+					success: function(res) {
+						if(res.ErrorResponse) {
+							return;
+						}
+						if(res.Result.Status == 'OK') document.getElementById("shippaddress").innerHTML = template("tempshippaddress", res.Result);
+						else document.getElementById("shippaddress").innerHTML = "";
+					},
+					error: function(ex) {
+						mui.toast(ex);
+					}
+				});
+			}
+
+			function reloadPage() {
+				pageindex = 1;
+				loadNearStore('reset');
+			}
+
+			function loadNearStore(reset) {
+				mui.ajax(fxshop.goUrl('GetNearAddress'), {
+					dataType: "json",
+					type: "get",
+					timeout: 10000,
+					data: {
+						pageSize: pagesize,
+						pageIndex: pageindex,
+						keyWord: keyWord,
+						cityName: cityName
+					},
+					success: function(res) {
+						if(res.Result.Status == "OK") {
+							document.getElementById("list").innerHTML = template("tempnearaddress", res.Result);
+						}
+					},
+					error: function(ex) {
+						mui.toast(ex);
+					}
+				});
+			}
+
+			//获取经纬度
+			function GetLocation() {
+				mask.show(); //显示遮罩层
+				plus.nativeUI.showWaiting("正在加载")
+				if(navigator.geolocation) {
+					navigator.geolocation.getCurrentPosition(function(position) {
+						siteinfo = SiteSetting.getSiteInfo();
+						lat = position.coords.latitude; //纬度 
+						lon = position.coords.longitude; //经度 
+						var geocoder = new qq.maps.Geocoder();
+						var latLng = new qq.maps.LatLng(lat, lon);
+
+						//转换坐标，html5定位用的是标准的gps坐标，在使用腾讯地图api的时候需要转换坐标才能得到精准的位置
+						qq.maps.convertor.translate(latLng, 1, function(position) {
+							lat = position[0].lat;
+							lon = position[0].lng;
+							fromLatLng = lat + "," + lon;
+							latLng = new qq.maps.LatLng(lat, lon);
+
+							//对指定经纬度进行解析
+							geocoder.getAddress(latLng);
+							//设置服务请求成功的回调函数
+							geocoder.setComplete(function(result) {
+								var Location = {
+									'address': result.detail.address,
+									'city': result.detail.addressComponents.city,
+									'lat': lat,
+									'lng': lon
+								};
+								currentaddress = Location;
+								GetNearAddressApi();
+								setTimeout(function() {
+									mask.close();
+									plus.nativeUI.closeWaiting();
+								}, 200);
+							});
+						});
+					});
+				} else {
+					plus.nativeUI.toast("该浏览器不支持地理定位");
+				}
+
+				plus.geolocation.getCurrentPosition(function(result) {
+					var siteinfo = SiteSetting.getSiteInfo();
+					var lat = result.coords.latitude;
+					var lon = result.coords.longitude;
+					var Location = {
+						'address': result.addresses,
+						'city': result.address.city,
+						'lat': lat,
+						'lng': lon
+					};
+					currentaddress = Location;
+					GetNearAddressApi();
+
+					setTimeout(function() {
+						mask.close();
+						plus.nativeUI.closeWaiting();
+					}, 200);
+
+				}, function(e) {
+					mask.close();
+					mui.toast("请检查定位是否开启");
+					return;
+				}, {
+					provider: 'amap'
+				});
+			}
+
+			//选择附近地址
+			function ChooseAddress(obj) {
+siteinfo.Location.lat = obj.dataset.lat;
+					siteinfo.Location.lng = obj.dataset.lng;
+					siteinfo.Location.address = obj.dataset.address;
+					SiteSetting.setSiteInfo(siteinfo);
+					localStorage.setItem("nostoretip",obj.dataset.lat+"-"+obj.dataset.lng);
+					plus.nativeUI.showWaiting("正在加载");
+plus.webview.getWebviewById(plus.webview.getLaunchWebview().id).reload();
+plus.webview.getWebviewById(pagename + ".html").close();
+setTimeout(function() {
+						plus.nativeUI.closeWaiting();
+					}, 2000);
+			}
+
+			function ChooseShippAddress(obj) {
+				siteinfo.Location.lat = obj.dataset.formlat.split(",")[0];
+				siteinfo.Location.lng = obj.dataset.formlat.split(",")[1];
+				siteinfo.Location.address = obj.dataset.address;
+				SiteSetting.setSiteInfo(siteinfo);
+
+				mui.fire(plus.webview.getWebviewById(pagename + ".html"), "changeaddress");
+				setTimeout(function() {
+					plus.webview.currentWebview().close();
+				}, 200);
+			}
+
+			//绑定事件
+			function BindEvent() {
+				document.getElementById("changecity").addEventListener("tap", function() {
+					fxshop.openVW("arealist", {
+						'pageid': pagename
+					});
+				});
+
+				document.addEventListener("ChangeCity", function(event) {
+
+					cityName = event.detail.cityname;
+					lat = event.detail.lat;
+					lng = event.detail.lng;
+					pageindex = 1;
+					pagename = event.detail.pageid;
+
+					document.getElementById("changecity").innerText = cityName;
+
+				});
+
+				//重新定位
+				document.getElementById("ChooseLocation").addEventListener("tap", function() {
+					GetLocation();
+					if(pagename == "NoStoreTip") {
+localStorage.setItem("nostoretip",obj.dataset.lat+"-"+obj.dataset.lng);
+plus.webview.getWebviewById(plus.webview.getLaunchWebview().id).reload();
+				} else{
+					setTimeout(function() {
+						mui.fire(plus.webview.getWebviewById(pagename + ".html"), "changeaddress");
+					}, 2000);
+				}
+				});
+
+				document.getElementById("divcurrtaddress").addEventListener("tap", function() {
+					siteinfo.Location.lat = currentaddress.lat;
+					siteinfo.Location.lng = currentaddress.lng;
+					siteinfo.Location.address = currentaddress.address;
+					SiteSetting.setSiteInfo(siteinfo);
+
+					mui.fire(plus.webview.getWebviewById(pagename + ".html"), "changeaddress");
+					setTimeout(function() {
+						plus.webview.currentWebview().close();
+					}, 200);
+				});
+
+				document.addEventListener("keyup", function(event) {
+					if((event || window.event).keyCode == 13) {
+						keywordsText.blur();
+						keyWord = keywordsText.value;
+						loadNearStore('reset');
+					}
+
+				});
+
+				mui("#shippaddress").on("tap", "#more-products", function() {
+					if(!isexpend) {
+						var dochide = document.querySelectorAll(".hide");
+						for(var x = 0; x < dochide.length; x++) {
+							fxshop.removeClass(dochide[x], "hide");
+						}
+						isexpend = true;
+					} else {
+						var dochide = document.querySelector(".near-address").querySelectorAll(".group-item");
+						for(var x = 0; x < dochide.length; x++) {
+							fxshop.addClass(dochide[x], "hide");
+						}
+						isexpend = false;
+					}
+				});
+
+			}
+		</script>
+
+		<script id="tempnearaddress" type="text/html">
+			<div class="group">
+				<div class="group-title">附近地址</div>
+				<div class="bg-white pd24-horizontal">
+					{{each Data as item}}
+					<div class="group-item font32 pd24-vertical bd-b" onclick="ChooseAddress(this)" data-address="{{item.address}}" data-lat="{{item.location.lat}}" data-lng="{{item.location.lng}}">
+						<div class="overflow">
+							<span class="stroename mui-text-left">{{item.title}}</span>
+						</div>
+						<div class="group-desc font28">{{item.address}}</div>
+					</div>
+					{{/each}}
+				</div>
+			</div>
+		</script>
+
+		<script id="tempshippaddress" type="text/html">
+			<div class="group near-address">
+				<div class="group-title">收货地址</div>
+				<div class="bg-white pd24-horizontal">
+					{{each Data as item}}
+					<div class="group-item font32 pd24-vertical bd-b hide" onclick="ChooseShippAddress(this)" data-address="{{item.Address}}" data-formlat="{{item.LatLng}}">
+						<div class="overflow">
+							<span class="stroename mui-text-left">{{item.Address}}</span>
+						</div>
+						<div class="group-desc font28">{{item.FullAddress}}</div>
+					</div>
+					{{/each}} {{if Data.length>2}}
+					<div class="pd24-horizontal bg-white bd-e bd-t overflow more-products" id="more-products">
+						<div class="mui-row product-group-p">
+							<div class="mui-text-center">查看更多 <b class="iconfont arrow_color icon__arrow_down icon__arrow_up}}"></b>
+							</div>
+						</div>
+					</div>
+					{{/if}}
+
+				</div>
+			</div>
+		</script>
+	</body>
+
+</html>

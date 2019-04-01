@@ -1,0 +1,164 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title>代理商管理</title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<link href="../css/mui.min.css" rel="stylesheet" />
+		<link rel="stylesheet" href="../css/mui.picker.min.css" />
+		<link rel="stylesheet" href="../css/mui.poppicker.css" />
+		<link rel="stylesheet" href="../css/style.css" />
+		<link rel="stylesheet" href="css/trade_select.css" />
+		<style>
+			.condition_select_content_input{
+				width: 6.53rem;
+				display: flex;
+				justify-content: space-between;
+				align-items: center;
+			}
+			.condition_select_content_input_right{
+				font-size: 0.35rem;
+				display: flex;
+				align-items: center;
+			}
+			.condition_select_content_input_right img{
+				width: 0.17rem;
+				height: 0.29rem;
+				margin-left: 0.13rem;
+			}
+			#menu{
+				font-size: 0.34rem;
+			}
+			.condition_select_content:last-child{
+				border-bottom: none;
+			}
+		</style>
+		<script type="text/javascript" src="../js/flexible.debug.js" ></script>
+		<script type="text/javascript" src="../js/flexible_css.debug.js" ></script>
+		
+	</head>
+
+	<body>
+		<header class="mui-bar mui-bar-nav" id="header">
+			<div class="home-header">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<a id="menu" class=" mui-pull-right">保存</a>
+			<h1 class="mui-title">代理商管理</h1>
+			</div>
+		</header>
+		<div class="mui-content">
+			<div class="condition_select" id="content">
+				
+			</div>
+		</div>
+		
+		<script id='text' type="text/html">
+			<div class="condition_select_content">
+				<span class="condition_select_content_span2">代理商名称 </span>
+				<div class="condition_select_content_input">
+					<input type="text" placeholder="请输入代理商名称" id="name" value="{{StoreName}}" data-id = "{{StoreId}}"/>
+				</div>
+			</div>
+			<div class="condition_select_content">
+				<span class="condition_select_content_span2">代理商帐号</span>
+				<div class="condition_select_content_input">
+					<input type="text" placeholder="请输入代理商帐号" id="num" value="{{UserName}}" disabled="disabled"/>
+				</div>
+			</div>
+			<div class="condition_select_content">
+				<span class="condition_select_content_span2">代理商vip等级</span>
+				<div class="condition_select_content_input" id="grade">
+					<div id="grade_result">{{GradeName}}</div>
+					<div class="condition_select_content_input_right">
+						<span>v3</span>
+						<img src="../images/select_right.png"/>
+					</div>
+				</div>
+			</div>
+		</script>
+		
+		<script src="../js/mui.min.js"></script>
+		<script type="text/javascript" src="../js/mui.picker.min.js" ></script>
+		<script type="text/javascript" src="../js/mui.poppicker.js" ></script>
+		<script type="text/javascript" src="../js/jquery-1.8.3.min.js" ></script>
+		<script type="text/javascript" src="../js/app.js" ></script>
+		<script type="text/javascript" src="../js/art-template.js" ></script>
+		<script type="text/javascript">
+			mui.init();
+			var GradeId;
+			mui.plusReady(function(){
+				var self=plus.webview.currentWebview();
+				var datas=self.datas;
+				var html=template("text",datas);
+				document.getElementById("content").innerHTML=html;
+				
+				document.getElementById("grade").addEventListener('tap',function(){
+					mui.ajax('http://pos.wulilu.cn/AppShop/PostApi.ashx?action=GetAgentGrade',{
+						dataType: 'json',
+						type: 'post',
+						timeout: 10000,
+						data:{
+							sessionid:'c2a0c65fdd414216bf3ae93b79cddb25',
+						},
+						success:function(data){
+							console.info(JSON.stringify(data))
+							res=data.Result.rlist;
+							var datas=[];
+							for (var i=0;i<res.length;i++) {
+								var item={};
+								item['value']=res[i].GradeId;
+								item['text']=res[i].Name;
+								datas.push(item);
+							}
+							var picker = new mui.PopPicker();
+							var this_result=document.getElementById("grade_result");
+							picker.setData(datas);
+							picker.show(function (selectItems) {
+								this_result.innerText=selectItems[0].text;
+								GradeId=selectItems[0].value;
+							})
+						},
+						error:function(xhr,type,errorThrown){
+							mui.toast("网络请求超时，请重新加载");
+						}
+					})
+				})
+			})
+			document.getElementById("menu").addEventListener('tap',function(){
+				var name=$('#name').val();
+				console.info(name);
+				if(name==''){
+					mui.toast("请输入代理商名称~")
+					return false;
+				}else{
+					var id=$('#name').data('id');
+				}
+				mui.ajax('http://pos.wulilu.cn/AppShop/PostApi.ashx?action=PostAgentDetails',{
+					type: 'post',
+					data:{
+						sessionid:'c2a0c65fdd414216bf3ae93b79cddb25',
+						StoreId:id,
+						StoreName:name,
+						GradeId:GradeId
+					},
+					success:function(data){
+						console.info(data);
+						mui.toast(data.Result);
+						setTimeout(function(){
+							fxshop.openVW('agent_select_result');
+						},1500)
+						 
+					},
+					error:function(xhr,type,errorThrown){
+						mui.toast("网络请求超时，请重新加载");
+					}
+				})
+			})
+			
+		</script>
+	</body>
+
+</html>

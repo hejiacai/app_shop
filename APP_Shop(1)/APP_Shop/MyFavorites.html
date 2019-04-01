@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<meta name="format-detection" content="telephone=no,email=no" />
+		<title>我的收藏</title>
+		<link href="css/mui.min.css" rel="stylesheet" />
+		<link href="css/style.css" rel="stylesheet" />
+		<script type="text/javascript" src="js/flexible.debug.js"></script>
+		<script type="text/javascript" src="js/flexible_css.debug.js"></script>
+		<script type="text/javascript" src="js/mui.min.js" ></script>
+		<script type="text/javascript" src="js/app.js" ></script>
+		<script type="text/javascript" src="js/template.js" ></script>
+	</head>
+
+	<body>
+		<header class="mui-bar mui-bar-nav" id="header">
+			<div class="home-header">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"><span>返回</span></a>
+			<span class="mui-pull-right nav-title" id="Collection">编辑</span>
+			<h1 class="mui-title">我的收藏</h1>
+			</div>
+		</header>
+
+		<div id="pullrefresh" class="mui-content mui-scroll-wrapper transparent">
+			<div class="mui-col-xs-12" id="orderNull">
+				<img src="images/order_null.png" />
+				<p>没有任何收藏</p>
+			</div>
+
+			<div class="mui-scroll">
+				<div id="favoriteList" class="favoriteList">
+					
+				</div>
+			</div>
+
+		</div>
+	<script type="text/html" id="favoriteListTemp">
+		{{each result.List as favorite}}
+			<div class="mui-checkbox mui-left favorite-list-goods favorite" data-FavoriteId="{{favorite.FavoriteId}}" data-id="{{favorite.ProductId}}" data-storeid="{{favorite.StoreId}}">
+				<div class="favorite-goods favorite-list" data-id="list-{{favorite.FavoriteId}}" >
+					<a class="goods-img" data-url="{{favorite.ProductId}}">
+						<img src="{{favorite.ThumbnailUrl100}}" data-delay="{{favorite.ThumbnailUrl100}}" />
+					</a>
+					<div class="favorite-goods-detail">
+						<a class="goods-name" data-url="{{favorite.ProductId}}">{{favorite.ProductName}}</a>
+						<span>¥<em class="font32 ml8">{{favorite.SalePrice}}</em></span>
+					</div>
+				</div>
+			</div>			
+		{{/each}}		
+	</script>
+		<script>
+			var isEnd = false,
+				pageIndex = 0,
+				pagesize = 10,
+				FavoriteIds,
+				favoriteList=document.getElementById('favoriteList');
+ 				var siteifno = SiteSetting.getSiteInfo();	
+ 				var immersedIos=isIphoneX();
+			mui.init({
+				pullRefresh: {
+					container: '#pullrefresh',
+					up: {
+						height: 0,
+						contentrefresh: '正在加载...',
+						contentnomore: '没有更多数据了',
+						callback: loadFavorite,
+					}
+				}
+			})
+			
+			
+			mui.plusReady(function() {
+				//判断是否是iphone X 
+				if(immersedIos){
+					document.getElementById("header").className+=" Xheader"; 
+					document.getElementById("pullrefresh").className+=" Xmui-content";
+				} 	
+				loadFavorite('reset');
+				BindEvent();
+				
+				//监听更新
+				document.addEventListener('updateFavorite', function() {
+					isEnd=false;
+					pageIndex=0;
+					loadFavorite('reset');						
+				});				
+			});
+			
+			// 绑定事件
+			function BindEvent() {
+				//编辑
+				mui(document).on('tap','#Collection', function() {
+					var editTxt=document.getElementById('Collection').innerText;
+					var inputTxt=document.getElementsByName("checkItem");
+					if(editTxt=="编辑")
+					{
+						fxshop.openVW('editFavorites');
+					}
+				});
+				
+				mui(document).on('tap', '.favorite', function() {
+					var storeid=this.dataset.storeid;
+					var pid=this.dataset.id;
+					if(storeid>0){
+						ShowStoreProdduct(pid,storeid)
+					}else{
+						showProduct(pid);
+					}
+					
+				});				
+
+			};
+	 
+			function loadFavorite(re) {
+				var that = this;
+				if(!isEnd) {
+					pageIndex++;
+					mui.ajax(fxshop.goUrl('Favorites'), {
+						data: {
+							sessionid: siteifno.UserInfo.sessionid,
+							pageIndex: pageIndex,
+							pageSize: pagesize,
+						},
+						dataType: 'json',
+						type: 'get',
+						timeout: 10000,
+						success: function(data) {
+							
+							var result = data.Result;
+							if(data.ErrorResponse != undefined) {
+								plus.nativeUI.toast(data.ErrorResponse.ErrorMsg);
+								fxshop.openVW('login');								
+								return;
+							}
+							
+							if(data.Result.List.length < 10) {
+								isEnd = true;
+							}
+
+							if(re) {
+								document.getElementById("favoriteList").innerHTML = template('favoriteListTemp', {
+									'result': result
+								});
+								mui('#pullrefresh').pullRefresh().scrollTo(0, 0, 20);
+							} else {
+								document.getElementById("favoriteList").insertAdjacentHTML('beforeend', template('favoriteListTemp', {
+									'result': result
+								}));
+								that.endPullupToRefresh(isEnd);
+							}
+
+							if(pageIndex == 1) {
+								if(data.Result.List.length > 0) {
+									document.querySelector('.mui-pull-bottom-pocket').style.opacity = 1;
+									document.getElementById("favoriteList").style.display = "block";
+									document.getElementById("orderNull").style.display = "none";
+								} else {
+									document.querySelector('.mui-pull-bottom-pocket').style.opacity = 0;
+									document.getElementById("favoriteList").style.display = "none";
+									document.getElementById("orderNull").style.display = "block";
+								}
+							}
+						},
+						error: function(xhr, type, errorThrown) {
+							plus.nativeUI.toast('请求失败，请检查网络')
+						}
+					});
+				} else {
+					that.endPullupToRefresh(isEnd);
+				}
+			};
+
+			
+			
+		</script> 
+	</body>
+</html>

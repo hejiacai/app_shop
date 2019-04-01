@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<meta name="format-detection" content="telephone=no,email=no" />
+		<title>商品搜索结果</title>
+		<link href="css/mui.min.css" rel="stylesheet" />
+		<link rel="stylesheet" href="css/style.css" />
+		<link rel="stylesheet" href="css/search.css" />
+		<script type="text/javascript" src="js/flexible.debug.js"></script>
+		<script type="text/javascript" src="js/flexible_css.debug.js"></script>
+		<script type="text/javascript" src="js/mui.min.js"></script>
+		<script type="text/javascript" src="js/app.js"></script>
+		<script type="text/javascript" src="js/template.js"></script>
+	</head>
+
+	<body>
+		<header class="mui-bar mui-bar-nav" id="header">
+			<div class="home-header">
+				<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+				<h1 class="mui-title">
+					<form  onsubmit="return;">
+				<div class="search">
+					<label class="search-btnicon mui-icon mui-icon-search"></label>
+					<input type="search" class="mui-input-clear search-input" placeholder="搜索商品" id="search-input">
+				</div>
+				</form>
+			</h1>
+				<a id="menu" class="iconfont _more mui-pull-right" href="#topPopover"></a>
+			</div>
+		</header>
+
+<!--右上角弹出菜单-->
+		<div id="topPopover" class="mui-popover">
+			<div class="mui-popover-arrow"></div>
+			<div class="mui-scroll-wrapper">
+				<div class="mui-scroll" id="navbar">
+					<ul class="mui-table-view nav-bar">
+						<li data-page="home"><i class="iconfont home"></i>首页</li>
+						<li data-page="category"><i class="iconfont fenlei"></i>分类</li>
+						<li data-page="shopcart"><i class="iconfont icon__cart"></i>购物车</li>
+						<li data-page="user"><i class="iconfont icon__my"></i>个人中心</li>				
+					</ul>
+				</div>
+			</div>
+
+		</div>		
+ 
+		<div class="fixed-inner" id="fixedNav">
+			<a class="rangBtn change-btn" Sortkey="0" onclick="SortBy(0,this)" href="#">新品<i class="icon_sort"></i></a>
+			<a class="rangBtn change-btn" Sortkey="1" onclick="SortBy(1,this)" href="#">价格<i class="icon_sort"></i></a>
+			<a class="rangBtn change-btn" Sortkey="2" onclick="SortBy(2,this)" href="#">销量<i class="icon_sort"></i></a>
+			<a class="rangBtn change-btn" Sortkey="3" onclick="SortBy(3,this)" href="#">人气<i class="icon_sort"></i></a>
+		</div>
+		<div id="pullrefresh" class="mui-content mui-scroll-wrapper" style=" padding-top: 120px;">
+			<div class="empty-show" id="emptyShow" style="display: none;">
+				<img src="images/null_search.png">
+			</div>
+
+			<div class="mui-scroll">
+				<ul class="mui-table-view mui-grid-view mui-clearfix vshop-product has-fixed" id="productsList">
+
+				</ul>
+			</div>
+		</div>
+ 
+
+		<script>
+			var pageIndex = 0,
+				isEnd = false,
+				keywords = '',
+				CategoryId,
+				sortBy = 'AddedDate',
+				sortOrder = 'asc',
+				//分类cid
+				cid = 0,
+				storeId = 0,
+				flag = false,
+				chooseC,
+				chooseB,
+				chooseA = [],
+				couponId = "",
+				productsList = document.getElementById('productsList');
+			var immersedIos=isIphoneX();	
+			mui.init({
+				pullRefresh: {
+					container: '#pullrefresh',
+					deceleration: 0.0006,
+					up: {
+						contentrefresh: "正在加载...",
+						contentnomore: '已加载全部商品',
+						callback: SearchResult
+					}
+				}
+			});
+
+			mui.plusReady(function() {
+				//判断是否是iphone X 
+				if(immersedIos){
+					document.getElementById("header").className+=" Xheader"; 
+					document.getElementById("pullrefresh").className+=" Xsearch-content";
+					document.getElementById("fixedNav").className+=" iphoneXNav";
+				} 	
+				var self = plus.webview.currentWebview(); //获取当前窗体对象
+				if(self.keywords) {
+					keywords = self.keywords;
+				}
+				if(self.storeId) {
+					storeId = self.storeId;
+				}
+				if(self.pid) {
+					cid = self.pid;
+				}
+				if(self.couponId) {
+					couponId = self.couponId;
+				}
+				CurrentView = plus.webview.currentWebview();
+				SearchResult('reset');
+				BindEvent();
+			});
+
+			function BindEvent() {
+				showNav();
+				mui(document).on("tap", ".count-cart", function() {
+					if(!fxshop.isLogin()){
+						mui.toast("您还未登录");
+						showLogin();
+						return;
+					}
+					var pid = this.dataset.pid;
+					if(storeId) {
+						ClickCart(pid, 4, storeId);
+					}else{
+						ClickCart(pid);
+					}
+				});
+				
+				mui(document).on("tap",".pro-info",function(){
+					var pid = this.dataset.id;
+					if(storeId) {
+						ShowStoreProdduct(pid, storeId);
+					} else {
+						showProduct(pid);
+					}
+				});
+			}
+
+			function SearchResult(re) {
+				var that = this;
+				if(!isEnd) {
+					pageIndex++;
+					mui.ajax(fxshop.goUrl('getProducts'), {
+						data: {
+							cId: cid,
+							pageIndex: pageIndex,
+							pageSize: 10,
+							keyword: keywords,
+							sortOrder: sortOrder,
+							sortBy: sortBy,
+							storeId: storeId,
+							couponId: couponId
+						},
+						dataType: 'json',
+						type: 'get',
+						timeout: 10000,
+						success: function(data) {
+							if(data['ErrorResponse'] != undefined) {
+								mui.toast(data.ErrorResponse.ErrorMsg);
+								return;
+							}
+							if(data.Result.List.length < 10) {
+								isEnd = true;
+							}
+
+							if(re) {
+								productsList.innerHTML = template('initProduct', data);
+							} else {
+								productsList.insertAdjacentHTML('beforeend', template('initProduct', data));
+								that.endPullupToRefresh(isEnd);
+							}
+
+							if(pageIndex == 1) {
+								if(data.Result.List.length > 0) {
+									document.querySelector('.mui-pull-bottom-pocket').style.opacity = 1;
+									document.getElementById("productsList").style.display = "block";
+									document.getElementById("emptyShow").style.display = "none";
+								} else {
+									document.querySelector('.mui-pull-bottom-pocket').style.opacity = 0;
+									document.getElementById("productsList").style.display = "none";
+									document.getElementById("emptyShow").style.display = "block";
+								}
+							}
+						},
+						error: function(xhr, type, errorThrown) {
+							plus.nativeUI.toast('请求失败，请检查网络')
+						}
+					});
+				} else {
+					that.endPullupToRefresh(isEnd);
+				}
+
+			}
+
+			document.getElementById('search-input').addEventListener('tap', function() {
+				plus.webview.currentWebview().close();
+				fxshop.openVW('search');
+			});
+
+			function SortBy(sort, obj) {
+				var selectA = document.getElementsByClassName('select');
+				if(selectA.length > 0)
+					selectA[0].className = selectA[0].className.replace(/ select/g, '');
+				if(!fxshop.hasClass(obj, 'select'))
+					obj.className += ' select';
+				if(fxshop.hasClass(obj, 'state_switch')) {
+					fxshop.removeClass(obj, 'state_switch');
+				} else {
+					obj.className += ' state_switch';
+				}
+
+				sortBy = ShowSortBy(sort);
+				pageIndex = 0;
+				if(sortOrder == 'asc') {
+					sortOrder = 'desc';
+				} else {
+					sortOrder = 'asc';
+				}
+				pageIndex = 0;
+				isEnd = false;
+				mui('#pullrefresh').pullRefresh().refresh(true);
+				SearchResult('reset');
+			}
+
+			function ShowSortBy(sortBy) {
+				switch(parseInt(sortBy)) {
+					case 1:
+						return "SalePrice";
+					case 2:
+						return "ShowSaleCounts";
+					case 3:
+						return "VistiCounts";
+					default:
+						return "AddedDate";
+				};
+
+			}
+		</script>
+
+		<script type="text/html" id="initProduct">
+			{{each Result.List as value}}
+			<li class="mui-table-view-cell mui-media mui-col-xs-6">
+				<div class="vshop-product-box">
+					<div data-id="{{value.pid}}" class="pro-info">
+						<div class="p-img">
+							<a><img src="{{value.pic}}"></a>
+						</div>
+						<div class="search-name">
+							<a>{{value.name}}</a>
+						</div>
+					</div>
+
+					<p class="vshop-product-price"><span>¥ {{value.price}}</span></p>
+					<div class="count-cart" data-pid="{{value.pid}}">
+						<span class="sale-count">已售{{value.saleCounts}}件</span>
+						<em class="iconfont icon__plus cart-icon-color mb8"></em>
+					</div>
+				</div>
+			</li>
+			{{/each}}
+		</script>
+
+	</body>
+
+</html>

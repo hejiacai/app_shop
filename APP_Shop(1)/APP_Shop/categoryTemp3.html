@@ -1,0 +1,168 @@
+﻿<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title>分类模板三</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<link rel="stylesheet" href="css/mui.min.css">
+		<link href="css/style.css" rel="stylesheet" />
+	</head>
+ 	<style>
+		 	.mui-segmented-control{ position: static; overflow: auto; display: inherit;}
+			.mui-segmented-control .mui-control-item {
+				line-height: 44px;
+				width: 100%;
+			}
+			input[type=search]:focus{ text-align: center;}
+		 	.home-header,header.mui-bar,.mui-bar.mui-bar-nav:before { background:rgb(245, 245, 245)!important;}
+			.mui-search.mui-active:before{ left:24px;}	
+		</style>
+	<body style="overflow: hidden;">
+ 
+		<header class="mui-bar mui-bar-nav">
+			<div class="home-header">
+			<div class="search-box" id="seach-box">
+				<label class="iconfont -search search-color" id="search_btn"></label>
+				<input type="search" class="mui-input-clear search-input" placeholder="请输入搜索关键字">
+			</div>	
+			</div>
+		</header>	
+ 
+			<!--第3套模板分类-->
+	     	<div class="mui-content" style="z-index: 99; position: fixed;  top: 15px;">
+					<div id="cateleft3" style="height: 480px; overflow-y: scroll; margin-top: 5px;" class="mui-segmented-control mui-segmented-control-inverted mui-segmented-control-vertical">
+						
+					</div>
+ 
+				<div id="proCate3-Content" style="height: 500px; overflow-y: scroll; padding-top: 5px;">
+					<div class="cate-pic" id="cate-pic">
+		 			 	
+		 			</div>
+		 			 
+		 			<div id="proCate3-text">
+		 			 	
+		 			</div>
+		 			 
+				</div>
+ 
+			</div>
+
+ 
+	</body>
+		<script type="text/javascript" src="js/flexible.debug.js"></script>
+		<script type="text/javascript" src="js/flexible_css.debug.js"></script>
+		<script type="text/javascript" src="js/mui.min.js"></script>
+		<script type="text/javascript" src="js/app.js"></script>
+		<script type="text/javascript" src="js/template.js"></script>	
+		<script>
+			mui.init({});
+ 			var immersedIos=isIphoneX();
+			var pid=0,
+				leftCate={};
+			var cateleft3 = document.getElementById("cateleft3");
+			
+			mui.plusReady(function() {
+				//判断是否是iphone X 
+				if(immersedIos) {
+					document.getElementById("seach-box").className += " Xsearch";
+					document.getElementById("search_btn").className +=" Xsearchbtn"
+				}
+				LoadCate(0);
+			});
+
+			function LoadCate(pid){
+				mui.ajax(fxshop.goUrl('getCategories'), {
+					data:{
+						"pid":pid
+					},
+					dataType: 'json',
+					type: 'get',
+					success: function(data) {
+						var result = data.Result;	
+						var TopCategory = {
+							TopCategory: result
+						};			
+
+						if(pid==0){//一级分类
+								ShowLeftCate(result);
+								
+								
+							}else{//二级分类
+								ShowSecondCate(result);
+							}
+					} 
+				});
+			}
+			
+			document.addEventListener('updateData', function() {
+					plus.webview.currentWebview().reload();
+				});
+			
+			function LoadSecondCate(parentid)
+			{
+				leftCate.forEach(function(item,index,array){
+					if(parentid==array[index].cid){
+						if(array[index].bigImageUrl==''||array[index].bigImageUrl==null){
+							document.getElementById("cate-pic").style.display='none';
+						}else
+						{
+							document.getElementById("cate-pic").style.display='block';
+							document.getElementById("cate-pic").innerHTML="<div class='big-pic'><img src='"+array[index].bigImageUrl+"'></div>";
+						}
+						}
+				});				
+				LoadCate(parentid);		
+				//cateleft3.querySelector('.mui-control-item').classList.add('mui-active');
+			}			
+			
+			function ShowLeftCate(CateData){
+				leftCate=CateData;
+				var html=[];
+				CateData.forEach(function(item,index,array){
+					html.push("<a class='mui-control-item' onclick='LoadSecondCate("+item.cid+")'>"+item.name+"</a>");
+
+				});
+				cateleft3.innerHTML=html.join("");
+				if(CateData[0].bigImageUrl!=''){
+					document.getElementById("cate-pic").innerHTML="<div class='big-pic'><img src='"+CateData[0].bigImageUrl+"'></div>";
+				}
+				cateleft3.querySelector('.mui-control-item').classList.add('mui-active');
+				LoadCate(CateData[0].cid);	
+				return leftCate;
+			}
+		
+			function ShowSecondCate(CateData){
+				document.getElementById("proCate3-text").innerHTML = template('listTemp3', {'DataList':CateData});
+			}		
+			
+			
+		document.getElementById('seach-box').addEventListener('tap',function(){
+			fxshop.openVW('search');
+		});		
+		
+		
+		
+		
+		function searchCate(keywords,cid)
+		{
+			fxshop.openVW('search-result',{'keywords': keywords,'pid':cid});
+		}		
+ 
+		</script>
+ 	
+		<script type="text/html" id="listTemp3"> 
+			<div class="list-contentbox">
+				<h2>--类目商品--</h2>
+				{{each DataList as secondcategory}}
+					<div class="cate2-box" onclick="searchCate('','{{secondcategory.cid}}')">
+						<div class="img"><img src="{{secondcategory.icon}}"> </div>
+						<div class="pro-title">{{secondcategory.name}}</div>
+					</div>
+				{{/each}}
+			</div>
+		</script>
+
+</html>

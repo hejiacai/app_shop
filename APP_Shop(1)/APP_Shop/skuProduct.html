@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title>规格内容</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+		<script src="js/mui.min.js"></script>
+		<script src="js/app.js"></script>
+		<script src="js/template.js"></script>
+		<script type="text/javascript" src="js/flexible.debug.js"></script>
+		<script type="text/javascript" src="js/flexible_css.debug.js"></script>
+
+		<link rel="stylesheet" href="css/mui.min.css">
+		<link rel="stylesheet" href="css/style.css">
+
+	</head>
+
+	<body>
+		<style>
+			body {
+				background: #fff;
+			}
+		</style>
+		<div class="guigebox"></div>
+		<div class="lqyhq skuchoose">
+			<div class="positionre">
+				<div id="prosku">
+
+				</div>
+			</div>
+
+		</div>
+
+		<div class="sku-btn" id="divcart">
+			<button type="button" id="btncart" class="btncart" onclick="AddCart()">加入购物车</button>
+		</div>
+		<div class="sku-btn bg-gray mui-hidden" id="divnopro">
+			<div id="exstatus" class="btnnopro">已售罄</div>
+		</div>
+
+		<script id="skuconent" type="text/html">
+			<div class="guige">
+				<div id="guigeImg">
+					<img class="guigeimg" src="{{ProductInfo.ImageUrl1 || ProductInfo.SubmitOrderImg}}" />
+				</div>
+				
+				<div class="guigecont">
+					<div class="saleprice" id="sku_price"><span>¥</span> {{ShowPrice(ProductInfo.MinSalePrice,ProductInfo.MaxSalePrice,ProductInfo.MobileExclusive)}}
+					</div>
+					<div class="guigeyxhs"><span id="selectsku"></span></div>
+				</div>
+				<div class="sku-close iconfont icon__close font28" id="skuclose"></div>
+			</div>
+			<div class="mui-clearfix"></div>
+
+			<div class="nronggaodu">
+				{{if ProductInfo.SkuItem.length>=1}}
+				<div class="sku bd-b pb12 mb8">
+					{{each ProductInfo.SkuItem as skuitem idx}}
+					<div class="skuname">
+						<div class="attributename">{{skuitem.AttributeName}}</div>
+						<div class="attributsub mui-clearfix">
+							{{each skuitem.AttributeValue as attributevalue}}
+							<span class="attrbutevalue" data-id="{{attributevalue.ValueId}}" onclick="onSkuClick({{idx}},{{attributevalue.ValueId}},'{{attributevalue.Value}}',this)">
+
+{{if attributevalue.UseAttributeImage}}
+								{{attributevalue.Value}}
+							{{else}}
+							<img src="{{attributevalue.ImageUrl}}">
+							{{/if}}
+						</span> {{/each}}
+						</div>
+					</div>
+					{{/each}}
+				</div>
+				{{/if}}
+
+				<div class="goumaisl">
+					<span class="count">数量</span>
+					<div class="goumkuang">
+						<div class="jian">
+							<span class="iconfont minus_regular" onclick="changenum()"></span>
+						</div>
+
+						<input type="text" id="txtnum" class="sku-input" oninput="EventInputNum(this)" value="1" />
+						<div class="jia">
+							<span class="iconfont plus_regular" onclick="changenum('add')"></span>
+						</div>
+					</div>
+
+					<div class="guigeconkc">
+						<span id="spstock" class="mui-hidden Stock_txt" style="margin-left:0.5rem;">库存<b id="skustock">0</b>件</span>
+					</div>
+				</div>
+			</div>
+
+		</script>
+		<script>
+			var SkuInfo = {
+				selectedskuList: [], //选中的值
+				skuItemList: [], //当前存储的规格集合
+				skus: [],
+				source: 1, //1表示加入购物车，2表示立即购买，3表示火拼团
+				productId: null, //获取传过来的productId
+				activeId: '',
+				mobileExclusive: 0
+			};
+			var storeid = 0;
+			var self = null;
+			var pid = "";
+			var selDefaultImg;
+			mui.init();
+			mui.plusReady(function() {});
+
+			var ShowPrice = function(minprice, maxprice, mobileprice) {
+
+				var minprice = parseFloat(minprice);
+				var maxprice = parseFloat(maxprice);
+				var mobileprice = parseFloat(mobileprice||0);
+				if(storeid > 0) {
+					if(minprice != maxprice) {
+						return minprice.toFixed(2) + "~" + maxprice.toFixed(2);
+					} else {
+						return minprice.toFixed(2)<0?0:minprice.toFixed(2);
+					}
+				} else {
+					if(minprice != maxprice) {
+						saleprice = (minprice - mobileprice).toFixed(2) + '~' + (maxprice - mobileprice).toFixed(2);
+					}else {
+						saleprice = minprice - mobileprice;
+					}
+					return saleprice<0?0:saleprice;
+				}
+			}
+			template.helper('ShowPrice', ShowPrice);
+
+			function openActivity(productdetail) {}
+
+			//监听输入框事件
+			function EventInputNum(obj) {
+				var val = obj.value;
+				if(!fxshop.isPInt(val)) {
+					mui.toast("请输入要购买的数量！");
+					obj.onfocus();
+					return;
+				}
+			}
+			//点击规格
+			function onSkuClick(index, valueid, value, obje) {
+				var valueclass = document.querySelectorAll(".skuname")[index].querySelectorAll(".attrbutevalue");
+				for(var x = 0; x < valueclass.length; x++) {
+					fxshop.removeClass(valueclass[x], 'mui-active');
+				}
+				fxshop.addClass(obje, 'mui-active'); //添加
+
+				var selInfo = new Object();
+				selInfo.valueid = valueid;
+				selInfo.value = value;
+				var selSku = SkuInfo.selectedskuList;
+				selSku[index] = selInfo;
+				var selContent = "";
+				var isAlSelected = false;
+				var itemList = SkuInfo.skuItemList;
+				if(itemList.length == selSku.length) isAlSelected = true;
+				var skuId = SkuInfo.productId;
+				for(var i = 0; i < selSku.length; i++) {
+					var info = selSku[i];
+					if(info != undefined) {
+						selContent += selContent == "" ? info.value : "," + info.value;
+					}
+				}
+
+				var currentProductSku = null;
+				SkuInfo.skus.forEach(function(item, index, array) {
+					var found = true;
+
+					for(var i = 0; i < selSku.length; i++) {
+						if(selSku[i] == undefined || item.SkuId.indexOf('_' + selSku[i].valueid) == -1)
+							found = false;
+					}
+					if(found && itemList.length == selSku.length) {
+						currentProductSku = item;
+						skuId = item.SkuId;
+						return;
+					}
+				});
+				var curentItem = itemList[index];
+				for(var j = 0; j < itemList[index].AttributeValue.length; j++) {
+					var item = itemList[index].AttributeValue[j];
+					if(item.ValueId == valueid) {
+						itemList[index].AttributeValue[j].UseAttributeImage = 'selected';
+					} else {
+						itemList[index].AttributeValue[j].UseAttributeImage = 'False';
+					}
+				}
+				var selectSku = "选择规格";
+				if(selContent != "") {
+					selectSku = "已选择：" + selContent;
+
+				}
+				
+				/*选择规格切换规格图片*/
+				SkuInfo.skuItemList.forEach(function(item, index, array) {
+					for(var k = 0; k < item.AttributeValue.length; k++) {
+						var flag = item.AttributeValue[k].UseAttributeImage;
+						if(flag=="selected"&&item.AttributeValue[k].ImageUrl){
+							document.getElementById("guigeImg").innerHTML="<img class='guigeimg' src='"+item.AttributeValue[k].ImageUrl+"'>";
+							return;
+						}else{
+							document.getElementById("guigeImg").innerHTML="<img class='guigeimg' src='"+selDefaultImg+"'>";
+							
+						}
+					}
+				 
+				})
+				
+				SkuInfo.selectedskuList = selSku;
+				SkuInfo.selectedSku = skuId;
+				SkuInfo.selectedSkuContent = selContent;
+				SkuInfo.skuItemList = itemList;
+				SkuInfo.selectSpecifications = selectSku;
+
+				if(currentProductSku != null) {
+					SkuInfo.skuPrice = currentProductSku.SalePrice;
+					SkuInfo.skuStock = currentProductSku.Stock;
+
+					if(currentProductSku.ThumbnailUrl40 != "" && currentProductSku.ThumbnailUrl40 != null) {
+						SkuInfo.skuImg = currentProductSku.ThumbnailUrl40;
+					}
+				}
+				updateSku();
+
+			}
+
+			function updateSku() {
+				if(SkuInfo.selectSpecifications != undefined) {
+					document.getElementById('selectsku').innerText = SkuInfo.selectSpecifications;
+				}
+				fxshop.removeClass(document.getElementById('spstock'), 'mui-hidden');
+				if(SkuInfo.skus) {
+					if(SkuInfo.selectedSku == undefined) {
+						document.getElementById("skustock").innerText = parseInt(SkuInfo.skus[0].Stock) > 0 ? SkuInfo.skus[0].Stock : "0";
+						var temprice = parseFloat(SkuInfo.skus[0].SalePrice);
+						var skuprice = 	temprice - (SkuInfo.mobileExclusive||0);
+						skuprice=skuprice<0?0:skuprice;
+						document.getElementById("sku_price").innerHTML = "<span>¥</span>" + toFixed(skuprice);
+					} else {
+						SkuInfo.skus.forEach(function(item, index, array) {
+							if(item.SkuId == SkuInfo.selectedSku) {
+								document.getElementById("skustock").innerText = parseInt(item.Stock) > 0 ? item.Stock : "0";
+								var temprice = parseFloat(item.SalePrice);
+								var skuprice = temprice - (SkuInfo.mobileExclusive||0);
+								skuprice=skuprice<0?0:skuprice;
+								document.getElementById("sku_price").innerHTML = "<span>¥</span>" + toFixed(skuprice);
+							}
+						});
+					}
+				}
+			}
+
+			//改变文本框值
+			function changenum(oper) {
+				var num = document.getElementById("txtnum").value;
+				if(fxshop.isPInt(num)) {
+					num = parseInt(num);
+					if(oper) { //累加
+						num = num - 0 + 1;
+					} else {
+						if(num >= 2) {
+							num = num - 1;
+						}
+					}
+					document.getElementById("txtnum").value = num;
+				}
+
+			}
+
+			//加入购物车
+			function AddCart() {
+				if(!fxshop.isLogin()) {
+					mui.toast('你还未 登录');
+					return;
+				}
+
+				var currentuserinfo = SiteSetting.getSiteInfo().UserInfo;
+
+				var that = this;
+				var isselectsku = true;
+				for(var x = 0; x < SkuInfo.selectedskuList.length; x++) {
+					if(SkuInfo.selectedskuList[x] == undefined || SkuInfo.selectedskuList[x] == '' || SkuInfo.selectedskuList[x] == null) {
+						isselectsku = false;
+						break;
+					}
+				}
+				if(SkuInfo.selectedskuList.length != SkuInfo.skuItemList.length || !isselectsku) {
+
+					mui.toast('请选择规格');
+					return;
+				}
+
+				buyamout = document.getElementById("txtnum").value;
+				if(document.getElementById("skustock").innerText == "0") {
+					mui.toast('库存不足');
+					return;
+				}
+				var stocksku = SkuInfo.skuStock;
+				if(!fxshop.isPInt(buyamout)) {
+					mui.toast('请输入要购买的数量');
+					return;
+				}
+				if(parseInt(buyamout) <= 0) {
+					mui.toast('请输入要购买的数量');
+					return;
+				}
+
+				if(stocksku - buyamout < 0) {
+					mui.toast('库存不足');
+					return;
+				}
+
+				var skuid = SkuInfo.selectedSku;
+
+				if(!skuid) {
+					skuid = SkuInfo.productId + '_0';
+				}
+
+				if(SkuInfo.source == 3) { //火拼团
+
+					var requesturl = apiURL + "appshop/SubmmitOrder.aspx?fightGroupActivityId=" + SkuInfo.activeId + "&buyAmount=" + buyamout + "&from=fightGroup&productSku=" + skuid + "&d=" + Math.random();
+
+					fxshop.OpenWapWeb(requesturl, '提交订单');
+					close();
+				} else if(SkuInfo.source == 5) { //参与拼团
+					var tempactiveid = SkuInfo.activeId.split('-')[1]; //火拼团活动Id
+
+					var tempgroupid = SkuInfo.activeId.split('-')[0]; //参与的火拼团组ID
+					var requesturl = apiURL + "appshop/SubmmitOrder.aspx?fightGroupActivityId=" + tempactiveid + "&FightGroupId=" + tempgroupid + "&buyAmount=" + buyamout + "&from=fightGroup&productSku=" + skuid + "&d=" + Math.random();
+					fxshop.OpenWapWeb(requesturl, '提交订单');
+					close();
+				} else if(SkuInfo.source == 2 || SkuInfo.source == 6) { //立即购买
+					var requesturl = apiURL + "appshop/SubmmitOrder.aspx?buyAmount=" + buyamout + "&productSku=" + skuid + "&from=signBuy&StoreId=" + storeid;
+					fxshop.OpenWapWeb(requesturl, '提交订单');
+					close();
+				} else {
+					mui.ajax(fxshop.goUrl('addToCart'), {
+						type: 'post',
+						data: {
+							SkuID: skuid,
+							Quantity: buyamout,
+							GiftID: 0,
+							sessionid: currentuserinfo.sessionid,
+							StoreId: storeid
+						},
+						dataType: 'json',
+						timeout: 10000,
+						success: function(res) {
+							if(res.ErrorResponse != undefined) {
+								mui.toast(res.ErrorResponse.ErrorMsg);
+								return;
+							}
+							mui.toast('加入购物车成功!');
+							plus.webview.currentWebview().hide();
+							mui.fire(plus.webview.getWebviewById('shopcart.html'), 'updateData');
+						},
+						error: function(ex) {
+							mui.toast(ex)
+							plus.webview.currentWebview().hide();
+						}
+					});
+				}
+
+			}
+
+			function close() {
+				setTimeout(function() {
+					plus.webview.currentWebview().hide()
+				}, 200);
+			}
+
+			document.addEventListener("UpdateData", function(event) {
+				pid = event.detail.productId;
+				var source = event.detail.source; //1表示加入平台购物车，4表示加入门店购物车，2表示立即购买，3表示开火拼团,5表示参与火拼团，6表示门店立即购买
+				var activeid = event.detail.activeid;
+				var skus = event.detail.skus;
+				UpdateSkus(source, activeid, skus);
+			});
+
+			function UpdateSkus(source, activeid, skus) {
+				self = plus.webview.currentWebview();
+				SkuInfo = {
+				selectedskuList: [], //选中的值
+				skuItemList: [], //当前存储的规格集合
+				skus: [],
+				source: 1, //1表示加入购物车，2表示立即购买，3表示火拼团
+				productId: null, //获取传过来的productId
+				activeId: '',
+				mobileExclusive: 0
+			};
+				SkuInfo.source = source;
+				storeid = 0;
+				if(activeid && (source == 4 || source == 6)) { //门店加入购物车
+					storeid = activeid;
+				} else if(source == 3 || source == 5) {
+					SkuInfo.activeId = activeid;
+				}
+
+				SkuInfo.productId = pid;
+				if(skus && skuitemlist) {
+					SkuInfo.skuItemList = skuitemlist;
+					SkuInfo.skus = skus;
+				} else {
+					var action = storeid == 0 ? 'getProductDetail' : 'getStoreProductDetail';
+					mui.ajax(fxshop.goUrl(action), {
+						dataType: 'json',
+						type: 'get',
+						timeout: 10000,
+						data: {
+							ProductID: SkuInfo.productId,
+							GradeId: 0,
+							StoreId: storeid
+						},
+						success: function(res) {
+							if(res.ErrorResponse != undefined) {
+								switch(res.ErrorResponse.ErrorCode) {
+									case 100: //商品已删除
+										fxshop.OpenWapWeb(apiURL + "Appshop/ProductDelete.aspx", "商品详情");
+										break;
+									case 1: //限时抢购等活动
+										fxshop.OpenWapWeb(res.ErrorResponse.ErrorMsg, "商品详情");
+										break;
+									default:
+										mui.toast(res.ErrorResponse.ErrorMsg);
+										break;
+								}
+								fxshop.closeModelPanel();
+								return;
+							}
+
+							//OpenWindows();
+							var result = res.Result == undefined ? res : res.Result;
+							SkuInfo.mobileExclusive = result.MobileExclusive;
+							if(result.ExStatus == 2 || result.Stock <= 0) { //已售罄
+								fxshop.addClass(document.getElementById("divcart"), "mui-hidden");
+								fxshop.removeClass(document.getElementById("divnopro"), "mui-hidden");
+							} else {
+								fxshop.removeClass(document.getElementById("divcart"), "mui-hidden");
+								fxshop.addClass(document.getElementById("divnopro"), "mui-hidden");
+							}
+
+							if(source != 2 && ((result.ActivityUrl != undefined && result.ActivityUrl.length > 0) || result.FightGroupActivityId > 0)) {
+
+								fxshop.closeModelPanel();
+								if(res.Result.FightGroupActivityId > 0) {
+									var activeId = res.Result.FightGroupActivityId;
+									fxshop.openVW("rushgroupdetail", {
+										"activeid": activeId
+									});
+
+								} else if(!(res.Result.ActivityUrl == null || res.Result.ActivityUrl == "" || res.Result.ActivityUrl == undefined) && !(res.Result.IsUnSale == "true")) {
+									var requesturl = apiURL + "Appshop/" + res.Result.ActivityUrl;
+									fxshop.OpenWapWeb(requesturl, '活动商品');
+
+								}
+								/*if(storeid > 0) {
+									ShowStoreProdduct(pid, storeid);
+								} else {
+									showProduct(pid);
+								}*/
+								return;
+							}
+
+							SkuInfo.skuItemList = result.SkuItem;
+							SkuInfo.skus = result.Skus;
+							document.getElementById("prosku").innerHTML = template('skuconent', {
+								ProductInfo: result
+							});
+							selDefaultImg = result.ImageUrl1;
+							updateSku();
+
+							self.show();
+							document.body.className = '';
+						},
+						error: function(ex) {
+							mui.toast(ex);
+						},
+						complete: function() {
+							if(source == 3) {
+								SkuInfo.activeId = activeid;
+								document.getElementById("btncart").innerText = "我要火拼";
+							} else if(source == 2 || source == 6) {
+								document.getElementById("btncart").innerText = "立即购买";
+							} else {
+								document.getElementById("btncart").innerText = "加入购物车";
+							}
+
+							mui(document).on("tap", "#skuclose", function() {
+								self.hide();
+							});
+						}
+					});
+
+				}
+			}
+		</script>
+	</body>
+
+</html>

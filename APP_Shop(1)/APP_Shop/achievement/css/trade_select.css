@@ -1,0 +1,143 @@
+.select_time{
+	width: 100%;
+	height: 1.33rem;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: 0 0.4rem;
+}
+.select_time_content{
+	width: 3.76rem !important;
+	height: 0.77rem !important;
+	border: 1px solid #8C8C8C !important;
+	color: #8F8F8F;
+	font-size: 0.35rem;
+	border-radius: 5px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	margin: 0 !important;
+	padding: 0 !important;
+	text-align: center;
+	background: none !important;
+}
+.select_time_div{
+	font-size: 0.35rem;
+	margin: 0 0.35rem;
+}
+.condition_select{
+	width: 100%;
+	height: auto;
+	background-color: white;
+	padding-left: 0.4rem;
+}
+.condition_select_content,.condition_select_content1{
+	width: 100%;
+	height: 1.35rem;
+	border-bottom: 1px solid #E3DEDE;
+	display: flex;
+	align-items: center;
+	font-size: 0.35rem;
+}
+.condition_select_content1{
+	border-bottom: none;
+	justify-content: space-between;	
+	padding-right: 0.4rem;
+}
+.condition_select_content_img{
+	width: 0.4rem;
+	height: 0.4rem;
+	margin-right: 0.33rem;
+	
+}
+.condition_select_content_span{
+	font-size: 0.4rem;
+}
+.condition_select_content_span1{
+	font-size: 0.4rem;
+	color: #238DF4;
+}
+.condition_select_content_input{
+	/*margin-left: 1.13rem;*/
+}
+.condition_select_content_input input{
+	border: none;
+	margin: 0;
+	padding: 0;
+}
+.condition_select_content_span2{
+	display: inline-block;
+	width: 2.6rem;
+}
+.condition_select_content1 img{
+	width: 0.17rem;
+	height: 0.29rem;
+}
+.select_choice{
+	width: 100%;
+	height: 1.33rem;
+	padding: 0 0.4rem;
+	display: flex;
+	align-items: center;
+}
+.select_choice_content{
+	width: 50%;
+	font-size: 0.35rem;
+	display: flex;
+	align-items: center;
+}
+.select_choice_content:last-child{
+	padding-left: 0.8rem;
+}
+.select_choice_content img{
+	width: 0.45rem;
+	height: 0.45rem;
+	margin-left: 0.27rem;
+}
+.condition_select_content1_left{
+	width: 6.61rem;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+}
+.select_button{
+	width: 100%;
+	padding: 0 0.4rem;
+	margin-top: 0.91rem;
+	height: 1.23rem;
+}
+.select_button button{
+	width: 100%;
+	height: 100%;
+	background-color: #238DF4;
+	color: white;
+	font-size: 0.4rem;
+}
+.time_choice{
+	width: 100%;
+	padding: 0 0.4rem;
+	display: flex;
+	align-items: center;
+	font-size: 0.35rem;
+	padding-top: 0.43rem;
+}
+.time_choice img{
+	width: 0.35rem;
+	height: 0.35rem;
+	margin-right: 0.13rem;
+}
+
+/*日期选择器*/
+.mui-dtpicker-header,.mui-poppicker-header{
+	background-color: #238DF4;
+}
+.mui-dtpicker-header button,.mui-poppicker-header button{
+	background-color: #238DF4;
+	color: white;
+}
+.mui-dtpicker-title{
+	display: none;
+}
+.mui-dtpicker-body,.mui-picker{
+	background-color: white;
+}

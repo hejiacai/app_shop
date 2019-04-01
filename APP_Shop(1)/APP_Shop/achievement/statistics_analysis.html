@@ -1,0 +1,249 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title>统计分析</title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="../css/mui.min.css" rel="stylesheet" />
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<link href="../css/mui.min.css" rel="stylesheet" />
+		<link rel="stylesheet" href="../css/style.css" />
+		<link rel="stylesheet" href="css/statistics_analysis.css" />
+	</head>
+
+	<body>
+		<header class="mui-bar mui-bar-nav" id="header">
+			<div class="home-header">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<h1 class="mui-title">统计分析</h1>
+			</div>
+		</header>
+		<div class="mui-content">
+		    <div class="data_title">
+		    	<span>日</span>
+		    	<span>周</span>
+		    	<span class="data_title_active">月</span>
+		    </div>
+		    <div class="data_content">
+		    	<span class="data_content_span">明日/下周/下月预期</span>
+		    	<span>￥30000元</span>
+		    </div>
+		    <div id="main" ></div>
+		    <div class="statistics_nav">
+		    	<div class="statistics_nav_content statistics_nav_content_active">交易量</div>
+		    	<div class="statistics_nav_content">分润</div>
+		    	<div class="statistics_nav_content">商户数量</div>
+		    	<div class="statistics_nav_content">激活数量</div>
+		    </div>
+		</div>
+		<script type="text/javascript" src="../js/flexible.debug.js" ></script>
+		<script type="text/javascript" src="../js/flexible_css.debug.js" ></script>
+		<script src="../js/mui.min.js"></script>
+		<script type="text/javascript" src="../js/jquery-1.8.3.min.js" ></script>
+		<script type="text/javascript" src="../js/app.js" ></script>
+		<script type="text/javascript" src="../js/echarts.min.js" ></script>
+		<script type="text/javascript">
+			mui.init();
+			var datas;
+			var Type=1;
+			var DataType=3;
+			mui.plusReady(function(){
+				var myChart = echarts.init(document.getElementById('main'));
+				myChart.showLoading();
+				mui.ajax('http://pos.wulilu.cn/AppShop/PostApi.ashx',{
+					dataType: 'json',
+					type: 'post',
+					async:false,
+					data:{
+						action:	'GetStatisticalAnalysis',
+						sessionid:'c2a0c65fdd414216bf3ae93b79cddb25',
+						DataType:DataType,
+						Type:Type,
+					},
+					success:function(data){
+						console.info(JSON.stringify(data));
+						datas=data.Result;
+						myChart.hideLoading();
+						myChart.setOption({
+							xAxis: {
+					            data: datas.NameList
+					        },
+					        series: [{
+					            // 根据名字对应到相应的系列
+					            name: '交易量',
+					            data: datas.ValueList
+					        }]
+						})
+					},
+					error:function(xhr,type,errorThrown){
+						mui.toast("网络请求超时，请重新加载");
+					}
+				})
+				
+				
+				
+				
+				
+			mui('.statistics_nav').on('tap','.statistics_nav_content',function(){
+				$(this).addClass('statistics_nav_content_active').siblings().removeClass('statistics_nav_content_active');
+				Type= ($(this).index())+1;
+				var name;
+				switch(Type){
+					case 1:
+						name='交易量';
+						break;
+					case 2:
+						name='分润';
+						break;
+					case 3:
+						name='商户数量';
+						break;
+					case 4:
+						name='激活数量';
+						break;
+				}
+				myChart.showLoading();
+				mui.ajax('http://pos.wulilu.cn/AppShop/PostApi.ashx',{
+					dataType: 'json',
+					type: 'post',
+					data:{
+						action:	'GetStatisticalAnalysis',
+						sessionid:'c2a0c65fdd414216bf3ae93b79cddb25',
+						DataType:DataType,
+						Type:Type,
+					},
+					success:function(data){
+						console.info(JSON.stringify(data));
+						myChart.hideLoading();
+						datas=data.Result;
+						if(datas.NameList.length==0 || datas.ValueList.length==0){
+							mui.toast('暂无数据');
+						}
+						myChart.setOption({
+							xAxis: {
+					            data: datas.NameList
+					        },
+					        series: [{
+					            // 根据名字对应到相应的系列
+					            name: name,
+					            data: datas.ValueList
+					        }]
+						})
+					},
+					error:function(xhr,type,errorThrown){
+						mui.toast("网络请求超时，请重新加载");
+					}
+				})
+			})
+			mui('.data_title').on('tap','span',function(){
+				$(this).addClass('data_title_active').siblings().removeClass('data_title_active');
+				DataType= ($(this).index())+1;
+				myChart.showLoading();
+				mui.ajax('http://pos.wulilu.cn/AppShop/PostApi.ashx',{
+					dataType: 'json',
+					type: 'post',
+					data:{
+						action:	'GetStatisticalAnalysis',
+						sessionid:'c2a0c65fdd414216bf3ae93b79cddb25',
+						DataType:DataType,
+						Type:Type,
+					},
+					success:function(data){
+						console.info(JSON.stringify(data));
+						datas=data.Result;
+						myChart.hideLoading();
+						myChart.setOption({
+							xAxis: {
+					            data: datas.NameList
+					        },
+					        series: [{
+					            // 根据名字对应到相应的系列
+					            data: datas.ValueList
+					        }]
+						})
+					},
+					error:function(xhr,type,errorThrown){
+						mui.toast("网络请求超时，请重新加载");
+					}
+				})
+			})
+			
+			 // 指定图表的配置项和数据
+	        var option = {
+	            tooltip: {},
+	            xAxis: {
+	            	type: 'category',
+	                data: datas.NameList,
+//					axisLabel:{
+////						     interval:0,//横轴信息全部显示
+////						     rotate:-30,//-30度角倾斜显示
+//						}
+	            },
+	            itemStyle: {
+		            // 点的颜色。
+		            color: '#C4E7CE'
+		        },
+		        // 高亮样式。
+		        emphasis: {
+		            itemStyle: {
+		                // 高亮时点的颜色。
+		                color: '#4DB367'
+		            }
+		        },
+	             yAxis : {
+                    type : 'value',
+                    axisLabel:{
+			            margin: 4,
+			            formatter: function (value, index) {
+			                if (value >= 1000&& value < 10000000) {
+			                    value = value / 10000 + "万";
+			                }else if(value<1000 && value>=0){
+			                	value=value+'元'
+			                }else if (value >= 10000000) {
+			                    value = value / 10000000 + "千万";
+			                }
+			                return value;
+			            }
+                    },
+                },
+                grid: {
+			        left: 45
+			    },
+	            series: [{
+	                name: '交易量',
+	                type: 'bar',
+	                data: datas.ValueList,
+	                itemStyle: {
+	                	
+						normal: {
+							label: {
+								show: true, //开启显示
+								position: 'top', //在上方显示
+								textStyle: { //数值样式
+									fontSize: 16, 
+									color: '#55B26C',
+								}
+							}
+						},
+						
+					},
+	            }],
+//	            dataZoom:{
+//			       realtime:true, //拖动滚动条时是否动态的更新图表数据
+//			       height:25,//滚动条高度
+//			       start:10,//滚动条开始位置（共100等份）
+//			       end:65//结束位置（共100等份）
+//			    }  
+	        };
+
+	
+	        // 使用刚指定的配置项和数据显示图表。
+	        myChart.setOption(option);
+			})
+			
+		</script>
+	</body>
+
+</html>

@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title>周边门店</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<link rel="stylesheet" href="css/mui.min.css">
+
+		<script src="js/mui.min.js"></script>
+		<script src="js/app.js"></script>
+		<script src="js/template.js"></script>
+		<script type="text/javascript" src="js/flexible.debug.js"></script>
+		<script type="text/javascript" src="js/flexible_css.debug.js"></script>
+
+		<link rel="stylesheet" href="css/style.css" />
+		<link rel="stylesheet" href="css/store.css">
+	</head>
+
+	<body>
+ 	
+		<header class="mui-bar mui-bar-nav" id="header">
+			<div class="home-header">
+			<div class="store-address"><span class="iconfont location"></span><span id="homeaddress">湖南文化大厦</span></div>
+			<span class="store-search iconfont -search" id="search-btn"></span>
+			</div>
+		</header>
+		
+		
+		<div class="mui-content bg-gray" id="content">
+			<div class="storetitle">
+				<i></i>
+				<span>周边门店</span>
+				<i class="store-right"></i>
+			</div>
+			<div class="storelist bg-white overflow" id="storelist">
+
+			</div>
+		</div>
+	</body>
+
+	<script id="tempstorelist" type="text/html">
+		{{each Models as item}}
+		<div class="storeInfo overflow">
+			<div class="storeinfo-l">
+				<div class="store-img"><img src="{{item.StoreImages}}" class="guide-img"></div>
+			</div>
+			<div class="storeinfo-r">
+
+				<div class="storeinfo-content" data-id="{{item.StoreId}}">
+					<div class="storeinfo-txt store-title" onclick="openstoredetail(this)" data-id="{{item.StoreId}}">
+						<span class="storeinfo-txt-l stroename">{{item.StoreName}}</span>
+						<span class="storeinfo-txt-r store-jianshuTxt"><span class="store-count">{{item.OnSaleNum}}</span>件商品</span>
+					</div>
+
+					<div class="storeinfo-txt address-price" onclick="openstoredetail(this)" data-id="{{item.StoreId}}">
+
+						<div class="storeinfo-txt-l address">
+
+							<div class="storelist-name"><span class="iconfont location distance storeinfo-icon-colour "></span>{{item.AddressSimply}}</div>
+							<span class="Distance">{{item.Distance}}</span>
+						</div>
+
+						<div class="storeinfo-txt-r store-Full">
+
+							{{if item.Delivery.MinOrderPrice>0}} 满 <span class="size-color">¥{{item.Delivery.MinOrderPrice}}</span>起送 {{/if}}
+
+						</div>
+					</div>
+					<div class="storeinfo-txt line40 Delivery-style">
+						<div class="mr24">{{if item.Delivery.IsPickeupInStore}}<span class="iconfont right storeinfo-icon-colour  {{item.Delivery.IsPickeupInStore?'active':''}}"></span>自提&nbsp;{{/if}}</div>
+						<div class="mr24">{{if item.Delivery.IsSupportExpress}}<span class="iconfont right storeinfo-icon-colour {{item.Delivery.IsSupportExpress?'active':''}}"></span>快递&nbsp;{{/if}}</div>
+						<div class="mr24">{{if item.Delivery.IsStoreDelive}}<span class="iconfont right storeinfo-icon-colour {{item.Delivery.IsStoreDelive?'active':''}}"></span>门店配送{{/if}}</div>
+						
+					</div>
+					{{if item.Activity.ActivityCount>0}}
+					<div class="storeinfo-txt line40">
+						<div class="huodong-listHeight" id="huodong_{{item.StoreId}}">
+						{{if item.Activity.FullAmountReduceList.length>0}}
+						<div class="storeinfo-txt-l"><i class="iconfont badge_jian_ jian-icon youhui-icon"></i>{{item.Activity.FullAmountReduceList[0].ActivityName}}</div>
+						{{/if}}
+						{{if item.Activity.FullAmountSentGiftList.length>0}}
+						<div class="storeinfo-txt-l"><i class="iconfont badge_song_ song youhui-icon"></i>{{item.Activity.FullAmountSentGiftList[0].ActivityName}}</div>
+						{{/if}}
+						{{if item.Activity.FullAmountSentFreightList.length>0}}
+						<div class="storeinfo-txt-l"><i class="iconfont badge_mian_ mian youhui-icon"></i>{{item.Activity.FullAmountSentFreightList[0].ActivityName}}</div>
+						{{/if}}
+						</div>
+						
+						{{if item.Activity.ActivityCount>1}}
+						
+						
+						<div class="storeinfo-txt-r">
+							<div class="huodong-count" onclick="showDiv({{item.StoreId}})">
+								{{item.Activity.ActivityCount}}个活动<span class="iconfont icon__arrow_down"></span>
+							</div>
+						</div>
+						
+							
+							<div class="huodong-list" id="{{item.StoreId}}">
+									{{each item.Activity.FullAmountReduceList as activeitem}}
+
+									<p><i class="iconfont badge_jian_  jian-icon youhui-icon"></i>{{activeitem.ActivityName}}</p>
+			
+									{{/each}}
+									
+									{{each item.Activity.FullAmountSentGiftList as activeitem}}
+			
+									<p><i class="iconfont badge_song_ song youhui-icon"></i>{{activeitem.ActivityName}}</p>
+			
+									{{/each}} 
+									
+									{{each item.Activity.FullAmountSentFreightList as activeitem}}
+			
+									<p><i class="iconfont badge_mian_ mian youhui-icon"></i>{{activeitem.ActivityName}}</p>
+			
+									{{/each}}
+							</div>
+							{{/if}}
+						
+					</div>
+					{{/if}}
+					</div>
+
+					<div class="storeinfo-pro">
+						{{each item.ProductList as product}}
+						<div class="storeinfo-pro-info">
+							<div class="pro-img" data-storeid="{{item.StoreId}}" data-pid="{{product.ProductId}}" onclick="openprodcutdetail(this)"><img class="img-width" src="{{product.ThumbnailUrl220}}" /></div>
+							<div class="pro-txt">
+								<span class="pro-price mui-left"><span>¥</span>{{product.SalePrice}}</span>
+								<span class="iconfont add_ add  mui-right fr" onclick="OpenStoreSku({{product.ProductId}},4,{{item.StoreId}})"></span>
+							</div>
+						</div>
+						{{/each}}
+						</div>
+				</div>
+			</div>
+			{{/each}}
+	</script>
+	<script>
+		mui.init();
+		var immersedIos=isIphoneX();
+		mui.plusReady(function() {
+			//判断是否是iphone X 
+				if(immersedIos){
+					document.getElementById("header").className+=" Xheader"; 
+					document.getElementById("content").className+=" Xmui-content";
+				} 	 
+			CurrentView = plus.webview.currentWebview();
+
+			setTimeout(function() {
+				loadStoreList();
+				BindEvent();
+			    loadAddress();
+
+			}, 3000);
+
+		});
+				//更新城市
+		document.addEventListener("changeaddress", function(event) {
+				loadStoreList();
+				loadAddress();
+
+		});
+
+		// 绑定事件
+		function BindEvent() {
+			//重新定位
+			document.getElementById("homeaddress").addEventListener("tap", function() {
+				fxshop.openVW("nearstore",{'pageid':'nearstorelist'});
+			});
+
+			document.getElementById('search-btn').addEventListener('tap', function() {
+				fxshop.openVW('search',{
+					'nearstore':'nearstore'
+				});
+			})
+
+		}
+		
+		function OpenStoreSku(pid,socurce,storeid){
+			if(!fxshop.isLogin()){
+				showLogin();
+				return;
+			}
+			ClickCart(pid,socurce,storeid);
+		}
+
+		function showDiv(storeid) {
+			var huodongbox = document.getElementById(storeid).style.display;
+			if(huodongbox == '' || huodongbox == 'none') {
+				document.getElementById(storeid).style.display = 'block';
+				document.getElementById('huodong_' + storeid).style.display = 'none';
+			} else {
+				document.getElementById(storeid).style.display = 'none';
+				document.getElementById('huodong_' + storeid).style.display = 'block';
+			}
+		}
+
+		//设置当前地址
+		function loadAddress() {
+			var siteinfo = SiteSetting.getSiteInfo();
+			if(siteinfo.Location) {
+				document.getElementById("homeaddress").innerText = siteinfo.Location.address;
+			}
+		}
+
+		var pageindex = 1;
+		var pagesize = 100;
+
+		function loadStoreList() {
+			var siteinfo = SiteSetting.getSiteInfo();
+			if(siteinfo.Location) {
+				mui.ajax(fxshop.goUrl('GetStoreList'), {
+					dataType: "json",
+					type: "post",
+					timeout: 10000,
+					data: {
+						Lan: siteinfo.Location.lat,
+						Lng: siteinfo.Location.lng,
+						PageIndex: pageindex,
+						PageSize: pagesize
+					},
+					success: function(res) {
+						if(res.ErrorResponse) {
+							mui.toast(res.ErrorResponse.ErrorMsg);
+							return;
+						}
+						document.getElementById("storelist").innerHTML = template("tempstorelist", res.Result);
+
+					},
+					error: function(ex) {
+						mui.toast(ex);
+					}
+
+				});
+			}
+
+		}
+
+//		setTimeout(function() {
+//			var swiper = new Swiper('#swiper1', {
+//				loop: true,
+//				autoplay: 3000,
+//				pagination: '.swiper-pagination'
+//			});
+//		}, 2000);
+
+		//打开但店铺首页
+		function openstoredetail(obj) {
+			var storeid = obj.dataset.id;
+			mui.fire(plus.webview.getWebviewById(plus.webview.getLaunchWebview().id), "updateMenu", {
+				"href": "storehome1.html",
+				"storeid": storeid
+			});
+
+			//fxshop.openVW("storehome",{'storeid':storeid});
+		}
+
+		//打开产品详情页
+		function openprodcutdetail(obj) {
+			var storeid = obj.dataset.storeid;
+			var pid = obj.dataset.pid;
+
+			ShowStoreProdduct(pid, storeid);
+		}
+	</script>
+
+</html>

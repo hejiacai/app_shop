@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title>首页</title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">	
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<link rel="stylesheet" href="css/mui.min.css">
+		<link rel="stylesheet" href="css/swiper.min.css">
+		<link rel="stylesheet" href="css/mescroll.min.css">
+
+		<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/index.css">
+	</head>
+	<style>
+ 
+		.mui-bar .mui-icon {
+			padding-top: 0;
+		}
+	</style>
+
+	<body>
+		<header class="mui-bar mui-bar-nav">
+					
+			<div class="header" id="header">
+				<div class="sign_set">
+					<div class="signbox fl" id="userhone_sign">
+						<div class="iconfont icon_3 sign"></div>
+						<span>客服</span>
+					</div>
+					<div class="user_center">颐锦天辰</div>
+					<div class="set fr">
+						<div class="notice iconfont icon_7" id="messageimg"></div>
+					</div>
+				</div>
+			<div class="sumInfoBox">
+								<div class="Collsum_colltotal">
+									
+								<div id="sumMonthOrder" class="Collsum fl">
+									<em>当月交易量(万)</em>
+									<span id="Collection_num">0</span>
+									
+								</div>
+								<div id="sumMonthReflesh" class="colltotal fr">
+									<em>当月分润(元)</em>
+									<span id="advice_num">0.00</span>
+									
+								</div>
+							</div>
+								</div>
+							<div class="userInfoBox">
+								<div class="Collection_Consultation">
+										
+									<div id="showFavProduct" class="Collection fl">
+										<em>当月激活数量</em>
+										<span id="Collection_num">0</span>
+										
+									</div>
+									<div id="advice" class="Consultation fr">
+										<em>当前团队人数</em>
+										<span id="advice_num">0</span>
+										
+									</div>
+								</div>
+			</div>
+			</div>
+			
+		</header>
+
+		<div class="mui-content">
+			<div id="mescroll" class="mescroll">
+				<div id="webview">
+				</div>
+				<div class="pd24 overflow">
+					<div class="home-title mui-text-center"><img class="love-icon" src="images/icon_like.png">猜你喜欢</div>
+					<div class="prolist overflow" id="homeprolist">
+
+					</div>
+					
+				</div>
+			</div>
+		</div>
+	</body>
+	<script src="js/mui.min.js"></script>
+	<script src="js/mescroll.min.js"></script>
+	<script src="js/app.js"></script>
+	<script src="js/template.js"></script>
+	<script type="text/javascript" src="js/flexible.debug.js"></script>
+	<script type="text/javascript" src="js/flexible_css.debug.js"></script>
+	<script type="text/javascript" src="js/swiper.min.js"></script>
+	<script src="js/home.js"></script>
+	<!--
+	描述：商品列表
+-->
+	<script id="prodata" type="text/html">
+		<ul class="overflow">
+			{{each ProductsList as product}}
+			<li class="prolist-li">
+				<div class="prolist-info mb24 bg-white">
+
+					<div class="pro-pic" data-pid="{{product.pid}}">
+						<img src="{{product.pic}}">
+					</div>
+
+					<div class="pro-txt">
+						<div class="pro-name">{{product.name}}</div>
+						<div class="pro-des">
+							<div class="pro-price">¥<span>{{product.price}}</span></div>
+							<div class="pro-add iconfont icon__plus" onclick="OpenSkus({{product.pid}})" data-pid=""></div>
+						</div>
+					</div>
+
+				</div>
+			</li>
+			{{/each}}
+		</ul>
+
+	</script>
+
+	<!--
+	描述：轮播图模板
+-->
+	<script id="temp9" type="text/html">
+		{{if dataset.length==1}}
+		<div class="editeCss" data-linkType="{{dataset[0].linkType}}" data-link="{{dataset[0].link}}" data-title="{{dataset[0].showtitle}}"><img class="guide-img" src="{{ShowSiteLink(dataset[0].pic)}}" /></div>
+		{{else}}
+		<div class="swiper-container" id="swiper{{controlId}}">
+			<div class="swiper-wrapper">
+				{{each dataset as item}}
+				<div class="swiper-slide editeCss" data-linkType="{{item.linkType}}" data-link="{{item.link}}" data-title="{{item.showtitle}}"><img class="guide-img" src="{{ShowSiteLink(item.pic)}}" /></div>
+				{{/each}}
+			</div>
+			<div class="swiper-pagination"></div>
+		</div>
+		{{/if}}
+	</script>
+
+	<!--
+	描述：导航组图标
+-->
+
+	<script id="temp8" type="text/html">
+		<div class="mui-row bg-white">
+			{{each dataset as item}}
+			<div class="mui-col-sm-3 mui-col-xs-3 nagitive-icon editeCss" data-linkType="{{item.linkType}}" data-link="{{item.link}}" data-title="{{item.showtitle}}">
+				<a href="#">
+					<img src="{{ShowSiteLink(item.pic)}}" />
+				</a>
+				<p>{{item.showtitle}}</p>
+			</div>
+			{{/each}}
+		</div>
+	</script>
+
+
+	<script id="temp20" type="text/html">
+		<div class="group20">
+			<div class="group-t editeCss" data-linkType="{{dataset[0].linkType}}" data-link="{{dataset[0].link}}" data-title="{{dataset[0].title}}">
+				<a href="#"><img src="{{dataset[0].pic}}" /></a>
+			</div>
+			<div class="group-content">
+				<div class="group-l editeCss" data-linkType="{{dataset[1].linkType}}" data-link="{{dataset[1].link}}" data-title="{{dataset[1].title}}">
+					<a href="#"><img src="{{ShowSiteLink(dataset[1].pic)}}" /></a>
+				</div>
+				<div class="group-r">
+					<div class="group-r-t editeCss bd-b" data-linkType="{{dataset[2].linkType}}" data-link="{{dataset[2].link}}" data-title="{{dataset[2].title}}">
+						<a href="#"><img src="{{ShowSiteLink(dataset[2].pic)}}" /></a>
+					</div>
+					<div class="group-r-b overflow">
+						<div class="group-r-50 editeCss bd-r" data-linkType="{{dataset[3].linkType}}" data-link="{{dataset[3].link}}" data-title="{{dataset[3].title}}">
+							<a href="#"><img src="{{ShowSiteLink(dataset[3].pic)}}" alt="{{dataset[3].title}}" /></a>
+						</div>
+						<div class="group-r-50 editeCss" data-linkType="{{dataset[4].linkType}}" data-link="{{dataset[4].link}}" data-title="{{dataset[4].title}}">
+							<a href="#"><img src="{{ShowSiteLink(dataset[4].pic)}}" /></a>
+						</div>
+					</div>
+				</div>
+			</div>
+
+		</div>
+	</script>
+
+	<script id="temp21" type="text/html">
+		<div class="group21">
+			<div class="group-t editeCss" data-linkType="{{dataset[0].linkType}}" data-link="{{dataset[0].link}}" data-title="{{dataset[0].title}}">
+				<a><img src="{{ShowSiteLink(dataset[0].pic)}}" /></a>
+			</div>
+			<div class="group-content">
+				<div class="overflow">
+					
+			
+				<div class="group-l w40 bd-r editeCss" data-linkType="{{dataset[1].linkType}}" data-link="{{dataset[1].link}}" data-title="{{dataset[1].title}}">
+					<a><img src="{{ShowSiteLink(dataset[1].pic)}}"></a>
+				</div>
+				<div class="group-l bd-r editeCss" data-linkType="{{dataset[2].linkType}}" data-link="{{dataset[2].link}}" data-title="{{dataset[2].title}}">
+					<a><img src="{{ShowSiteLink(dataset[2].pic)}}"></a>
+				</div>
+				<div class="group-l editeCss" data-linkType="{{dataset[3].linkType}}" data-link="{{dataset[3].link}}" data-title="{{dataset[3].title}}">
+					<a><img src="{{ShowSiteLink(dataset[3].pic)}}"></a>
+				</div>
+					</div>
+					<div class="overflow">
+				<div class="group-l w40 bd-r bd-t editeCss" data-linkType="{{dataset[4].linkType}}" data-link="{{dataset[4].link}}" data-title="{{dataset[4].title}}">
+					<a><img src="{{ShowSiteLink(dataset[4].pic)}}"></a>
+				</div>
+				<div class="group-l bd-r bd-t editeCss" data-linkType="{{dataset[5].linkType}}" data-link="{{dataset[5].link}}" data-title="{{dataset[5].title}}">
+					<a><img src="{{ShowSiteLink(dataset[5].pic)}}"></a>
+				</div>
+				<div class="group-l bd-t editeCss" data-linkType="{{dataset[6].linkType}}" data-link="{{dataset[6].link}}" data-title="{{dataset[6].title}}">
+					<a><img src="{{ShowSiteLink(dataset[6].pic)}}"></a>
+				</div>
+				</div>
+			</div>
+		</div>
+	</script>
+
+	<script id="temp22" type="text/html">
+		<div class="group22">
+			<div class="editeCss" data-linkType="{{dataset[0].linkType}}" data-link="{{dataset[0].link}}" data-title="{{dataset[0].title}}"><img class="guide-img" src="{{ShowSiteLink(dataset[0].pic)}}" /></div>
+			<ul>
+				{{each dataset as item index}} {{if index!=0}}
+				<li class="group-l bd-r  bd-t editeCss" data-linkType="{{item.linkType}}" data-link="{{item.link}}" data-title="{{item.title}}"><img src="{{ShowSiteLink(item.pic)}}" /></li>
+				{{/if}} {{/each}}
+			</ul>
+			<div class="mui-clearfix"></div>
+		</div>
+	</script>
+
+	<script id="temp23" type="text/html">
+		<div class="group23">
+			<div class="editeCss" data-linkType="{{dataset[0].linkType}}" data-link="{{dataset[0].link}}" data-title="{{dataset[0].title}}"><img class="guide-img" src="{{ShowSiteLink(dataset[0].pic)}}" /></div>
+			<ul>
+				<li class="group-l bd-r editeCss" data-linkType="{{dataset[1].linkType}}" data-link="{{dataset[1].link}}" data-title="{{dataset[1].title}}"><img src="{{ShowSiteLink(dataset[1].pic)}}" /></li>
+				<li class="group-l bd-r editeCss" data-linkType="{{dataset[2].linkType}}" data-link="{{dataset[2].link}}" data-title="{{dataset[2].title}}"><img src="{{ShowSiteLink(dataset[2].pic)}}" /></li>
+				<li class="group-l bd-r bd-t editeCss" data-linkType="{{dataset[3].linkType}}" data-link="{{dataset[3].link}}" data-title="{{dataset[3].title}}"><img src="{{ShowSiteLink(dataset[3].pic)}}" /></li>
+				<li class="group-l bd-r bd-t editeCss" data-linkType="{{dataset[4].linkType}}" data-link="{{dataset[4].link}}" data-title="{{dataset[4].title}}"><img src="{{ShowSiteLink(dataset[4].pic)}}" /></li>
+			</ul>
+			<ul class="group-b">
+				<li class="group-b-l bd-r editeCss" data-linkType="{{dataset[5].linkType}}" data-link="{{dataset[5].link}}" data-title="{{dataset[5].title}}"><img src="{{ShowSiteLink(dataset[5].pic)}}" /></li>
+				<li class="group-b-l bd-r editeCss" data-linkType="{{dataset[6].linkType}}" data-link="{{dataset[6].link}}" data-title="{{dataset[6].title}}"><img src="{{ShowSiteLink(dataset[6].pic)}}" /></li>
+				<li class="group-b-l bd-r bd-t editeCss" data-linkType="{{dataset[7].linkType}}" data-link="{{dataset[7].link}}" data-title="{{dataset[7].title}}"><img src="{{ShowSiteLink(dataset[7].pic)}}" /></li>
+				<li class="group-b-l bd-r bd-t editeCss" data-linkType="{{dataset[8].linkType}}" data-link="{{dataset[8].link}}" data-title="{{dataset[8].title}}"><img src="{{ShowSiteLink(dataset[8].pic)}}" /></li>
+			</ul>
+			<div class="mui-clearfix"></div>
+		</div>
+	</script>
+
+	<script id="temp24" type="text/html">
+		<div class="group24">
+			<img class="guide-img editeCss" src="{{ShowSiteLink(dataset[0].pic)}}" data-linkType="{{dataset[0].linkType}}" data-link="{{dataset[0].link}}" data-title="{{dataset[0].title}}" />
+		</div>
+	</script>
+	<script id="temp11" type="text/html">
+		<div class="group11" style="height:{{dataset/2}}px;overflow:hidden;">
+		</div>
+	</script>
+	
+</html>                                                                                                                      

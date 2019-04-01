@@ -1,0 +1,93 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title>代理商管理</title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<link href="../css/mui.min.css" rel="stylesheet" />
+		<link rel="stylesheet" href="../css/mui.picker.min.css" />
+		<link rel="stylesheet" href="../css/mui.poppicker.css" />
+		<link rel="stylesheet" href="../css/style.css" />
+		<link rel="stylesheet" href="css/trade_select.css" />
+		<script type="text/javascript" src="../js/flexible.debug.js" ></script>
+		<script type="text/javascript" src="../js/flexible_css.debug.js" ></script>
+	</head>
+
+	<body>
+		<header class="mui-bar mui-bar-nav" id="header">
+			<div class="home-header">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<h1 class="mui-title">代理商管理</h1>
+			</div>
+		</header>
+		<div class="mui-content">
+			<div class="condition_select">
+				<div class="condition_select_content">
+					<img src="../images/cxtj.png" class="condition_select_content_img"/>
+					<span class="condition_select_content_span">查询条件</span>
+					<span class="condition_select_content_span1">(非必填)</span>
+				</div>
+				<div class="condition_select_content">
+					<span class="condition_select_content_span2">姓名 </span>
+					<div class="condition_select_content_input">
+						<input type="text" placeholder="请输入姓名" id="name"/>
+					</div>
+				</div>
+				<div class="condition_select_content">
+					<span class="condition_select_content_span2">平台帐号</span>
+					<div class="condition_select_content_input">
+						<input type="number" placeholder="请输入平台帐号" id="num"/>
+					</div>
+				</div>
+			</div>
+			<div class="select_button">
+				<button type="button" id="select_button" >查询</button>
+			</div>
+		</div>
+		
+		
+		
+		<script src="../js/mui.min.js"></script>
+		<script type="text/javascript" src="../js/mui.picker.min.js" ></script>
+		<script type="text/javascript" src="../js/mui.poppicker.js" ></script>
+		<script type="text/javascript" src="../js/jquery-1.8.3.min.js" ></script>
+		<script type="text/javascript" src="../js/app.js" ></script>
+		<script type="text/javascript">
+			mui.init();
+			//判断是否选择0为未选，1为已选
+			var select_type=0;
+//			mui('.condition_select_content').on('input','input',function(){
+//				var name=$('#name').val();
+//				var num=$('#num').val();
+//				if(name!='' && num!=''){
+//					$('#select_button').removeAttr('disabled');
+//				}else{
+//					$('#select_button').attr('disabled','disabled');
+//				}
+//			})
+			document.getElementById("select_button").addEventListener('tap',function(){
+				mui.ajax('http://pos.wulilu.cn/AppShop/PostApi.ashx?action=GetProxyQuery',{
+					dataType: 'json',
+					type: 'post',
+					timeout: 10000,
+					data:{
+						sessionid:'c2a0c65fdd414216bf3ae93b79cddb25',
+						pageIndex:1
+					},
+					success:function(data){
+						console.info(JSON.stringify(data));
+						var datas=data.Result;
+						fxshop.openVW('agent_select_result',{datas:datas});
+					},
+					error:function(xhr,type,errorThrown){
+						mui.toast("网络请求超时，请重新加载");
+					}
+				})
+			})
+		</script>
+	</body>
+
+</html>

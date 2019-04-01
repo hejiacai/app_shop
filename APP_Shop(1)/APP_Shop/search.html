@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title>搜索历史记录</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<link rel="stylesheet" href="css/mui.min.css">
+		<link rel="stylesheet" href="css/style.css" />
+		<link rel="stylesheet" href="css/search.css" />
+		<script type="text/javascript" src="js/flexible.debug.js"></script>
+		<script type="text/javascript" src="js/flexible_css.debug.js"></script>
+		<script type="text/javascript" src="js/mui.min.js"></script>
+		<script type="text/javascript" src="js/app.js"></script>
+		<script type="text/javascript" src="js/template.js"></script>
+	</head>
+
+	<body>
+		<header class="mui-bar mui-bar-nav" id="header">
+			<div class="home-header">
+				<form onsubmit="return false;">
+					<div class="search-div">
+						<div class="mui-input-row mui-search">
+							<input type="search" class="mui-input-clear" placeholder="输入关键字" id="keywordsText">
+						</div>
+					</div>
+
+					<span class="quxiao" id="quxiao">取消</span>
+				</form>
+			</div>
+		</header>
+
+		<div class="mui-content" id="content">
+			<div class="searchlslist ml24" id="search-result">
+
+			</div>
+
+			<div class="delete-all" id="delete-all">删除全部</div>
+		</div>
+
+	</body>
+
+	<script>
+		var keywords = '',
+			KeyWordList = new Array(),
+			keywordsText = document.getElementById('keywordsText'),
+			keywordstr = localStorage.getItem('KeyWordList'),
+			siteinfo = SiteSetting.getSiteInfo();
+		var StoreStatus = siteinfo.Status;
+		var immersedIos=isIphoneX();
+		if(keywordstr != null && keywordstr != undefined && keywordstr != "") {
+			KeyWordList = keywordstr.split(",");
+		}
+
+		mui.plusReady(function() {
+			//判断是否是iphone X 
+			if(immersedIos){
+				document.getElementById("header").className+=" Xheader"; 
+				document.getElementById("content").className+=" Xmui-content";
+			} 	 
+			var self = plus.webview.currentWebview();
+			var nearstore = self.nearstore;
+			document.getElementById("search-result").innerHTML = template('KeyList', {
+				'KeyWordList': KeyWordList
+			});
+			document.addEventListener("keyup", function(event) {
+				if((event || window.event).keyCode == 13) {
+					keywordsText.blur();
+					keywords = keywordsText.value;
+					if(keywords != '') {
+						keywords = keywordsText.value;
+						if(KeyWordList.length > 0) {
+							KeyWordList.forEach(function(items, index, array) {
+								if(array[index] == keywords) {
+									array.splice(index, 1);
+									return;
+								}
+							});
+							KeyWordList.push(keywords);
+							localStorage.setItem('KeyWordList', KeyWordList.join(","));
+						} else {
+							KeyWordList.push(keywords);
+							localStorage.setItem('KeyWordList', KeyWordList.join(","));
+						}
+						
+						if(StoreStatus == 'goToStore') {
+							fxshop.openVW('search-result', {
+								'keywords': keywords,
+								'storeId': localStorage.getItem('DefaultStorid')
+							});
+						} else if(nearstore == 'nearstore'|| StoreStatus == 'storeList') {
+							fxshop.openVW('proStroeInfo', {
+								'keywords': keywords
+							});
+						}else {
+							fxshop.openVW('search-result', {
+								'keywords': keywords
+							});
+						}
+
+					}
+
+				}
+
+			});
+
+			if(KeyWordList.length > 0) {
+				document.getElementById('delete-all').style.display = "block";
+			}
+
+			document.getElementById('delete-all').addEventListener('tap', function() {
+				var btnArray = ['取消', '确认'];
+				mui.confirm('确定清除搜索历史吗？', '', btnArray, function(e) {
+					if(e.index == 1) {
+						localStorage.setItem('KeyWordList', '');
+						document.getElementById('search-result').style.display = 'none';
+						document.getElementById('delete-all').style.display = 'none';
+					}
+				})
+			});
+
+			document.getElementById('quxiao').addEventListener('tap', function() {
+				var self = plus.webview.currentWebview();
+				self.close();
+			});
+
+			mui('.searclibut').on('tap', 'a', function(e) {
+				var keywords = this.dataset.keyword;
+				if(nearstore == 'nearstore'|| StoreStatus == 'storeList') {
+					fxshop.openVW('proStroeInfo', {
+						'keywords': keywords
+					});
+				} else {
+					fxshop.openVW('search-result', {
+						'keywords': keywords
+					});
+				}
+
+			});
+
+			mui('.searclibut').on('tap', 'span', function(e) {
+				var delKey = this.dataset.keyword;
+				KeyWordList.forEach(function(items, index, array) {
+					if(array[index] == delKey) {
+						array.splice(index, 1);
+						return;
+					}
+				});
+				localStorage.setItem('KeyWordList', KeyWordList.join(","));
+				plus.webview.currentWebview().reload();
+			});
+
+		})
+	</script>
+
+	<script type="text/html" id="KeyList">
+		{{each KeyWordList as KeyWord}}
+		<div class="searclibut">
+			<em class="icon-history"><img src="images/ic_history.png"></em>
+			<a data-keyword="{{KeyWord}}">{{KeyWord}}</a>
+			<span class="iconfont icon__close1 font32" data-keyword="{{KeyWord}}" id="delete-icon"></span>
+		</div>
+		{{/each}}
+	</script>
+
+</html>

@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<meta name="format-detection" content="telephone=no,email=no" />
+		<title>编辑我的收藏</title>
+		<link href="css/mui.min.css" rel="stylesheet" />
+		<link href="css/style.css" rel="stylesheet" />
+		<script type="text/javascript" src="js/flexible.debug.js"></script>
+		<script type="text/javascript" src="js/flexible_css.debug.js"></script>
+
+	</head>
+
+	<body>
+		<header class="mui-bar mui-bar-nav" id="header">
+			<div class="home-header">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"><span>返回</span></a>
+			<span class="mui-pull-right nav-title" id="Collection">完成</span>
+			<h1 class="mui-title">我的收藏</h1>
+			</div>
+		</header>
+
+		<div class="has-fixed-bottom mui-row mui-checkbox mui-left" id="all-del" style="z-index: 9; background: #fff;">
+				<div class="sel-box" id="allBtn">
+					<input name="s-checkAll" id="s-checkAll" type="checkbox">
+					<label>全选</label>
+				</div>
+				<div class="del-btn" id="del-btn">删除</div>
+			</div>	
+
+
+		<div id="pullrefresh" class="mui-content mui-scroll-wrapper transparent" style="padding-bottom: 50px;">
+ 
+
+			<div class="mui-scroll">
+				<div id="favoriteList" class="favoriteList">
+					
+				</div>
+			</div>
+
+		</div>
+ 			<script type="text/javascript" src="js/mui.min.js" ></script>
+		<script type="text/javascript" src="js/app.js" ></script>
+		<script type="text/javascript" src="js/template.js" ></script>		
+
+		<script>
+			var isEnd = false,
+				pageIndex = 0,
+				pagesize = 10,
+				keyword,
+				tags,
+				FavoriteIds,
+				checkAll=document.querySelector('input[name="s-checkAll"]'),
+				favoriteList=document.getElementById('favoriteList');
+ 				var siteifno = SiteSetting.getSiteInfo();	
+				var immersedIos=isIphoneX();
+			mui.init({
+				pullRefresh: {
+					container: '#pullrefresh',
+					up: {
+						height: 0,
+						contentrefresh: '正在加载...',
+						contentnomore: '没有更多数据了',
+						callback: loadFavorite,
+					}
+				}
+			})
+			
+			
+			mui.plusReady(function() {
+				//判断是否是iphone X 
+				if(immersedIos){
+					document.getElementById("header").className+=" Xheader"; 
+					document.getElementById("pullrefresh").className+=" Xmui-content";
+				} 
+				loadFavorite('reset');
+				BindEvent();
+			});
+			
+			// 绑定事件
+			function BindEvent() {  
+				mui('#favoriteList').on('change', 'input', function() {    	
+		    	var SelectCheckBox = document.getElementById('favoriteList').querySelectorAll('input[type="checkbox"]:checked').length;
+		    	var AllCheckBox = document.getElementById('favoriteList').querySelectorAll('input[type="checkbox"]').length;
+			    document.getElementById("s-checkAll").checked=(AllCheckBox==SelectCheckBox);			    			    	
+				});
+ 
+				
+				//编辑
+				mui(document).on('tap','#Collection', function() {
+					var editTxt=document.getElementById('Collection').innerText;
+					var inputTxt=document.getElementsByName("checkItem");
+					if(editTxt=="完成")
+						fxshop.openVW('MyFavorites');
+				});
+				
+				//删除收藏的内容
+				document.getElementById('del-btn').addEventListener('tap',function(){
+					DeleteFavorite();
+				});	
+				
+				//全选
+				mui(document).on('change', 'input[name="s-checkAll"]', function() {
+		    	var _this=this;
+		        setTimeout(function(){
+			        var checked = _this.checked,
+			        	checkBox=favoriteList.querySelectorAll('input[type="checkbox"]:enabled');
+			        for(var i=0; i<checkBox.length; i++){
+			        	checkBox[i].checked=checked;
+			        }
+
+		        },50)
+		    });
+				
+			}
+			
+			
+			function DeleteFavorite(){
+				var ws=plus.webview.currentWebview();
+				setTimeout(function(){
+						var checkPro=favoriteList.querySelectorAll('input[name="checkItem"]:checked');
+						if(checkPro.length>0){
+							var skuArr=[],
+								cartidArr=[],
+								dataList,
+								data;
+							mui('#favoriteList input[name="checkItem"]:checked').each(function(){
+								skuArr.push({
+									skuId:this.parentNode.getAttribute('data-favoriteid'),
+								});
+								cartidArr.push(this.parentNode.getAttribute('data-favoriteid'));
+								dataList=cartidArr.join(",");
+							});
+							mui.ajax(fxshop.goUrl('DeleteFavorites'),{
+								data:{
+									FavoriteIds:dataList,
+									SessionId: siteifno.UserInfo.sessionid,
+								},
+								dataType:'json',
+								type:'POST',
+								timeout:10000,
+								success:function(data){
+									if(data.ErrorResponse != undefined) {
+										plus.nativeUI.toast(data.ErrorResponse.ErrorMsg);
+										fxshop.openVW('login');								
+										return;
+									}
+									
+									if(data.Success.Status){
+										plus.nativeUI.toast('删除成功');
+										reloadFavorite();
+										mui.fire(plus.webview.getWebviewById('MyFavorites'),'updateFavorite');
+										ws.close();
+									}else{
+										plus.nativeUI.toast(data.Success.Msg);
+									}
+								},
+								error:function(xhr,type,errorThrown){
+									plus.nativeUI.toast('data.Success.Msg')
+								}
+							});
+						}else{
+							plus.nativeUI.toast('请至少选择一件商品')
+						}
+					},100)
+			}
+			
+			
+			
+			
+			function reloadFavorite() {
+				isEnd = false;
+				pageIndex = 0;
+				mui('#pullrefresh').pullRefresh().refresh(true);
+				loadFavorite('reset');
+			};
+ 
+			function loadFavorite(re) {
+				var that = this;
+				if(!isEnd) {
+					pageIndex++;
+					mui.ajax(fxshop.goUrl('Favorites'), {
+						data: {
+							sessionid: siteifno.UserInfo.sessionid,
+							pageIndex: pageIndex,
+							pageSize: pagesize,
+						},
+						dataType: 'json',
+						type: 'get',
+						timeout: 10000,
+						success: function(data) {
+							var result = data.Result;
+							if(data.ErrorResponse != undefined) {
+								plus.nativeUI.toast(data.ErrorResponse.ErrorMsg);
+								fxshop.openVW('login');								
+								return;
+							}
+							if(data.Result.List.length < 10) {
+								isEnd = true;
+							}
+
+							if(re) {
+								document.getElementById("favoriteList").innerHTML = template('favoriteListTemp', {
+									'result': result
+								});
+								mui('#pullrefresh').pullRefresh().scrollTo(0, 0, 20);
+							} else {
+								document.getElementById("favoriteList").insertAdjacentHTML('beforeend', template('favoriteListTemp', {
+									'result': result
+								}));
+								that.endPullupToRefresh(isEnd);
+							}
+
+						 
+						},
+						error: function(xhr, type, errorThrown) {
+							plus.nativeUI.toast('请求失败，请检查网络')
+						}
+					});
+				} else {
+					that.endPullupToRefresh(isEnd);
+				}
+			};
+
+			
+			
+		</script> 
+
+	</body>
+	<script type="text/html" id="favoriteListTemp">
+		{{each result.List as favorite}}
+			<div class="mui-checkbox mui-left favorite-list-goods" data-FavoriteId="{{favorite.FavoriteId}}">
+				<div class="favorite-goods" data-id="list-{{favorite.FavoriteId}}" >
+					<a class="goods-img" data-url="{{favorite.ProductId}}"><img src="{{favorite.ThumbnailUrl60}}" data-delay="{{favorite.ThumbnailUrl60}}" /></a>
+					<div class="favorite-goods-detail editfavorite">
+						<a class="goods-name" data-url="{{favorite.ProductId}}">{{favorite.ProductName}}</a>
+						<span>¥<em class="font32 ml8">{{favorite.SalePrice}}</em></span>
+					</div>
+				</div>
+				<input name="checkItem" type="checkbox" id="select-{{favorite.ProductId}}"/>
+			</div>			
+		{{/each}}		
+	</script>
+	
+	
+	
+
+</html>

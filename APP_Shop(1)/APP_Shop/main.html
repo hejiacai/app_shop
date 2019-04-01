@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title>移动云商城</title>
+		<meta name="viewport" content="width=device-width,initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<link rel="stylesheet" href="css/mui.min.css">
+		<link rel="stylesheet" href="css/style.css">
+		<script type="text/javascript" src="js/flexible.debug.js"></script>
+		<script type="text/javascript" src="js/flexible_css.debug.js"></script>
+		<script src="js/mui.min.js"></script>
+		<script type="text/javascript" src="js/app.js"></script>
+	</head>
+
+	<style>
+		.mui-bar-tab .mui-tab-item {
+			color: #212121;
+		}
+		
+		.mui-bar {
+			background: #fff;
+			border-top: 1px #E0E0E0 solid;
+		}
+	</style>
+
+	<body>
+		<nav class="mui-bar mui-bar-tab mui-hidden" id="tabbar">
+			<a id="defaultTab" class="mui-tab-item mui-active" data-href="home.html" data-idx="0">
+				<span class="mui-icon iconfont home"></span>
+				<span class="mui-tab-label">首页</span>
+			</a>
+			<a id="categoryTab" class="mui-tab-item" data-href="category.html" data-idx="1">
+				<span class="mui-icon iconfont fenlei"></span>
+				<span class="mui-tab-label">推广</span>
+			</a>
+			<a class="mui-tab-item" id="memberTab" data-href="userhome.html" data-idx="3">
+				<span class="mui-icon iconfont icon__my"></span>
+				<span class="mui-tab-label">我的</span>
+			</a>
+		</nav>
+		<script src="http://map.qq.com/api/js?v=2.exp&libraries=convertor"></script>
+
+		<script src="https://3gimg.qq.com/lightmap/components/geolocation/geolocation.min.js"></script>
+		<script src="js/mui.min.js"></script>
+		<script src="js/app.js"></script>
+		<script type="text/javascript" charset="utf-8">
+			//mui初始化
+			var currentstoreid = 0;
+			var currentsubpages = "home.html";
+			var mqView;
+			mui.init({
+				preloadPages: [{
+						url: 'product-detail.html',
+						id: 'product-detail.html'
+					},
+					{
+						url: 'storeproduct-detail.html',
+						id: 'storeproduct-detail.html'
+					},
+					{
+						url: 'skuProduct.html',
+						id: 'skuProduct.html',
+						styles: {
+							bottom: "0",
+							height: "480px",
+							popGesture: "none"
+						}
+					},
+					{
+						url: 'Fight_sku_Product.html',
+						id: 'Fight_sku_Product.html',
+						styles: {
+							bottom: "0",
+							height: "480px",
+							popGesture: "none"
+						}
+
+					}
+				]
+			});
+			var subpages = ['home.html', 'category.html', 'shopcart.html', 'userhome.html', 'nearstorelist.html', 'storehome1.html','BindPhoneHome.html'];
+			var subpage_style = {
+				top: '0px',
+				bottom: '51px'
+			};
+
+			var aniShow = {};
+
+			//创建子页面，首个选项卡页面显示，其它均隐藏；
+			mui.plusReady(function() {
+				var launchFlag = plus.storage.getItem("launchFlag"); 
+					if(!launchFlag) {
+						fxshop.openVW('guide');
+					}				
+				plus.navigator.setStatusBarBackground("#46BAF4");
+				plus.navigator.setStatusBarStyle("UIStatusBarStyleBlackOpaque");
+				LoadSiteData(); //更新站点信息
+				getPosition(); //筛选首页是平台还是门店
+				//变更商品分类页面选项				
+				updateCategoryPage();
+				setTimeout(function() {
+					var self = plus.webview.currentWebview();
+					for(var i = 0; i < 6; i++) {
+						var temp = {};
+						var sub = plus.webview.create(subpages[i], subpages[i], subpage_style);
+						if(i > 0) {
+							sub.hide();
+						} else {
+							temp[subpages[i]] = "true";
+							mui.extend(aniShow, temp);
+						}
+						self.append(sub);
+					}
+					fxshop.removeClass(document.getElementById('tabbar'), 'mui-hidden');
+					createMQView();
+				}, 2000);
+
+				fxshop.quitApp();
+				fxshop.update();
+				push();
+			});
+			//当前激活选项
+			var activeTab = subpages[0];
+			//选项卡点击事件
+			mui('.mui-bar-tab').on('tap', 'a', function(e) {
+				BindBottom(this.getAttribute('data-href'));
+			});
+
+			function createMQView() {
+				var IsOpenMeiQiaService = SiteSetting.getSiteInfo().Site.IsOpenMeiQiaService;
+				if(!IsOpenMeiQiaService) return;
+				if(!mqView) {
+					mqView = new plus.nativeObj.View('meiqia', {
+						bottom: '80px',
+						left: '85%',
+						height: '44px',
+						width: '44px'
+					}, [{
+						tag: 'img',
+						id: 'img',
+						src: 'images/icon_service_online.png',
+						position: {
+							top: '0px',
+							left: '0px',
+							width: '100%',
+							height: '100%'
+						}
+					}]);
+					mqView.addEventListener("click", function() {
+						if(fxshop.isLogin()) {
+							var name = SiteSetting.getSiteInfo().UserInfo.realName;
+							fxshop.openVW("meiqia", {
+								'name': name
+							});
+						} else {
+							showLogin();
+						}
+					});
+					plus.webview.currentWebview().append(mqView);
+				}
+				mqView.show();
+			}
+
+			function BindBottom(targetTab) {
+				if(targetTab == activeTab) {
+					return;
+				}
+				
+				if(targetTab=="userhome.html"){
+					mui.fire(plus.webview.getWebviewById('userhome.html'), 'updateData');
+				}
+				
+				if(targetTab=="categoryTemp3.html"){
+					mui.fire(plus.webview.getWebviewById('categoryTemp3.html'), 'updateData');
+				} 
+				
+				if(targetTab=="shopcart.html"){
+					mui.fire(plus.webview.getWebviewById('shopcart.html'), 'updateData');
+				}		
+				//更换标题
+				//ShowHead(this.getAttribute("data-idx"));
+				//显示目标选项卡
+				//若为iOS平台或非首次显示，则直接显示
+				if(mui.os.ios || aniShow[targetTab]) {
+					plus.webview.show(targetTab);
+				} else {
+					//否则，使用fade-in动画，且保存变量
+					var temp = {};
+					temp[targetTab] = "true";
+					mui.extend(aniShow, temp);
+					plus.webview.show(targetTab, "fade-in", 300);
+				}
+				//隐藏当前;
+				plus.webview.hide(activeTab);
+				//更改当前活跃的选项卡
+				activeTab = targetTab;
+				
+				if(subpages.indexOf(targetTab) == 0) createMQView();
+				else if(mqView != null) mqView.hide();
+			}
+			//更换子页面的顶部菜单
+			function ShowHead(suoyin) {
+				var head_item = document.querySelectorAll(".home-header");
+				for(var x = 0; x < head_item.length; x++) {
+					if(x == suoyin) {
+
+						if(fxshop.hasClass(head_item[x], 'mui-hidden')) {
+							fxshop.removeClass(head_item[x], 'mui-hidden');
+						}
+					} else {
+						if(!fxshop.hasClass(head_item[x], 'mui-hidden')) {
+							fxshop.addClass(head_item[x], 'mui-hidden');
+						}
+					}
+				}
+
+			}
+
+			//自定义事件，模拟点击“首页选项卡”
+			document.addEventListener('gohome', function(e) {
+				var pagename = e.detail.pagename;
+				var defaultTab = "";
+				if(pagename == "home") {
+					defaultTab = document.getElementById("defaultTab");
+				} else if(pagename == "category") {
+					defaultTab = document.getElementById("categoryTab");
+				} else if(pagename == "shopcart") {
+					defaultTab = document.getElementById("shopcartTab");
+				} else {
+					defaultTab = document.getElementById("memberTab");
+				}
+
+				//模拟首页点击
+				mui.trigger(defaultTab, 'tap');
+				//切换选项卡高亮
+				var current = document.querySelector(".mui-bar-tab>.mui-tab-item.mui-active");
+				if(defaultTab !== current) {
+					current.classList.remove('mui-active');
+					defaultTab.classList.add('mui-active');
+				}
+			});
+
+			document.addEventListener('updateData', function(e) {
+				mui.fire(plus.webview.getWebviewById('userhome.html'), 'updateData');
+				var cartnum = e.detail.shopcartnum; //购物车数量
+				var docshopcartnum = document.getElementById("spshopcartnum");
+				if(cartnum == undefined) {
+					cartnum = 0;
+				}
+				docshopcartnum.innerText = cartnum;
+				if(parseInt(cartnum) <= 0) {
+					fxshop.addClass(docshopcartnum, "mui-hidden");
+					return;
+				}
+				fxshop.removeClass(docshopcartnum, "mui-hidden");
+				pushBindUser();
+			});
+
+			//监听修改菜单跳转
+			document.addEventListener("updateMenu", function(e) {
+				var currentulr = e.detail.href;
+				var storeid = e.detail.storeid;
+				if(storeid) {
+					mui.fire(plus.webview.getWebviewById("storehome1.html"), "UpdateStoreData", {
+						"storeid": storeid
+					});
+				}
+				mui.fire(plus.webview.getWebviewById('userhome.html'), 'updateData');
+				BindBottom(currentulr);
+			});
+
+			document.addEventListener('showMQView', function(e) {
+				var hidden = e.detail.hidden;
+				if(!hidden) mqView.show();
+				else mqView.hide();
+			});
+
+			function push() {
+				pushBindUser();
+				//推送监听
+				plus.push.addEventListener("receive", function(msg) {
+					//										plus.ui.alert('reveived' + JSON.stringify(msg));
+					switch(plus.os.name) {
+						case 'Android':
+							createLocalPushMsg(msg.payload);
+							break;
+						case 'iOS':
+							if(msg.content.indexOf('{') < 0) createLocalPushMsg(msg.payload.TransmissionContent);
+							else createLocalPushMsg(msg.content);
+							break;
+						default:
+							break;
+					}
+
+				}, false);
+
+				plus.push.addEventListener("click", function(msg) {
+					// 设置APP图标的角标
+					plus.runtime.setBadgeNumber(1);
+					switch(plus.os.name) {
+						case 'Android':
+							pushClicked(msg.payload);
+							break;
+						case 'iOS':
+							if(window.plus)
+								pushClicked(msg.payload.TransmissionContent);
+							else
+								setTimeout(function() {
+									pushClicked(msg.payload.TransmissionContent);
+								}, 3000);
+							break;
+						default:
+							break;
+					}
+				}, false);
+			}
+
+			function pushBindUser() {
+				/*推送设备用户绑定接口字段
+			= @"SendClientId";
+			= @"SendToken";
+			= @"UserId";*/
+				var info = plus.push.getClientInfo();
+				var token = info.token;
+				var clientid = info.clientid;
+				var userid = fxshop.isLogin() ? SiteSetting.getSiteInfo().UserInfo.uid : "";
+				mui.ajax(fxshop.goUrl('SaveClientIdAndToken'), {
+					dataType: "json",
+					type: "post",
+					data: {
+						'UserId': userid,
+						'SendClientId': clientid,
+						'SendToken': token
+					},
+					success: function(res) {},
+					error: function(ex) {}
+				});
+			}
+
+			function pushClicked(msg) {
+				//								plus.ui.alert('clicked' + msg);
+				// 设置APP图标的角标
+				plus.runtime.setBadgeNumber(0);
+				var message = JSON.parse(msg)
+				var url = message.url;
+				if(!isEmptyObject(url)) {
+					url = url.startsWith('http://') ? url : ('http://' + url);
+					fxshop.OpenWapWeb(url, '消息');
+				}
+
+				var productid = message.productid;
+				if(!isEmptyObject(productid)) {
+					showProduct(productid);
+				}
+			}
+
+			function createLocalPushMsg(msg) {
+				var message = JSON.parse(msg)
+				//				plus.ui.alert(msg);
+				if(plus.os.name == "iOS") {
+					// 弹出提示信息对话框
+					plus.ui.confirm(message.PushContent, function(e) {
+						if(e.index == 0) {
+							pushClicked(msg);
+						}
+					}, {
+						"title": message.PushTitle,
+						"buttons": ["去查看", "取消"],
+						"verticalAlign": "center"
+					});
+				} else {
+					var options = {
+						cover: false,
+						title: message.PushTitle
+					};
+					plus.push.createMessage(message.PushContent, msg, options);
+				}
+			}
+		</script>
+	</body>
+
+</html>

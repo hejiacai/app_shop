@@ -1,0 +1,128 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title>激活返现查询</title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<link href="../css/mui.min.css" rel="stylesheet" />
+		<link rel="stylesheet" href="../css/mui.picker.min.css" />
+		<link rel="stylesheet" href="../css/mui.poppicker.css" />
+		<link rel="stylesheet" href="../css/style.css" />
+		<link rel="stylesheet" href="css/trade_select.css" />
+		<style>
+			.time_title{
+				height: 3.23rem;
+				background-color: #F0F0F4;
+				display: flex;
+				flex-direction: column;
+				justify-content: center;
+			}
+		</style>
+		<script type="text/javascript" src="../js/flexible.debug.js" ></script>
+		<script type="text/javascript" src="../js/flexible_css.debug.js" ></script>
+	</head>
+
+	<body>
+		<header class="mui-bar mui-bar-nav" id="header">
+			<div class="home-header">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<h1 class="mui-title">激活返现查询</h1>
+			</div>
+		</header>
+		<div class="mui-content" style="background: white;">
+			<div class="time_title">
+				<div class="time_choice">
+					<img src="../images/time_choice.png"/>
+					<span>日期选择</span>
+				</div>
+			    <div class="select_time">
+			    	<div   class="select_time_content" id="time_result">请选择日期</div>
+			    	<div class="select_time_div">至</div>
+			    	<div  class="select_time_content" id="time_result1">请选择日期</div>
+			    </div>
+			</div>
+			<div class="select_choice">
+				<div class="select_choice_content">
+					<span>代理商</span>
+					<img src="../images/select_rideo.png" data-type = "0" data-user = "1"/>
+				</div>
+				<div class="select_choice_content">
+					<span>个人</span>
+					<img src="../images/select_rideo.png" data-type = "0" data-user = "0"/>
+				</div>
+			</div>
+			<div class="select_button">
+				<button type="button" id="select_button" disabled="disabled">查询</button>
+			</div>
+		</div>
+		
+		
+		
+		<script src="../js/mui.min.js"></script>
+		<script type="text/javascript" src="../js/mui.picker.min.js" ></script>
+		<script type="text/javascript" src="../js/mui.poppicker.js" ></script>
+		<script type="text/javascript" src="../js/app.js" ></script>
+		<script type="text/javascript" src="../js/jquery-1.8.3.min.js" ></script>
+		<script type="text/javascript">
+			mui.init()
+			//判断是否选择0为未选，1为已选
+			var select_type=0;
+			var user_type;
+			mui(".select_choice_content").on('tap','img',function(){
+				var type=this.dataset.type;
+				if(type==0){
+					this.src='../images/select_rideo1.png';
+					this.dataset.type=1;
+					$(this).parent(".select_choice_content").siblings().children('img').attr("data-type",'0');
+					$(this).parent(".select_choice_content").siblings().children('img').attr('src','../images/select_rideo.png');
+					select_type=1;
+					user_type=$(this).data('user');
+				}
+				if(select_type==1){
+					$("#select_button").removeAttr('disabled');
+				}
+			})
+			document.getElementById("select_button").addEventListener('tap',function(){
+				var StartingTime=$("#time_result").text();
+				var EndTime=$("#time_result1").text();
+				var datas={};
+				datas['user_type']=user_type;
+				datas['StartingTime']=StartingTime;
+				datas['EndTime']=EndTime;
+				fxshop.openVW('activation_details',{datas:datas});
+				
+			})
+			mui(".select_time").on('tap','.select_time_content',function(){
+				var this_result=this;
+				var this_result1=$(this);
+				var dtpicker  = new  mui.DtPicker({
+	      			type:'date',
+	      			"beginYear":2010,
+        			"endDate": 2050,//设置结束日期    //真正的是10.21
+	      		});
+	      		dtpicker .show(function(rs) {
+						/*
+						 * rs.value 拼合后的 value
+						 * rs.text 拼合后的 text
+						 * rs.y 年，可以通过 rs.y.vaue 和 rs.y.text 获取值和文本
+						 * rs.m 月，用法同年
+						 * rs.d 日，用法同年
+						 * rs.h 时，用法同年
+						 * rs.i 分（minutes 的第二个字母），用法同年
+						 */
+						this_result.innerText = rs.y.text + '-' + rs.m.text + '-' + rs.d.text;
+						this_result1.css('color','black');
+						/*
+						 * 返回 false 可以阻止选择框的关闭
+						 * return false;
+						 */
+//						 dtpicker.dispose();
+				});
+			})
+		</script>
+	</body>
+
+</html>

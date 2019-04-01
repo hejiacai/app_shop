@@ -1,0 +1,50 @@
+
+.terminal_body{
+	padding-left: 0.4rem;
+	background-color: white;
+}
+.terminal_content{
+	height: 1.67rem;
+	padding-right: 0.4rem;
+	background-color: white;
+	border-bottom: 1px solid #E3DEDE;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	
+}
+.terminal_content:last-child{
+	border-bottom: none;
+}
+.terminal_content_title{
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	font-size: 0.32rem;
+	
+}
+.terminal_content_title_left{
+	font-size: 0.35rem;
+	display: flex;
+	align-items: center;
+}
+.terminal_content_title_left span:last-child{
+	font-size: 0.24rem;
+	color: #8F8F8F;
+}
+.terminal_content_num{
+	font-size: 0.32rem;
+}
+/*确认绑定*/
+.terminal_binding_button{
+	margin-top: 0.67rem;
+	padding: 0 0.4rem;
+	height: 1.23rem;
+}
+.terminal_binding_button button{
+	width: 100%;
+	height: 100%;
+	background-color: #238DF4;
+	color: white;
+	font-size: 0.4rem;
+}

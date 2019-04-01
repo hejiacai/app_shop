@@ -1,0 +1,84 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title>终端查询结果</title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<link href="../css/mui.min.css" rel="stylesheet" />
+		<link rel="stylesheet" href="../css/style.css" />
+		<link rel="stylesheet" href="css/terminal_binding.css" />
+		<style>
+			#menu{
+				font-size: 0.8rem;
+			}
+			.terminal_content_num{
+				display: flex;
+				justify-content: space-between;
+				align-items: center;
+			}
+			.terminal_content_num_wbd{
+				color: #F33D43;
+			}
+			.terminal_content_num_ybd{
+				color: #9D9D9D;
+			}
+		</style>
+	</head>
+
+	<body>
+		<header class="mui-bar mui-bar-nav" id="header">
+			<div class="home-header">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<h1 class="mui-title">终端查询</h1>
+			</div>
+		</header>
+		<div class="mui-content">
+			<div class="terminal_body" id="content">
+			   
+			</div>
+		</div>
+		<script type="text/html" id="text">
+			{{each List as value i}}
+			 <div class="terminal_content">
+		    	<div class="terminal_content_title">
+		    		<div class="terminal_content_title_left">
+		    			<span>{{value.PosBrandName}}</span>
+		    			<span>小pos机</span>
+		    		</div>
+		    		<span>型号：ky27920机器</span>
+		    	</div>
+		    	<div class="terminal_content_num">
+		    		<span>S N：{{value.PosSnNo}}</span>
+		    		{{if value.ActivationType==0}}
+		    		<span class="terminal_content_num_wbd">未激活</span>
+		    		{{else if value.ActivationType==1}}
+		    		<span class="terminal_content_num_ybd">已激活</span>
+		    		{{/if}}
+		    	</div>
+		    </div>
+		    {{/each}}
+		</script>
+		<script type="text/javascript" src="../js/flexible.debug.js" ></script>
+		<script type="text/javascript" src="../js/flexible_css.debug.js" ></script>
+		<script src="../js/mui.min.js"></script>
+		<script type="text/javascript" src="../js/art-template.js" ></script>
+		<script type="text/javascript" src="../js/app.js" ></script>
+		<script type="text/javascript">
+			mui.init();
+			mui.plusReady(function(){
+				var self=plus.webview.currentWebview();
+				var datas=self.datas;
+				if(datas.RecordCount==0){
+					mui.toast('暂无数据~');
+				}else{
+					var html=template("text",datas);
+					document.getElementById("content").innerHTML=html;
+				}
+			})
+		</script>
+	</body>
+
+</html>

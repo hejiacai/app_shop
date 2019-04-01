@@ -1,0 +1,172 @@
+body,.mui-content{
+	background-color: white;
+}
+.mui-content{
+	position: relative;
+}
+.terminal_manage_body{
+	padding-left: 0.4rem;
+}
+.terminal_manage_content{
+	height: 1.6rem;
+	padding-right: 0.4rem;
+	border-bottom: 1px solid #E4E0E1;
+	display: flex;
+	align-items: center;
+}
+.terminal_manage_content img{
+	width: 0.45rem;
+	height: 0.45rem;
+	margin-right: 0.4rem;
+}
+.terminal_manage_content_right,.terminal_manage_content_right1{
+	font-size: 0.35rem;
+	height: 100%;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+}
+.terminal_manage_content_right1{
+	width: 100%;
+}
+.terminal_manage_button{
+	position: fixed;
+	bottom: 0.27rem;
+	height: 1.2rem;
+	padding: 0 0.4rem;
+	width: 100%;
+}
+.terminal_manage_button button{
+	width: 100%;
+	height: 100%;
+	background-color: #238DF4;
+	color: white;
+	font-size: 0.4rem;
+}
+
+
+/*终端分配*/
+.terminal_distribution_title{
+	height: 0.96rem;
+	display: flex;
+	align-items: center;
+	padding: 0 0.4rem;
+	border-bottom: 0.13rem solid #F0F0F4;
+	position:relative;
+	background-color: white;
+	z-index: 999;
+}
+.terminal_distribution_title_content{
+	font-size: 0.35rem;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 50%;
+}
+.terminal_distribution_title_content img{
+	width: 0.28rem;
+	height: 0.15rem;
+	margin-left: 0.13rem;
+}
+.terminal_distribution_body{
+	padding-left: 0.4rem;
+}
+.terminal_manage_content_right_div{
+	font-size: 0.35rem;
+	display: flex;
+	justify-content: space-between;
+	width: 100%;
+}
+.terminal_manage_content_right_div span:last-child{
+	color: #F51525;
+}
+
+
+
+
+
+.terminal_select_content{
+	height: 1.33rem;
+	padding-right: 0.4rem;
+	border-bottom: 1px solid #E5E0E1;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	font-size: 0.35rem;
+	display: none;
+}
+.terminal_select_content_right1{
+	display: flex;
+	align-items: center;
+	font-size: 0.35rem;
+	color: #949494;
+}
+.terminal_select_content_left{
+	display: inline-block;
+	width: 2.4rem;
+}
+
+.terminal_select_content_right1{
+	width: 8.19rem;
+	
+}
+.select_time_content{
+	width: 3.6rem !important;
+	height: 0.77rem !important;
+	border: 1px solid #8C8C8C !important;
+	color: #8F8F8F;
+	font-size: 0.35rem;
+	border-radius: 5px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	margin: 0 !important;
+	padding: 0 !important;
+	text-align: center;
+	background: #F0F0F4;
+	
+}
+.select_time_div{
+	display: inline-block;
+	font-size: 0.35rem;
+	margin: 0 0.35rem;
+}
+
+
+.backdrop{
+	position: fixed;
+    z-index: 998;
+    background-color: rgba(0,0,0,.3);
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    display: none;
+}
+.terminal_distribution_title_brand{
+	max-height: 4.85rem;
+	z-index: 999;
+	position: absolute;
+	width: 100%;
+	background-color: #F0F0F4;
+	overflow-y: scroll;
+	padding-left: 0.4rem;
+	display: none;
+}
+.terminal_distribution_title_brand_content{
+	padding-right:  0.4rem;
+	border-bottom: 1px solid #E9E7E9;
+	font-size: 0.35rem;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	height: 1.12rem;
+}
+.terminal_distribution_title_brand_content:last-child{
+	border-bottom: none;
+}
+.terminal_distribution_title_brand_content img{
+	width: 0.48rem;
+	height: 0.48rem;
+	display: none;
+}

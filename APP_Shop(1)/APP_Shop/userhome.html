@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<meta name="format-detection" content="telephone=no,email=no" />
+		<title>用户中心</title>
+		<link href="css/userhome.css" rel="stylesheet" />
+		<link rel="stylesheet" href="css/mescroll.min.css" />
+		<script type="text/javascript" src="js/flexible.debug.js"></script>
+		<script type="text/javascript" src="js/flexible_css.debug.js"></script>
+		<script type="text/javascript" src="js/mescroll.min.js"></script>
+	</head>
+
+	<body class="bg">
+		<div class="member_tips mui-hidden" id="memberaccounttips">
+			<i class="icon_warning"></i>
+			<a href="AccountManagement.aspx">为了您的账户安全，请及时绑定邮箱或手机。</a>
+			<i class="icon_close"></i>
+		</div>
+		<div id="scrollDiv" class="scroll-div notop">
+			<div class="header" id="header">
+				<div class="sign_set">
+					<div class="signbox fl" id="userhone_sign">
+						<div class="iconfont icon_3 sign"></div>
+						<span>客服</span>
+					</div>
+					<div class="user_center">会员中心</div>
+					<div class="set fr">
+						<div class="notice iconfont icon_7" id="messageimg"></div>
+						<div class="iconfont icon_4 seticon" id="exit"></div>
+					</div>
+				</div>
+				<div class="userInfoBox">
+					<div class="Info">
+						<div class="userImg"><img id="userimg" src="images/default_img.jpg"></div>
+						<div class="userInfo">
+							<h2 id="account">未登录</h2>
+							<div class="pointsBox">
+								<div class="member" id="gradeName">普通会员</div>
+								<div class="point">
+									<img src="images/sign_coin.png">
+									 <em id="jifen">信用等级 V0</em>
+								</div>
+							</div>
+						</div>
+						<div class="Distribution" id="Distribution">分销中心</div>
+					</div>
+					<div class="Collection_Consultation">
+						<div id="showFavProduct" class="Collection fl">
+							<span id="Collection_num">0</span>
+							<em>昨日收益</em>
+						</div>
+						<div id="advice" class="Consultation fr">
+							<span id="advice_num">0</span>
+							<em>可提现金额</em>
+						</div>
+					</div>
+
+				</div>
+			</div>
+
+			<!--我的订单-->
+			<div class="user_order">
+				<div class="hd">
+					<span>我的订单</span>
+					<a onclick="showAllorder(0)" id="Allorder">查看全部<em class="iconfont arrow_right right_more"></em></a>
+				</div>
+				<ul class="order_num">
+					<li data-id="1">
+						<div class="iconfont icon__wallet"></div>
+						<span>待付款</span>
+						<em class="num" id="waitPayCount"></em>
+					</li>
+					<li data-id="2">
+						<div class="iconfont icon__package"></div>
+						<span>待发货</span>
+						<em class="num" id="WaitingForDelivery"></em>
+					</li>
+					<li data-id="3">
+						<div class="iconfont icon__shipping"></div>
+						<span>待收货</span>
+						<em class="num" id="WaitingForRecieve"></em>
+					</li>
+					<li data-id="5">
+						<div class="iconfont icon__comment"></div>
+						<span>待评论</span>
+						<em class="num" id="waitReviewCount">2</em>
+					</li>
+					<li data-id="6">
+						<div class="iconfont icon__service-1"></div>
+						<span>售后</span>
+						<em class="num" id="ApplySale"></em>
+					</li>
+				</ul>
+			</div>
+
+			<!--常用功能-->
+			<div class="commonBox">
+				<div class="hd">常用功能</div>
+				<div class="commonList">
+					<ul>
+						<li data-id="1">
+							<img src="images/icon_deposit.png">
+							<span>我的钱包</span>
+							<em class="fontstyle" id="IsOpenRechargeGift"></em>
+						</li>
+						<li data-id="2">
+							<img src="images/icon_point.png">
+							<span>我的信用</span>
+							<em id="jifen_tab"></em>
+						</li>
+						
+						
+						
+						<li data-id="6">
+							<img class="height36" src="images/icon_extension.png">
+							<span>我要推广</span>
+							<em></em>
+						</li>
+						
+						<li class="lastheight" data-id="8">
+							<img class="height40" src="images/icon_address.png">
+							<span>收货地址</span>
+							<em></em>
+						</li>
+						
+					</ul>
+				</div>
+			</div>
+			<div class="height24"></div>
+		</div>
+		<script src="js/mui.min.js"></script>
+		<script src="js/app.js"></script>
+		<script>
+			var state = {},
+				auths = null,
+				CellPhone;
+			var doc = document,
+				accountImg = doc.getElementById('userimg'),
+				siteinfo = SiteSetting.getSiteInfo();
+			var immersedIos = isIphoneX();
+			var IsReferral;
+			mui.init({});
+			mui.plusReady(function() {
+				//是否开启充值赠送
+				if(siteinfo.IsOpenRechargeGift) {
+					doc.getElementById("IsOpenRechargeGift").innerHTML = "充值享优惠";
+				}
+
+				//判断是否是iphone X 
+				if(immersedIos) {
+					document.getElementById("header").className += " Xheader";
+					document.getElementById("memberaccounttips").className += " Xmember_tips";
+				}
+
+				if(fxshop.isLogin()) { 
+					getUserData();
+				} else {
+					mui.toast("您还未登录");
+				}
+				mescroll = new MeScroll("scrollDiv", { //第一个参数"mescroll"对应上面布局结构div的id
+					//如果您的下拉刷新是重置列表数据,那么down完全可以不用配置,具体用法参考第一个基础案例
+					//解析: down.callback默认调用mescroll.resetUpScroll(),而resetUpScroll会将page.num=1,再触发up.callback
+					down: {
+						callback: reloadInfo //下拉刷新的回调,别写成downCallback(),多了括号就自动执行方法了
+					}
+				});
+
+				loadEvent();
+			})
+
+			accountImg.addEventListener('tap', function() {
+				if(fxshop.isLogin()) {
+					fxshop.openVW('AccountManagement');
+				} else {
+					showLogin();
+				}
+
+			});
+			doc.getElementById('Distribution').addEventListener('tap', function() {
+				if(!fxshop.isLogin()) {
+					mui.toast('您还没有登录,请先登录');
+				}
+			})
+
+			//常用功能代码
+			mui(".commonList").on("tap", "li", function() {
+				var id = this.dataset.id;
+				if(fxshop.isLogin()) {
+					switch(id) {
+						case "1":
+							fxshop.openVW('AccountSummary');
+							break;
+						case "2":
+							fxshop.openVW('Point');
+							break;
+						case "3":
+							var requesturl = apiURL + "appshop/MemberCoupons?usedType=1";
+							fxshop.OpenWapWeb(requesturl, '我的优惠券');
+							break;
+						case "4":
+							var requesturl = apiURL + "appShop/MemberWeiXinRedEnvelopeCoupons?usedType=1";
+							fxshop.OpenWapWeb(requesturl, '我的代金红包');
+							break;
+						case "5":
+							var requesturl = apiURL + "appShop/myprize";
+							fxshop.OpenWapWeb(requesturl, '我的奖品');
+							break;
+						case "6":
+							fxshop.openVW("Extension");
+							break;
+						case "7":
+							fxshop.openVW('FightGroups');
+							break;
+						case "8":
+							var requesturl = apiURL + "appShop/ShippingAddresses";
+							fxshop.OpenWapWeb(requesturl, '收货地址');
+							break;
+						default:
+							fxshop.openVW('aboutus');
+							break;
+					}
+				} else {
+					mui.toast('您还没有登录,请先登录');
+				}
+
+			})
+
+			mui(".order_num").on("tap", "li", function() {
+				var id = this.dataset.id;
+				//售后
+				if(id == 6) {
+					if(fxshop.isLogin()) {
+						var requesturl = apiURL + "appShop/AfterSaleOrders";
+						fxshop.OpenWapWeb(requesturl, '售后订单');
+					} else {
+						mui.toast('您还未登录，请先登录');
+					}
+				} else if(fxshop.isLogin()) {
+					fxshop.openVW('order-list', {
+						orderStatus: id
+					});
+
+				} else {
+					showLogin({
+						id: 'login.html',
+						extras: {
+							orderStatus: id
+						}
+					});
+				}
+			})
+
+			function showAllorder(id) {
+				if(fxshop.isLogin()) {
+					fxshop.openVW('order-list', {
+						orderStatus: id
+					});
+				} else {
+					mui.toast("您还未登录，请先登录")
+				}
+			}
+
+			function reloadInfo() {
+				if(fxshop.isLogin()) {
+					getUserData();
+				} else {
+					mescroll.endSuccess();
+				}
+			}
+
+			function getUserData() {
+				siteinfo = SiteSetting.getSiteInfo(); 
+				document.getElementById('account').innerText = siteinfo.UserInfo.realName;
+				mui.ajax(fxshop.goUrl('getMember'), {
+					dataType: 'json',
+					type: 'get',
+					data: {
+						SessionId: siteinfo.UserInfo.sessionid,
+					},
+					success: function(data) {
+						if(data.ErrorResponse != undefined) { 
+							mui.toast(data.ErrorResponse.ErrorMsg);
+							siteinfo.UserInfo = null;
+							SiteSetting.setSiteInfo(siteinfo);
+							plus.webview.currentWebview().reload();
+							return;
+						}
+						var result = data.Result;
+						doc.getElementById('gradeName').innerText = result.gradeName;
+						doc.getElementById('jifen').innerHTML = result.points + "分";
+						doc.getElementById('jifen_tab').innerHTML = result.points;
+						if(result.Balance > 0 && result.Balance != undefined) {
+							doc.getElementById("IsOpenRechargeGift").innerHTML = result.Balance
+						}
+
+						if(result.couponsCount > 0) {
+							doc.getElementById("coupn_count").innerHTML = result.couponsCount + "张";
+						}
+
+						fxshop.whichShow(result.waitPayCount, 'waitPayCount');
+						fxshop.whichShow(result.waitFinishCount, 'WaitingForRecieve');
+						fxshop.whichShow(result.waitSendCount, 'WaitingForDelivery');
+						fxshop.whichShow(result.AfterSaleCount, 'ApplySale');
+						fxshop.whichShow(result.waitReviewCount, 'waitReviewCount');
+
+						if(!result.ProductConsultationsCount) {
+							doc.getElementById('advice_num').innerHTML = 0;
+						}
+						if(!result.FavoriteCount) {
+							doc.getElementById('Collection_num').innerHTML = 0;
+						}
+						doc.getElementById('advice_num').innerHTML = result.ProductConsultaionsCount;
+						doc.getElementById('Collection_num').innerHTML = result.FavoriteCount;
+
+						//判断是否显示绑定手机或邮箱
+						if(!result.CellPhoneVerification || !result.EmailVerification) {
+							fxshop.addClass(document.getElementById("memberaccounttips"), "mui-hidden");
+						} else {
+							fxshop.removeClass(document.getElementById("memberaccounttips"), "mui-hidden");
+						}
+
+						IsReferral = result.IsReferral;
+
+						var userimg = result.picture;
+						if(userimg == '')
+							userimg = 'images/default_img.jpg';
+						else
+							doc.getElementById('userimg').src = userimg;
+						siteinfo.UserInfo = result;
+						SiteSetting.setSiteInfo(siteinfo);
+						mescroll.endSuccess();
+					}
+
+				});
+			}
+
+			//分销中心跳转											
+			doc.getElementById('Distribution').addEventListener('tap', function() {
+				if(IsReferral) {
+					var requesturl = apiURL + "appShop/ReferralCenter";
+					fxshop.OpenWapWeb(requesturl, '分销中心');
+					return;
+				} else {
+					fxshop.openVW("Extension");
+				}
+			})
+ 
+			function loadEvent() {
+				doc.getElementById('messageimg').addEventListener('tap', function() {
+					fxshop.openVW('messageList');
+				});
+
+				doc.getElementById('advice').addEventListener('tap', function() {
+					if(fxshop.isLogin()) {
+						fxshop.openVW('AccountSummary');
+					} else {
+						mui.toast('您还没有登录,请先登录');
+					}
+				});
+
+				doc.getElementById('showFavProduct').addEventListener('tap', function() {
+					if(fxshop.isLogin()) {
+						fxshop.openVW('MyFavorites');
+					} else {
+						mui.toast('您还没有登录,请先登录');
+					}
+				});
+
+				doc.addEventListener('updateData', function() {
+					siteinfo = SiteSetting.getSiteInfo();
+					if(fxshop.isLogin()) {
+						if(siteinfo.UserInfo.IsTrustLogon) { //信任登录的用户
+							if(siteinfo.Site.QuickLoginIsForceBindingMobbile &&
+								!siteinfo.UserInfo.CellPhoneVerification) {
+								fxshop.openVW("BindPhone", {
+									"Source": 'home'
+								});
+							}
+						} else {
+							if(siteinfo.Site.UserLoginIsForceBindingMobbile &&
+								!siteinfo.UserInfo.CellPhoneVerification) {
+								fxshop.openVW("BindPhone", {
+									"Source": 'home'
+								});
+							}
+						}
+						getUserData(); 
+						doc.getElementById('scrollDiv').scrollTop = 0;
+					} else {
+						ClearWapLogin();
+						return;
+					}
+					
+				});
+
+				doc.addEventListener('pagereload', function() {
+					plus.webview.currentWebview().reload();
+				});
+
+				doc.getElementById('exit').addEventListener('tap', function() {
+					if(fxshop.isLogin()) {
+						fxshop.openVW('AccountManagement');
+					} else {
+						showLogin();
+					}
+				});
+ 
+			function ClearWapLogin() {
+				mui.ajax(fxshop.goUrl("logout"), {
+					dataType: 'json',
+					type: 'get',
+					timeout: 10000,
+					success: function(data) {
+						siteinfo.UserInfo = null;
+						SiteSetting.setSiteInfo(siteinfo);
+						SetWapUserInfo();
+						//mui.fire(plus.webview.getWebviewById('shopcart.html'), 'updateData');
+//						mui.fire(plus.webview.getWebviewById(plus.webview.getLaunchWebview().id), "updateData", {
+//							'shopcartnum': 0
+//						});
+						//plus.webview.currentWebview().reload();
+				},
+					complete:function(){
+						//mui.fire(plus.webview.getWebviewById("userhome.html"), "pagereload");
+						return;
+					}
+				});
+			}
+				//签到
+				document.getElementById("userhone_sign").addEventListener("tap", function() {
+					if(!fxshop.isLogin()) {
+						mui.toast('您还未登录,请先登录！');
+						return;
+					}
+
+					var currentuserinfo = SiteSetting.getSiteInfo().UserInfo;
+					mui.ajax(fxshop.goUrl('signIn'), {
+						dataType: "json",
+						type: "post",
+						timeout: 10000,
+						data: {
+							sessionid: currentuserinfo.sessionid
+						},
+						success: function(res) {
+							if(res.ErrorResponse != undefined) {
+								mui.toast(res.ErrorResponse.ErrorMsg);
+								return;
+							}
+							res = res.Result;
+							var message = '未知错误';
+							switch(res.status) {
+								case 1:
+									message = res.points > 0 ? ('签到成功！＋' + res.points + '分') : '签到成功！';
+									break;
+								case 2:
+									message = '您已签到！';
+									break;
+								case 0:
+									message = '签到失败！';
+									break;
+								default:
+									break;
+							}
+							mui.toast(message);
+						},
+						error: function(ex) {
+							mui.toast(ex);
+						}
+					});
+				});
+			}
+		</script>
+	</body>
+
+</html>

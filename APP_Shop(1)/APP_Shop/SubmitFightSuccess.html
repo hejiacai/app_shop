@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<meta name="format-detection" content="telephone=no,email=no" />
+		<title>拼团</title>
+		<link href="css/mui.min.css" rel="stylesheet" />
+		<link href="css/style.css" rel="stylesheet" />
+		<script type="text/javascript" src="js/flexible.debug.js"></script>
+		<script type="text/javascript" src="js/flexible_css.debug.js"></script>
+	</head>
+
+	<body>
+		<header class="mui-bar mui-bar-nav" id="header">
+			<div class="home-header">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"><span>返回</span></a>
+			<a id="menu" class="iconfont _more mui-pull-right" href="#topPopover"></a>
+			<h1 class="mui-title">拼团</h1>
+			</div>
+		</header>
+		
+<!--右上角弹出菜单-->
+		<div id="topPopover" class="mui-popover">
+			<div class="mui-popover-arrow"></div>
+			<div class="mui-scroll-wrapper">
+				<div class="mui-scroll" id="navbar">
+					<ul class="mui-table-view nav-bar">
+						<li data-page="home"><i class="iconfont home"></i>首页</li>
+						<li data-page="category"><i class="iconfont fenlei"></i>分类</li>
+						<li data-page="shopcart"><i class="iconfont icon__cart"></i>购物车</li>
+						<li data-page="user"><i class="iconfont icon__my"></i>个人中心</li>				
+					</ul>
+				</div>
+			</div>
+
+		</div>				
+		
+		
+		
+		<div id="pullrefresh" class="mui-content" style="margin-bottom: 50px;">
+
+			<div id="List" class="rushgroup-list has-fixed">
+				<div class="emptyrush-show mui-text-center sucess-img" id="emptyShow">
+					<p>您已开团，再邀请<span id="spnum"></span>个好友就拼团成功了</p>
+					<img src="images/shouzhi.png" />
+					<span class="fightBtn" id="sharefight">去呼朋唤友</span>
+				</div>
+				
+				<div class="fight-success" id="fight-success">
+					<h2>恭喜您拼团成功</h2>
+					<div class="fight-img">
+						<img src="images/success_man.png" />
+					</div>
+					<span class="fightBtn" id="morefight">更多拼团</span>
+				</div>
+				
+
+			</div>
+		</div>
+ 
+		<ul class="mui-share mui-list-inline" id="share">
+			<li data-id="weixin" data-scene="WXSceneSession">
+				<img src="images/icon_wechat.png" />
+				<span class="mui-subtitle">微信</span>
+			</li>
+			<li data-id="weixin" data-scene="WXSceneTimeline">
+				<img src="images/icon_wxTimeLine.png" />
+				<span class="mui-subtitle">朋友圈</span>
+			</li>
+			<li data-id="qq">
+				<img src="images/icon_qq.png" />
+				<span class="mui-subtitle">QQ</span>
+			</li>
+			<li data-id="sinaweibo">
+				<img src="images/icon_weibo.png" />
+				<span class="mui-subtitle">新浪微博</span>
+			</li>
+			<div id="cancel">
+				<a class="cancel">取消</a>
+			</div>
+
+		</ul>
+		<script src="js/mui.min.js"></script>
+		<script src="js/app.js"></script>
+
+		<script>
+			mui.init();
+			var FightGroupId,
+				pid = "",
+				fightstate = 1,
+				controltop = 0,
+				sessionid = "",
+				orderId,
+				shareData = {};
+			var immersedIos=isIphoneX();	
+			mui.plusReady(function() {
+				//判断是否是iphone X 
+				if(immersedIos){
+					document.getElementById("header").className+=" Xheader"; 
+					document.getElementById("pullrefresh").className+=" Xmui-content";
+				} 	 
+				showNav();
+				CurrentView = plus.webview.currentWebview();
+				document.getElementById("spnum").innerText = CurrentView.NeedNum;
+				if(CurrentView.NeedNum<1){
+					document.getElementById('fight-success').style.display="block";
+					document.getElementById('emptyShow').style.display="none";
+				}else{
+					document.getElementById('fight-success').style.display="none";
+					document.getElementById('emptyShow').style.display="block";
+				}
+				var shareinfo=CurrentView.ShareInfo;
+
+shareData = {
+				title: shareinfo.Result.ShareTitle,
+				href: shareinfo.Result.ShareLink,
+				content: shareinfo.Result.ShareContent,
+				imgurl:shareinfo.Result.ShareImage
+			};
+				document.getElementById("sharefight").addEventListener("tap", function() {
+					document.getElementById("share").style.display="block";
+					loadShare(shareData);
+				});
+				
+				document.getElementById("morefight").addEventListener("tap", function() {
+					plus.webview.currentWebview().close();
+					fxshop.openVW('rushgrouplist');
+					
+				});
+				
+			});
+		</script>
+	</body>
+
+</html>

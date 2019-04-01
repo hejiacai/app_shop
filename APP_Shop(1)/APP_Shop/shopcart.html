@@ -1,0 +1,811 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<meta name="format-detection" content="telephone=no,email=no" />
+		<title>购物车列表</title>
+
+		<link rel="stylesheet" href="css/mui.min.css">
+		<link rel="stylesheet" href="css/swiper.min.css">
+		<link rel="stylesheet" href="css/style.css" />
+		<link rel="stylesheet" href="css/mescroll.min.css">
+
+		<script src="js/mui.js" type="text/javascript"></script>
+		<script src="js/mescroll.min.js"></script>
+		<script src="js/app.js" type="text/javascript"></script>
+		<script type="text/javascript" src="js/template.js"></script>
+		<script src="js/swiper.min.js" type="text/javascript"></script>
+		<script src="js/flexible.debug.js" type="text/javascript"></script>
+		<script src="js/flexible_css.debug.js" type="text/javascript"></script>
+	</head>
+
+	<style>
+		.mui-content {
+			padding-bottom: 50px;
+			overflow-y: scroll;
+		}
+		
+		.emptyrush-show img {
+			height: 2.56rem;
+		}
+		
+		.mui-checkbox.mui-left label {
+			padding-top: 0.32rem;
+		}
+		.mui-bar .mui-title {
+	right: 50px;
+	left: 40px; 
+}
+	</style>
+
+	<body>
+		<header class="mui-bar mui-bar-nav" id="header">
+			<div class="home-header">
+				<h1 class="mui-title">购物车列表</h1>
+				<span class="mui-pull-right nav-title" id="EditeShopCart">编辑</span>
+			</div>
+		</header>
+		<div class="mui-content" id="content">
+			<div id="mescroll" class="mescroll">
+				<div id="List" class="rushgroup-list has-fixed">
+					<!--
+                    	作者：419634501@qq.com
+                    	时间：2017-09-22
+                    	描述：在此写入购物车列表结构
+                    -->
+					<div class="emptyrush-show mui-text-center">
+						<img src="images/shopcart-empty.png" />
+						<h4 class="font32 margin-t24">购物车暂无商品</h4>
+					</div>
+
+				</div>
+
+			</div>
+
+		</div>
+
+		<div class="has-fixed-bottom mui-row mui-text-center bg-white">
+			<div class="mui-col-xs-12 overflow">
+				<div class="mui-row" id="totalbuy">
+					<div class="mui-col-xs-8 join-shop  mui-left" style="background: #fff; color: #333; padding: 0.5rem 0rem  0.5rem 0rem;">总价：<span>¥<span id="totalmoney">0.00</span></span>（不含运费）</div>
+					<div class="mui-col-xs-4 buy-now goshop" id="btnShopcart">结算</div>
+				</div>
+				<div class="mui-row mui-hidden" id="delBatch">
+					<div class="mui-checkbox mui-left selectAllBox">
+						<label class="select-all">全选</label>
+						<input type="checkbox" id="checkall" />
+					</div>
+					<div class="buy-now goshop shopDel-btn" id="btnDelete">删除</div>
+				</div>
+			</div>
+		</div>
+	</body>
+	<script type="text/html" id="tempshop">
+		{{each ShopcartGroup as shopcartitem shopindex}}
+		{{if shopcartitem.List.length>0}}
+		<ul class="mui-table-view business-shop">
+			<li class="title">
+				<div class="mui-input-row mui-checkbox mui-left border-bottom">
+					<label>{{shopcartitem.Name}}</label>
+					<input name="ckgroupall_{{shopindex}}" value="{{shopindex}}" type="checkbox">
+				</div>
+			</li>
+			{{each shopcartitem.List as procart}} {{if procart.IsValid && procart.HasEnoughStock}}
+			<li class="item  {{!procart.IsValid?'mui-invalid':''}}">
+				<div class="mui-col-xs-1 left-check">
+					<div class="mui-input-row mui-checkbox mui-left">
+						{{if procart.IsValid}}
+						<label></label>
+						<input name="ckgroup_{{shopindex}}" value="{{procart.SkuID}}" type="checkbox" data-price="{{procart.SubTotal}}" data-storeid="{{procart.StoreId}}" data-type="1" data-storestatus="{{procart.StoreStatus}}"> {{/if}}
+
+					</div>
+				</div>
+				<div class="shopTxt">
+					<div class="shop_name">
+						<img class="mui-media-object mui-pull-left" src="{{procart.ThumbnailUrl100}}">
+
+						<div class="mui-media-body name">
+							<div class="{{!procart.IsValid?'':'cart-info'}}" data-id="{{procart.ProductId}}" onclick="showProductDetail({{procart.IsValid?'1':'0'}},{{procart.ProductId}},{{procart.StoreId}})">
+								<div class="overflow cartname">{{procart.Name}}</div>
+								{{if procart.SendGift.length>0}}
+								<p class="info_b">
+									<span class="info_b_gift"><em>赠</em>&nbsp;&nbsp;{{procart.SendGift[0].Name}}</span>
+								</p>
+								{{/if}}
+							</div>
+							<div class="cart-num  mui-hidden mui-clearfix">
+								<button class="cutshop mui-btn mui-numbox-btn-minus" type="button" data-skuid='{{procart.SkuID}}' data-id='{{shopcartitem.Id}}' data-btn='cut'><img src="images/reduce.png"/></button>
+								<input type="text" id="txtnum_{{procart.SkuID}}" readonly="readonly" class="cart-input" value="{{procart.Quantity}}" />
+								<button class="addshop mui-btn mui-numbox-btn-minus" type="button" data-skuid='{{procart.SkuID}}' data-id='{{shopcartitem.Id}}' data-btn='add'><img src="images/add.png"/></button>
+							</div>
+							<div class="cart-style">{{procart.SkuContent}}</div>
+						</div>
+					</div>
+
+					<div class="shop_pricebox">
+						<div class="price">
+							¥<span>{{procart.MemberPrice}}</span>
+							<div class="cart-quantity">x{{procart.Quantity}}</div>
+							<div class="iconfont icon__trash font48 mui-hidden" data-skuid="{{procart.SkuID}}" data-id='{{shopcartitem.Id}}' data-type="1" data-storeid="{{procart.StoreId}}"></div>
+						</div>
+						{{if procart.SendGift.length>0}}
+						<div class="num">
+							x{{procart.SendGift[0].Quantity}}
+						</div>
+						{{/if}}
+					</div>
+				</div>
+			</li>
+			{{/if}} {{/each}}
+		</ul>
+		{{/if}}
+		{{if (hasPlatform) ? (shopcartitem.Name.indexOf('平台') != -1) : (shopindex == ShopcartGroup.length-1)}}
+		<ul class="business-shop">
+		
+			<li></li>
+			{{each GiftInfo as giftitem}}
+			<li class="mui-table-view-cell item giftmb24">
+				<div class="mui-row overflow">
+					<div class="mui-col-xs-1">
+						<div class="mui-input-row mui-checkbox mui-left giftrow">
+							<label></label>
+							<input checked="true" readonly="readonly" name="ckgroup_gift{{giftitem.GiftId}}" value="{{giftitem.GiftId}}" type="checkbox" data-type="2">
+						</div>
+					</div>
+					<div class="mui-col-xs-8">
+						<img class="mui-media-object mui-pull-left" src="{{giftitem.ThumbnailUrl100}}">
+						<div class="mui-media-body name">
+							<div class="cart-info overflow">{{giftitem.Name}}</div>
+							<div class="cart-num mui-hidden">
+								<span class="iconfont minus_regular cutshop" onclick="changegiftnum('mun',{{giftitem.GiftId}})"></span>
+								<input type="text" id="txtnum_{{giftitem.GiftId}}" readonly="readonly" class="cart-input" value="{{giftitem.Quantity}}" />
+								<span class="iconfont plus_regular addshop" onclick="changegiftnum('add',{{giftitem.GiftId}})"></span>
+							</div>
+						</div>
+					</div>
+					<div class="mui-col-xs-3 mui-text-right">
+						<div class="price">
+							积分：<span>{{giftitem.NeedPoint}}</span>
+						</div>
+						<div class="num cart-quantity">
+							x{{giftitem.Quantity}}
+						</div>
+						<div class="iconfont icon__trash font48 mui-hidden" data-id='{{giftitem.GiftId}}' data-type="2"></div>
+					</div>
+				</div>
+			</li>
+			{{/each}}
+		</ul>
+		{{/if}}
+		{{/each}} {{if disabledList.length>0}}
+		<ul class="mui-table-view business-shop">
+			<li></li>
+			{{each disabledList}}
+			<li class="item  mui-invalid">
+				<div class="mui-col-xs-1 left-check">
+					<div class="mui-input-row mui-checkbox mui-left">
+						{{if !$value.IsValid}}
+						<span class="colorRed in">失效 </span> {{else}}
+						<span class="colorRed in">库存不足 </span> {{/if}}
+					</div>
+				</div>
+				<div class="shopTxt">
+					<div class="shop_name">
+						<img class="mui-media-object mui-pull-left" src="{{$value.ThumbnailUrl100}}">
+						<div class="mui-media-body name">
+							<div>
+								<div class="overflow cartname">{{$value.Name}}</div>
+							</div>
+						</div>
+					</div>
+
+					<div class="shop_pricebox">
+						<div class="price">
+							¥<span>{{$value.MemberPrice}}</span>
+							<div class="cart-quantity">x{{$value.Quantity}}</div>
+							<div class="iconfont icon__trash font48 mui-hidden" data-skuid="{{$value.SkuID}}" data-id='{{$value.StoreId}}' data-type="1" data-storeid="{{$value.StoreId}}"></div>
+						</div>
+					</div>
+				</div>
+			</li>
+			{{/each}}
+		</ul>
+		{{/if}}
+
+		
+	</script>
+	<script>
+		var sessionid = "";
+		var isopenmultstore;
+		var IsOpenSupplier;
+		var mescroll = "";
+		var hasGift = false;
+		var immersedIos=isIphoneX();
+		mui.init();
+		mui.plusReady(function() {
+			if(!fxshop.isLogin()) {
+				//	mui.toast("您还未登录");
+				return;
+			}
+			isopenmultstore = SiteSetting.getSiteInfo().Site.IsOpenMultStore; //是否开启多门店
+
+			IsOpenSupplier = SiteSetting.getSiteInfo().Site.IsOpenSupplier; //是否开启供应商
+
+			sessionid = SiteSetting.getSiteInfo().UserInfo.sessionid;
+			mescroll = new MeScroll("mescroll", { //第一个参数"mescroll"对应上面布局结构div的id
+				//如果您的下拉刷新是重置列表数据,那么down完全可以不用配置,具体用法参考第一个基础案例
+				//解析: down.callback默认调用mescroll.resetUpScroll(),而resetUpScroll会将page.num=1,再触发up.callback
+				down: {
+					callback: loadShopCarts //下拉刷新的回调,别写成downCallback(),多了括号就自动执行方法了
+				}
+			});
+			//loadShopCarts();
+			
+			//判断是否是iphone X
+				if(immersedIos){
+					document.getElementById("header").className+=" Xheader"; 
+					document.getElementById("content").className+=" Xmui-content";
+				} 	 
+			BindEvent();
+		});
+
+		//链接到商品详情
+		function showProductDetail(isvalid, productid, storeid) {
+			if(isvalid == 0) {
+				return;
+			}
+			if(storeid == 0) {
+				fxshop.openVW('product-detail', {
+					'productid': productid
+				});
+			} else {
+				fxshop.openVW('storeproduct-detail', {
+					'productid': productid,
+					'storeid': storeid
+				});
+			}
+		};
+
+		//绑定事件
+		function BindEvent() {
+			mui('#List').on('change', 'input', function() {
+		    	var _this=this;		    	
+		    	var SelectCheckBox = document.getElementById('List').querySelectorAll('input[type="checkbox"]:checked').length;
+		    	var AllCheckBox = document.getElementById('List').querySelectorAll('input[type="checkbox"]').length;
+			    document.getElementById("checkall").checked=(AllCheckBox==SelectCheckBox);			    			    	
+				});
+			
+			//监听点击编辑事件
+			document.getElementById("EditeShopCart").addEventListener("tap", function() {
+				var documentDelBatch = document.getElementById("delBatch");
+				var documentTotalBuy = document.getElementById("totalbuy");
+				this.style.background ="#fc0";
+				var opertext = this.innerText;
+				var docInfo = document.querySelectorAll(".cart-info");
+				var docNum = document.querySelectorAll(".cart-num");
+				var docGift = document.querySelectorAll(".giftrow");
+
+				var docDelte = document.querySelectorAll(".icon__trash");
+				var docquantity = document.querySelectorAll(".cart-quantity");
+
+				if(opertext == "编辑") {
+					opertext = "完成";
+					for(var x = 0; x < docInfo.length; x++) {
+						fxshop.addClass(docInfo[x], "mui-hidden");
+						fxshop.removeClass(docNum[x], "mui-hidden");
+					}
+					for(var k = 0; k < docGift.length; k++) {
+						fxshop.removeClass(docGift[k], "mui-hidden");
+					}
+
+					for(var j = 0; j < docDelte.length; j++) {
+						fxshop.removeClass(docDelte[j], "mui-hidden");
+					}
+					for(var a = 0; a < docquantity.length; a++) {
+						fxshop.addClass(docquantity[a], "mui-hidden");
+					}
+					fxshop.addClass(documentTotalBuy, "mui-hidden")
+					fxshop.removeClass(documentDelBatch, "mui-hidden");
+
+				} else {
+					opertext = "编辑";
+					for(var x = 0; x < docInfo.length; x++) {
+						fxshop.addClass(docNum[x], "mui-hidden");
+						fxshop.removeClass(docInfo[x], "mui-hidden");
+					}
+					for(var k = 0; k < docGift.length; k++) {
+						fxshop.addClass(docGift[k], "mui-hidden");
+					}
+
+					for(var j = 0; j < docDelte.length; j++) {
+						fxshop.addClass(docDelte[j], "mui-hidden");
+					}
+					for(var a = 0; a < docquantity.length; a++) {
+						fxshop.removeClass(docquantity[a], "mui-hidden");
+					}
+
+					loadShopCarts();
+
+					fxshop.removeClass(documentTotalBuy, "mui-hidden")
+					fxshop.addClass(documentDelBatch, "mui-hidden")
+				}
+				this.innerText = opertext;
+
+			});
+
+			mui("#mescroll").on("tap", ".icon__trash", function() {
+				var that = this;
+				var type = this.dataset.type;
+				var id = this.dataset.id;
+				var skuid = "";
+				if(type == 1) { //商品
+					skuid = this.dataset.skuid + "*" + this.dataset.storeid;
+				}
+
+				var sessionid = SiteSetting.getSiteInfo().UserInfo.sessionid;
+				mui.ajax(fxshop.goUrl("delCartItem"), {
+					dataType: "json",
+					type: "post",
+					data: {
+						'SessionId': sessionid,
+						'SkuIds': skuid,
+						'GiftIDs': id
+					},
+					success: function(res) {
+						if(res.ErrorResponse != undefined) {
+							plus.nativeUI.toast(res.ErrorResponse.ErrorMsg);
+							return;
+						}
+						var removeli = that.parentNode.parentNode.parentNode;
+						if(removeli.nodeName != "LI") removeli = removeli.parentNode;
+						removeli.parentNode.removeChild(removeli);
+
+						var ulparent = document.querySelectorAll(".business-shop");
+						for(var k = 0; k < ulparent.length; k++) {
+							if(ulparent[k].children.length <= 1) {
+								var elementul = ulparent[k];
+								elementul.parentNode.removeChild(elementul);
+							}
+						}
+						CalusPrice();
+						mui.toast("删除购物车成功！");
+					},
+					error: function(ex) {
+						mui.toast(ex);
+					}
+				});
+			});
+
+			mui("#mescroll").on("change", "input[name^='ckgroupall']", function() {
+				var groupid = this.value;
+				var ischeck = this.checked;
+				var that = this;
+				if(isopenmultstore) {
+					var groupcheck = document.querySelectorAll("input[name^='ckgroup']");
+					for(var k = 0; k < groupcheck.length; k++) {
+						if(that != groupcheck[k]) {
+							groupcheck[k].checked = false;
+						}
+
+						if(groupcheck[k].name.indexOf('ckgroupall') < 0)
+							groupcheck[k].disabled = true;
+					}
+				}
+
+				checklist = document.querySelectorAll("input[name='ckgroup_" + groupid + "']");
+				for(var x = 0; x < checklist.length; x++) {
+					checklist[x].checked = ischeck;
+					checklist[x].disabled = false;
+					mui.trigger(checklist[x], 'change');
+				}
+				CalusPrice(); //计算价格
+			});
+			
+			//监听复选框
+			var storeSelectCount = 0,allcheckbox,allGiftCheckbox;
+			function changeGiftSelect(){
+				storeSelectCount = 0; 
+				allcheckbox = document.querySelectorAll("input[type='checkbox']");
+				for(var k = 0; k < allcheckbox.length; k++) {
+					if(allcheckbox[k].getAttribute('data-storeid')&&allcheckbox[k].getAttribute('data-storeid')!='0'&&allcheckbox[k].checked){
+						storeSelectCount++;
+					}
+				}
+				allGiftCheckbox = document.querySelectorAll("input[name^='ckgroup_gift']");
+				for(var k = 0; k < allGiftCheckbox.length; k++) {
+					if(storeSelectCount>0){
+						allGiftCheckbox[k].checked = false;
+					}else{
+						allGiftCheckbox[k].checked = true;
+					}
+				}
+			}
+
+			mui("#mescroll").on("change", "input[name^='ckgroup_']", function() {
+				if(this.name.indexOf('ckgroup_gift')>-1){
+					changeGiftSelect();
+					return;
+				}
+				var that = this;
+				var indexid = this.name.split('_')[1];
+				if(!this.checked) {
+					document.getElementsByName("ckgroupall_" + indexid)[0].checked = false;
+					//mui.trigger(document.getElementsByName("ckgroupall_"+indexid)[0], 'change');
+				} else {
+					var ischeckall = true;
+					var othercheck = document.getElementsByName("ckgroup_" + indexid);
+					for(var x = 0; x < othercheck.length; x++) {
+						if(!othercheck[x].checked) {
+							ischeckall = false;
+							break;
+						}
+					}
+
+					if(ischeckall) {
+						document.getElementsByName("ckgroupall_" + indexid)[0].checked = true;
+						mui.trigger(document.getElementsByName("ckgroupall_" + indexid)[0], 'change');
+					}
+				}
+				CalusPrice();
+				changeGiftSelect();
+			});
+
+			//加减购物车
+			mui("#mescroll").on("tap", "button", function() {
+				var oper = this.dataset.btn;
+				var storeid = isopenmultstore ? this.dataset.id : 0;
+				var skuid = this.dataset.skuid;
+				var numstr = "";
+				var num = parseInt(document.getElementById("txtnum_" + skuid).value);
+				if(oper == 'add') {
+					numstr = "+1";
+					num = parseInt(num) + 1;
+				} else {
+					numstr = "-1";
+					num = num - 1;
+				}
+				if(num <= 0) {
+					return;
+				}
+
+				mui.ajax(fxshop.goUrl("addToCart"), {
+					dataType: "json",
+					type: "post",
+					data: {
+						'SessionId': sessionid,
+						'SkuID': skuid,
+						'Quantity': numstr,
+						'StoreId': storeid
+					},
+					success: function(res) {
+						if(res.ErrorResponse != undefined) {
+							plus.nativeUI.toast(res.ErrorResponse.ErrorMsg);
+							return;
+						}
+						document.getElementById("txtnum_" + skuid).value = num;
+					},
+					error: function(ex) {
+						mui.toast(ex);
+					}
+				});
+			})
+
+			//批量删除 
+			document.getElementById("btnDelete").addEventListener("tap", function() {
+				sessionid = SiteSetting.getSiteInfo().UserInfo.sessionid;
+
+				var checkdoc = document.querySelectorAll("input[name^='ckgroup_']:checked");
+
+				if(checkdoc.length <= 0) {
+					mui.toast("请选择要删除的商品");
+					return;
+				}
+
+				var skuidarray = [];
+				var giftdarray = [];
+				for(var x = 0; x < checkdoc.length; x++) {
+					var typeId = checkdoc[x].dataset.type; //1代表商品，2代表礼品
+					if(typeId == 1) {
+						var storeid = checkdoc[x].dataset.storeid;
+						skuidarray.push(checkdoc[x].value + '*' + storeid);
+					} else {
+						giftdarray.push(checkdoc[x].value);
+					}
+				}
+
+				mui.ajax(fxshop.goUrl("delCartItem"), {
+					dataType: "json",
+					type: "post",
+					data: {
+						'SessionId': sessionid,
+						'SkuIds': skuidarray.join(","),
+						'GiftIDs': giftdarray.join(",")
+					},
+					success: function(res) {
+						if(res.ErrorResponse != undefined) {
+							plus.nativeUI.toast(res.ErrorResponse.ErrorMsg);
+							return;
+						}
+						CalusPrice();
+						mui.toast("删除购物车成功！");
+						//loadShopCarts();
+						document.getElementById("checkall").checked=false;
+
+						for(var x = 0; x < checkdoc.length; x++) {
+							var removeli = checkdoc[x].parentNode.parentNode.parentNode.parentNode;
+							removeli.parentNode.removeChild(removeli);
+						}
+
+						var ulparent = document.querySelectorAll(".business-shop");
+						for(var k = 0; k < ulparent.length; k++) {
+							if(ulparent[k].children.length <= 1) {
+								var elementul = ulparent[k];
+								elementul.parentNode.removeChild(elementul);
+							}
+						}
+						
+					},
+					error: function(ex) {
+						mui.toast(ex);
+					}
+				});
+
+			});
+
+			//全选删除
+			document.getElementById("checkall").addEventListener("change", function() {
+				var ischekc = this.checked;
+				var checkall = document.querySelectorAll("input[name^='ckgroup']");
+				for(var x = 0; x < checkall.length; x++) {
+					checkall[x].checked = ischekc;
+				}
+				//this.checked=!ischekc;
+			});
+
+			//绑定结算
+			document.getElementById("btnShopcart").addEventListener("tap", function() {
+				if(!setButtonState()) {
+					mui.toast("请选择要结算的商品");
+					return;
+				}
+
+				var skuidarray = [];
+				var storeid = 0;
+				var checkdoc = document.querySelectorAll("input[name^='ckgroup_']:checked");
+				for(var x = 0; x < checkdoc.length; x++) {
+					if(checkdoc[x].dataset.type == 2)continue;
+					skuidarray.push(checkdoc[x].value);
+					storeid = checkdoc[x].dataset.storeid;
+				}
+				
+				if(!isopenmultstore) {
+					storeid = 0;
+				}
+				var requesturl = apiURL + "appshop/SubmmitOrder.aspx?ckids=" + skuidarray.join(",") + "&StoreId=" + storeid;
+				fxshop.OpenWapWeb(requesturl, '提交订单');
+
+			});
+
+		}
+
+		//改变状态
+		function setButtonState() {
+			var editetxt = document.getElementById("EditeShopCart").innerText;
+			var isEnable = true; //是否可用
+
+			if(editetxt == "完成") {
+				isEnable = false;
+			}
+
+			var checkdocgift = document.querySelectorAll("input[name^='ckgroup_gift']");
+			if(checkdocgift.length > 0) {
+				hasGift = true;
+			};
+			var checkdoc = document.querySelectorAll("input[name^='ckgroup_']:checked");
+			if(checkdoc.length <= 0 && !hasGift) {
+				isEnable = false;
+			}
+			return isEnable;
+
+		}
+
+		function CalusPrice() {
+			var checkdoc = document.querySelectorAll("input[name^='ckgroup_']:checked");
+			var sumprice = 0;
+			var submittitle = '结算';
+			var btnShopcart = document.getElementById('btnShopcart');
+			fxshop.removeClass(btnShopcart, 'disabled');
+			for(var x = 0; x < checkdoc.length; x++) {
+				var skuid = checkdoc[x].value;
+				var obj = checkdoc[x].dataset;
+				if(obj.type == 2) continue;
+				var subtotal = obj.price;
+				sumprice += parseFloat(subtotal);
+				if(x == 0) {
+					submittitle = obj.storestatus == 1 ? '歇业中' : (obj.storestatus == 4 ? '非营业时间' : '结算');
+					btnShopcart.disabled = obj.storestatus == 5 ? '' : 'disabled';
+					if(obj.storestatus != 5) fxshop.addClass(btnShopcart, 'disabled');
+				}
+			}
+			btnShopcart.innerText = submittitle;
+			document.getElementById("totalmoney").innerText = sumprice.toFixed(2);
+		}
+
+		//改变购物车数量
+		function changenum(oper, skuid, storeid) {
+
+			var numstr = "";
+			var num = parseInt(document.getElementById("txtnum_" + skuid).value);
+			if(oper == 'add') {
+				numstr = "+1";
+				num = parseInt(num) + 1;
+			} else {
+				numstr = "-1";
+				num = num - 1;
+			}
+			if(num <= 0) {
+				return;
+			}
+
+			mui.ajax(fxshop.goUrl("addToCart"), {
+				dataType: "json",
+				type: "post",
+				data: {
+					'SessionId': sessionid,
+					'SkuID': skuid,
+					'Quantity': numstr,
+					'StoreId': storeid
+				},
+				success: function(res) {
+					if(res.ErrorResponse != undefined) {
+						plus.nativeUI.toast(res.ErrorResponse.ErrorMsg);
+						return;
+					}
+					document.getElementById("txtnum_" + skuid).value = num;
+				},
+				error: function(ex) {
+					mui.toast(ex);
+				}
+			});
+		}
+
+		function changegiftnum(oper, giftId) {
+			var numstr = "";
+			var num = parseInt(document.getElementById("txtnum_" + giftId).value);
+			if(oper == 'add') {
+				numstr = "+1";
+				num = parseInt(num) + 1;
+			} else {
+				numstr = "-1";
+				num = num - 1;
+			}
+			if(num <= 0) {
+				return;
+			}
+
+			mui.ajax(fxshop.goUrl("addToCart"), {
+				dataType: "json",
+				type: "post",
+				data: {
+					'SessionId': sessionid,
+					'Quantity': numstr,
+					'GiftID': giftId
+				},
+				success: function(res) {
+					if(res.ErrorResponse != undefined) {
+						plus.nativeUI.toast(res.ErrorResponse.ErrorMsg);
+						return;
+					}
+					document.getElementById("txtnum_" + giftId).value = num;
+				},
+				error: function(ex) {
+					mui.toast(ex);
+				}
+			});
+		}
+
+		function loadShopCarts() {
+			mui.ajax(fxshop.goUrl("getShoppingCart"), {
+				dataType: "json",
+				type: "post",
+				timeout: 10000,
+				data: {
+					"SessionId": sessionid,
+					d: new Date()
+				},
+				success: function(res) {
+					if(res.ErrorResponse) {
+						mui.toast(res.ErrorResponse.ErrorMsg);
+						//mescroll.endErr();
+						return;
+					}
+					UpdateCartNum(res.Result.CartItemCount); //更新购物车数量
+					if(res.Result.CartItemInfo.length <= 0 && res.Result.GiftInfo.length <= 0) {
+						document.getElementById("List").innerHTML = '<div class="emptyrush-show mui-text-center">' +
+							'<img src="images/shopcart-empty.png" />' +
+							'<h4 class="font32 margin-t24">购物车暂无商品</h4></div>';
+						document.querySelector(".has-fixed-bottom").style.display = "none";
+						//mescroll.endSuccess();
+						return;
+					}
+					document.querySelector(".has-fixed-bottom").style.display = "block";
+					var shopresult = res.Result;
+					shopresult.hasPlatform = false;
+					var GroupList = [],
+						disabledList = [];
+					res.Result.CartItemInfo.forEach(function(item, index, array) {
+						var shopcargroup = {
+							"Id": 0,
+							"Name": "",
+							"List": []
+						};
+						var KeyId = "";
+						if(isopenmultstore) { //开启门店
+							KeyId = item.StoreId;
+							shopcargroup.Id = item.StoreId;
+							shopcargroup.Name = item.StoreName;
+						} else {
+							KeyId = item.SupplierId;
+							shopcargroup.Id = item.SupplierId;
+							shopcargroup.Name = item.SupplierName;
+						}
+						if (shopcargroup.Id == 0 && !shopresult.hasPlatform) shopresult.hasPlatform = true;
+						var isadd = true;
+
+						if(item.IsValid && item.HasEnoughStock) {
+							shopcargroup.List.push(item);
+						} else {
+							disabledList.push(item);
+						}
+
+						GroupList.forEach(function(groupitem, idx, arr) {
+							if(groupitem.Id == shopcargroup.Id) {
+								isadd = false;
+								groupitem.List.push(item);
+							}
+						});
+						if(isadd && shopcargroup.List.length > 0) { //新增对象
+							GroupList.push(shopcargroup);
+						}
+						hasGift = shopresult.GiftInfo.length > 0;
+
+					});
+
+					shopresult['ShopcartGroup'] = GroupList.length>0?GroupList:[{
+							"Id": 0,
+							"Name": "",
+							"List": []
+						}];
+					shopresult.disabledList = disabledList;
+					document.getElementById("List").innerHTML = template("tempshop", shopresult);
+					document.getElementById("totalmoney").innerText = 0.00.toFixed(2);
+
+					//mescroll.endSuccess();
+				},
+				error: function(ex) {
+					mui.toast(ex);
+					mescroll.endErr();
+				}
+			});
+		}
+
+		document.addEventListener('updateData', function(e) {
+			if(SiteSetting.getSiteInfo().UserInfo) {
+				sessionid = SiteSetting.getSiteInfo().UserInfo.sessionid;
+			}
+			plus.webview.currentWebview().reload();
+			//loadShopCarts();
+		});
+
+		function UpdateCartNum(cartnum) {
+			mui.fire(plus.webview.getWebviewById(plus.webview.getLaunchWebview().id), "updateData", {
+				'shopcartnum': cartnum
+			});
+		}
+	</script>
+
+</html>

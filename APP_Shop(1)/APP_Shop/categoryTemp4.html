@@ -1,0 +1,153 @@
+﻿<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title>分类模板四</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<link rel="stylesheet" href="css/mui.min.css">
+		<link href="css/style.css" rel="stylesheet" />
+
+	</head>
+	<style>
+		.mui-segmented-control .mui-control-item {
+			line-height: 48px;
+			width: 100%;
+		}
+		input[type=search]:focus{ text-align: center;}
+		.home-header,header.mui-bar,.mui-bar.mui-bar-nav:before { background:rgb(245, 245, 245)!important;}
+		.mui-search.mui-active:before{ left:24px;}	
+	</style>
+
+	<body>
+ 
+		<header class="mui-bar mui-bar-nav">
+			<div class="home-header">
+				<div class="search-box" id="seach-box">
+					<label class="iconfont -search search-color" id="search_btn"></label>
+					<input type="search" class="mui-input-clear search-input" placeholder="请输入搜索关键字">
+				</div>
+			</div>
+		</header>
+
+		<!--第4套模板分类-->
+		<div class="mui-content mui-row catelist4" id="catelist4">
+			<div class="cate-level" id="proCate4-text">
+	
+			</div>
+		</div>
+ 
+	</body>
+	
+		<script type="text/javascript" src="js/flexible.debug.js"></script>
+		<script type="text/javascript" src="js/flexible_css.debug.js"></script>
+		<script type="text/javascript" src="js/mui.min.js"></script>
+		<script type="text/javascript" src="js/app.js"></script>
+		<script type="text/javascript" src="js/template.js"></script>
+		
+	<script>
+		mui.init({});
+		var threeCateBox=document.getElementsByClassName("three-cate");
+		var threeCateTxt=document.getElementById("li-txt");
+		var immersedIos=isIphoneX();
+		mui.plusReady(function() {
+			//判断是否是iphone X 
+				if(immersedIos) {
+					document.getElementById("seach-box").className += " Xsearch";
+					document.getElementById("search_btn").className +=" Xsearchbtn"
+				}
+			
+			mui.ajax(fxshop.goUrl('getAllCategories'), {
+				dataType: 'json',
+				type: 'get',
+				success: function(data) {
+					var result = data.Result;
+					var TopCategory = result.Subs;
+					document.getElementById("proCate4-text").innerHTML = template('listTemp4-level1', {'TopCategory':TopCategory});											 
+				}
+			});
+ 
+		});
+		 
+		document.getElementById('seach-box').addEventListener('tap',function(){
+			fxshop.openVW('search');
+		});
+		
+		function showDiv(cateId){
+			var showstyle=document.getElementById("catediv_" + cateId).style.display;
+			if(showstyle=="block")
+			{
+				document.getElementById("catediv_" + cateId).style.display="none";
+			}
+			else
+			document.getElementById("catediv_" + cateId).style.display="block";
+		}
+		
+		function searchCate(keywords,cid)
+		{
+
+			var siteinfo = SiteSetting.getSiteInfo();
+			var StoreStatus = siteinfo.Status;
+			if(StoreStatus=='storeList'){
+				fxshop.openVW('proStroeInfo',{'keywords': keywords,'pid':cid});
+			}else if(StoreStatus=='goToStore'){
+				fxshop.openVW('search-result',{'keywords': keywords,'pid':cid,'storeId': localStorage.getItem('DefaultStorid')});
+			}
+			else {
+				fxshop.openVW('search-result',{'keywords': keywords,'pid':cid});
+			}
+			
+		}
+		
+ 
+	</script>
+
+	<script type="text/html" id="listTemp4-level1">
+		{{each TopCategory as cateDate}}
+		<div class="cate-box">
+			<div class="first-cate">
+				<div class="img_bg"></div>
+				{{if cateDate.bigImageUrl&&cateDate.bigImageUrl.length>0}}
+					<img src="{{cateDate.bigImageUrl}}">
+					
+				{{/if}}
+	
+				<div class="cate-txt">
+					<h2>{{cateDate.name}}</h2>
+					<a href="#" onclick="searchCate('','{{cateDate.cid}}')">查看全部</a>
+					<span>{{cateDate.Subs}}</span>
+				</div>
+			</div>
+			
+			<div class="second-cate">
+				{{each cateDate.Subs as cateDate2}}
+				<div class="cate-a" id="{{cateDate2.cid}}">
+					{{if cateDate2.hasChildren=="true"}}
+						<a onclick="showDiv({{cateDate2.cid}})">{{cateDate2.name}}<span class="iconfont icon__arrow_down down-icon"></span></a>				
+						<ul class="three-cate" id="catediv_{{cateDate2.cid}}">
+							<a class="cate-all" href="#" onclick="searchCate(' ','{{cateDate2.cid}}')">全部</a>
+							<div class="li-txt">
+							{{each cateDate2.Subs as cateDate3}}
+								<li>
+									<a href="#" onclick="searchCate(' ','{{cateDate3.cid}}')">{{cateDate3.name}}</a>
+								</li>
+							{{/each}}
+							</div>
+						</ul>
+					{{/if}}
+					
+					{{if cateDate2.hasChildren=="false"}}
+						<a onclick="searchCate(' ','{{cateDate2.cid}}')">{{cateDate2.name}}</a>	
+					{{/if}}
+				</div>		
+			{{/each}}			
+			</div>
+			
+		</div>
+		{{/each}}
+	</script>
+
+
+</html>

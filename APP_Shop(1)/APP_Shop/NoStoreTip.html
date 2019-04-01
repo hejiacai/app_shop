@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="css/mui.min.css" rel="stylesheet" />
+		<link href="css/style.css" rel="stylesheet" />
+		<link rel="stylesheet" href="css/style.css" />
+		<script type="text/javascript" src="js/flexible.debug.js"></script>
+		<script type="text/javascript" src="js/flexible_css.debug.js"></script>		
+	</head>
+	<body>
+		<div class="mui-content">
+			<!--周边没有门店并不推荐到平台-->
+			<div class="tipType mui-hidden" id="tipType1">
+					<img src="images/nostore-tip.png">
+					<h2>您的地址周边不存在可提供服务的门店</h2>
+					<span>手动搜索</span>
+			</div>
+
+			<!--周边没有门店并但后台有推荐到平台-->
+			<div class="tipType mui-hidden" id="tipType3">
+					<img src="images/noposi-tip.png">
+					<h2>无法获取您的位置信息，请您设置手机开启定位服务，否则可能影响到您的使用</h2>
+					<span>手动搜索</span>
+			</div>
+		
+		</div>
+	</body>
+
+	<script type="text/javascript" src="js/mui.min.js" ></script>
+	<script type="text/javascript" src="js/app.js" ></script>
+	<script type="text/javascript">
+		mui.init();
+		mui.plusReady(function() {
+			var self = plus.webview.currentWebview(); //获取当前窗体对象
+			var status = self.status;
+			if(status == "nothing"){
+				fxshop.removeClass(document.getElementById("tipType1"),"mui-hidden");
+			}
+			else if(status == "noLatLng"){
+				fxshop.removeClass(document.getElementById("tipType3"),"mui-hidden");
+			}
+		})
+		
+		mui('.tipType').on('tap', 'span', function(e) {
+			fxshop.openVW("nearstore",{'pageid':'NoStoreTip'});
+			//fxshop.openVW("nearstore",{'pageid':'nearstorelist'});
+			//plus.webview.currentWebview().close();
+			});
+	</script>
+</html>

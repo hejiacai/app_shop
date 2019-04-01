@@ -1,0 +1,256 @@
+<!DOCTYPE HTML>
+<html>
+
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+		<meta name="HandheldFriendly" content="true" />
+		<meta name="MobileOptimized" content="320" />
+		<title>订单提交页</title>
+		<link href="css/mui.min.css" rel="stylesheet" />
+		<link rel="stylesheet" href="css/style.css" />
+		<script src="js/mui.min.js"></script>
+		<script src="js/app.js"></script>
+ 		<script type="text/javascript" src="js/flexible.debug.js" ></script>
+		<script type="text/javascript" src="js/flexible_css.debug.js" ></script>		
+
+	</head>
+	<style>
+		.home-header{ height: 48px;}
+	</style>
+
+	<body>
+		<header id="header" class="mui-bar mui-bar-nav">
+			<div class="home-header">
+				<a class="mui-icon mui-icon-left-nav mui-pull-left" id="go_back"></a>
+				<a id="menu" class="iconfont _more mui-pull-right" onclick="showAppNav()"></a>				
+				<h1 class="mui-title">
+				
+				</h1>
+
+			</div>
+		</header>
+ 
+
+		<script type="text/javascript" charset="utf-8">
+			mui.init();
+			var webWV = null;
+			topHeight = "";
+			var shares;
+			var immersedIos=isIphoneX();
+			mui.plusReady(function() {
+				//plus.storage.setItem('appuserkey',himall.getState().userkey);
+				plus.storage.removeItem('alreayFresh');
+				topHeight = 44;
+				if(plus.navigator.isImmersedStatusbar()) {
+					topHeight = Math.round(plus.navigator.getStatusbarHeight()) + topHeight;
+				}
+				//判断是否是iphone X 
+				if(immersedIos){
+					document.getElementById("header").className += " Xheader";
+					topHeight = 84;
+				} 	 
+				setTimeout(function() {
+					loadPage();
+				}, 200);
+				initPay();
+				shares = initShare();
+			});
+
+			function loadPage(requesturl, title) {
+				var ws = plus.webview.currentWebview(),
+					w = plus.nativeUI.showWaiting('', {
+						padlock: true
+					});
+				var wtitle = ws.name,
+					wurl = ws.link;
+				if(title) {
+					wtitle = title;
+				}
+				if(requesturl) {
+					wurl = requesturl;
+				}
+				document.querySelector('.mui-title').innerText = wtitle;
+				webWV = plus.webview.create(wurl, "submitorder", {
+					top: topHeight + 'px',
+					bottom: 0,
+					opacity: 0,
+					bounce: 'vertical'
+				});
+				ws.append(webWV);
+				setTimeout(function() {
+					w.close();
+					webWV.setStyle({
+						opacity: 1
+					});
+				}, 1300);
+
+			}
+			//监听修改跳转过来的链接
+			document.addEventListener("UpdateWapPage", function(e) {
+				var updatename = e.detail.name;
+				var updateurl = e.detail.url;
+				loadPage(updateurl, updatename);
+			});
+
+			//监听支付方式
+			document.addEventListener('PayOrders', function(e) {
+
+				var typeId = e.detail.typeid;
+				var payurl = e.detail.payurl;
+
+				setTimeout(function() {
+					payOrder(typeId, payurl, 'success', 'error');
+				}, 200);
+
+			});
+
+			document.addEventListener("updateTitle", function(e) {
+				if(e.detail.title) {
+					document.querySelector('.mui-title').innerText = e.detail.title;
+				}
+
+			});
+
+			//监听"..."打开导航菜单        
+			document.addEventListener("showAppNav", function(e) {
+				var display = document.getElementById('navbar').style.display;
+				if(display == "none" || display == '') {
+					document.getElementById('navbar').style.display = 'block';
+				} else if(display == "block") {
+					document.getElementById('navbar').style.display = 'none';
+				}
+			});
+
+			//监听个人中心数据变化
+			document.addEventListener('updateUserData', function(e) {
+				mui.fire(plus.webview.getWebviewById('userhome.html'), 'updateData');
+				mui.fire(plus.webview.getWebviewById('shopcart.html'), 'updateData');
+			});
+
+			document.addEventListener("OpenUrl", function(e) {
+				var pagename = e.detail.pagename;
+				var parms = e.detail.extend;
+				if(parms != undefined && parms != null) {
+					if(pagename == "storeproduct-detail") {
+
+						var temp = JSON.parse(parms);
+
+						ShowStoreProdduct(temp.productid, temp.storeid);
+					} else if(pagename == "product-detail") {
+						var temp = JSON.parse(parms);
+						showProduct(temp.productid);
+					} else if(pagename == "storehome1") { //门店首页
+						plus.webview.currentWebview().close();
+						var temp = JSON.parse(parms);
+						mui.fire(plus.webview.getWebviewById(plus.webview.getLaunchWebview().id), "updateMenu", {
+							"href": "storehome1.html",
+							"storeid": temp.storeid
+						});
+						fxshop.openVW(plus.webview.getLaunchWebview().id);
+					}
+					else {
+						fxshop.openVW(pagename, JSON.parse(parms));
+					}
+
+				} else {
+					if(pagename == "shopcart" || pagename == "home" || pagename == "userhome" || pagename == "category") {
+						plus.webview.currentWebview().close();
+						mui.fire(plus.webview.getWebviewById(plus.webview.getLaunchWebview().id), "gohome", {
+							'pagename': pagename
+						});
+						fxshop.openVW(plus.webview.getLaunchWebview().id);
+					} else if(pagename == "nearstorelist") {
+						mui.fire(plus.webview.getWebviewById(plus.webview.getLaunchWebview().id), "updateMenu", {
+							"href": "nearstorelist.html"
+						});
+						fxshop.openVW(plus.webview.getLaunchWebview().id);
+					} else {
+						fxshop.openVW(pagename);
+					}
+
+				}
+			});
+
+			document.addEventListener("RefreshOrderList", function() {
+				//plus.webview.currentWebview().close();
+				mui.fire(plus.webview.getWebviewById("order-list"), "UpdateDataOrder");
+				fxshop.openVW("order-list");
+			});
+
+			document.addEventListener("ClosePage", function() {
+				plus.webview.currentWebview().close();
+			});
+
+			document.getElementById("go_back").addEventListener("tap", function() {
+				webWV.canBack(function(event) {
+					var canBack = event.canBack;
+				if(canBack&&!BackPage()) {
+						webWV.back();
+					} else {
+						mui.fire(plus.webview.getWebviewById('shopcart.html'), 'updateData');
+						mui.back();
+					}
+				});
+			});
+
+			function showAppNav() {
+				mui.fire(plus.webview.getWebviewById('submitorder'), 'showAppNav');
+			}
+			
+			//监听订单详情代金红包分享
+			document.addEventListener('orderDetailShare', function(e) {
+				var shareId = e.detail.id;
+				var scene = e.detail.scene;	
+				var orderId = e.detail.orderId;
+				var share = shares[shareId];
+				var params = e.detail.params;
+				var sendCode = params.SendCode;
+				var RedEnvelopeId = params.RedEnvelopeId;
+
+				if(share) {
+					if(share.authenticated) {
+						shareMessage(share, scene, params);
+						//订单详情发送成功插入数据的记录
+						AddRedEnvelopeSendRecord(orderId,sendCode,RedEnvelopeId);
+					} else {
+						share.authorize(function() {
+							shareMessage(share, scene, params);
+						}, function(e) {
+							mui.toast("认证授权失败：" + e.code + " - " + e.message);
+		
+						});
+					}
+				} else {
+					mui.toast("无法获取分享服务，请检查manifest.json中分享插件参数配置，并重新打包")
+}
+
+});
+
+function AddRedEnvelopeSendRecord(orderId,sendCode,RedEnvelopeId) {
+	mui.ajax({
+		url: apiURL+"API/VshopProcess.ashx",
+		type: 'post',
+		dataType: 'json',
+		timeout: 10000,
+		data: {
+			action: "AddRedEnvelopeSendRecord",
+			SendCode: sendCode,
+			RedEnvelopeId: RedEnvelopeId,
+			OrderId: orderId
+		},
+		success: function(resultData) {
+			if(resultData.success=="false"){
+				mui.toast(resultData.msg);
+				return;
+			}
+
+		},
+		error: function(XMLHttpRequest, textStatus, errorThrown) {
+			alert(XMLHttpRequest.status + "-" + XMLHttpRequest.readyState + "-" + textStatus);
+		}
+	});
+}</script>
+	</body>
+
+</html>

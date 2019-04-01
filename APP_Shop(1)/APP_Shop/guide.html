@@ -1,0 +1,137 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="css/mui.min.css" rel="stylesheet" />
+		<link href="css/style.css" rel="stylesheet" />
+		<script src="js/mui.min.js"></script>
+		<script src="js/template.js"></script>
+
+		<script type="text/javascript" src="js/flexible.debug.js"></script>
+		<script src="js/app.js"></script>
+		<script type="text/javascript" src="js/flexible_css.debug.js"></script>
+	</head>
+
+	<body>
+		<div id="slider" class="mui-slider mui-fullscreen">
+			<div class="mui-slider-group">
+				<!-- 第一张 -->
+				<div class="mui-slider-item" id="tips-1">
+					<img class="guide-img" src="images/index_01.jpg">
+				</div>
+				<!-- 第二张 -->
+				<div class="mui-slider-item" id="tips-2">
+					<img class="guide-img" src="images/index_02.jpg">
+				</div>
+				<!-- 第三张 -->
+				<div class="mui-slider-item" id="tips-3">
+					<img class="guide-img" src="images/index_03.jpg">
+					<button class="mui-btn mui-btn-blue mui-btn-outlined btn_start" type="button" id="start">开始体验</button>
+				</div>
+			</div>
+			<div class="mui-slider-indicator">
+				<div class="mui-indicator mui-active"></div>
+				<div class="mui-indicator"></div>
+				<div class="mui-indicator"></div>
+			</div>
+		</div>
+
+		<script src="js/mui.min.js"></script>
+		<script type="text/javascript">
+			mui.init();
+			mui.plusReady(function() {
+				localStorage.setItem('apiUrl', "");
+				var uuid = plus.device.uuid;
+				var type = plus.os.name.toLowerCase();
+				var version = localStorage.getItem('version') || plus.runtime.version;
+				var isfirst = plus.storage.getItem("launchFlag");
+				mui.ajax(appiniturl + 'AppShop/AppShopHandler.ashx?action=appInit', {
+					data: {
+						'VID': uuid,
+						'device': type,
+						'version': version,
+						'isFirst': isfirst
+					},
+					dataType: 'json',
+					type: 'get',
+					timeout: 10000,
+					success: function(data) {
+						localStorage.setItem('version', data.Result.version); //存储当前版本
+
+						var actapiurl = data.Result.AppAuditAPIUrl; //当前需要请求的路径
+
+						var tempruntimeversion = plus.runtime.version.replace(/\./g, "");
+						var tempcurrentversion = data.Result.CurrentVersion.replace(/\./g, ""); //当前的版本号
+						var currentsite = SiteSetting.getSiteInfo();
+						var tag = false; //默认为本地版本比接口版本要低
+						for(var x = 0; x < tempcurrentversion.length - 1; x++) {
+							var cversion = tempcurrentversion.substr(x, 1);
+							if(x <= tempruntimeversion.length) {
+								var rversion = tempruntimeversion.substr(x, 1);
+								if(rversion > cversion) {
+									tag = true;
+									break;
+								}
+							}
+						}
+						if(tag && actapiurl) { //为true代表需要请求接口返回的路径地址
+							apiURL = actapiurl;
+						}
+						if(apiURL.lastIndexOf('/') != apiURL.length - 1) { //如果不以斜杠结尾
+							apiURL = apiURL + '/';
+						}
+
+						localStorage.setItem('apiUrl', apiURL);
+					}
+				});
+
+				if(mui.os.ios) {
+					plus.navigator.setFullscreen(true);
+				}
+				plus.navigator.closeSplashscreen();
+				document.getElementById("start").addEventListener("tap", function() {
+					if(mui.os.ios) {
+						plus.navigator.setFullscreen(false);
+					}
+					/**
+					 * 向本地存储中设置launchFlag的值，即启动标识；
+					 * http://www.html5plus.org/doc/zh_cn/storage.html#plus.storage.setItem
+					 */
+					plus.storage.setItem("launchFlag", "true");
+					plus.webview.getWebviewById("guide").close();
+//					mui.openWindow({
+//						url: "main.html",
+//						id: "main",
+//						extras: {
+//							mark: "index" //同样，这里也只是个标识，实际开发中并不用；
+//						}
+//					});
+					fxshop.openVW('main', {
+						'mark': 'index'
+					})
+				});
+			});
+
+			//图片切换时，触发动画
+			document.querySelector('.mui-slider').addEventListener('slide', function(event) {
+				//注意slideNumber是从0开始的；
+				var index = event.detail.slideNumber + 1;
+				if(index == 2 || index == 3) {
+					var item = document.getElementById("tips-" + index);
+					if(item.classList.contains("mui-hidden")) {
+						item.classList.remove("mui-hidden");
+						item.classList.add("guide-show");
+					}
+				}
+			});
+			/**
+			 * 重写mui.back()，什么都不执行，反之用户返回到入口页；
+			 */
+			mui.back = function() {};
+		</script>
+	</body>
+
+</html>

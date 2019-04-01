@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<meta name="format-detection" content="telephone=no,email=no" />
+		<title>拼团商品详情</title>
+
+		<link rel="stylesheet" href="css/mui.min.css">
+		<link rel="stylesheet" href="css/swiper.min.css">
+		<link rel="stylesheet" href="css/style.css" />
+
+		<script src="js/mui.js" type="text/javascript"></script>
+		<script src="js/app.js" type="text/javascript"></script>
+		<script type="text/javascript" src="js/template.js"></script>
+		<script src="js/swiper.min.js" type="text/javascript"></script>
+		<script src="js/delayimg.min.js"></script>
+		<script src="js/flexible.debug.js" type="text/javascript"></script>
+
+		<script src="js/flexible_css.debug.js" type="text/javascript"></script>
+	</head>
+	<style>
+		.mui-control-content {
+			margin-bottom: 1.3066rem;
+			overflow: hidden;
+		}
+		
+		#productframe img {
+			width: 100%;
+		}
+	</style>
+
+	<body>
+		<header class="mui-bar mui-bar-nav" id="header">
+			<div class="home-header">
+				<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+				<h1 class="mui-title">拼团商品详情</h1>
+			</div>
+		</header>
+
+		<div class="mui-content" id="content" style="background: #F0F0F0;">
+
+			<!--轮播-->
+			<div class="swiper-container" id="swiper1">
+
+			</div>
+
+			<div id="List" style="padding-bottom:1.28rem ;">
+
+			</div>
+
+		</div>
+
+		<div class="has-fixed-bottom mui-row mui-text-center bg-white">
+			<div class="mui-col-xs-12 overflow">
+				<div class="mui-row">
+					<div class="mui-col-xs-6 join-shop" id="gobuy">原价购买</div>
+					<div class="mui-col-xs-6 buy-now" id="pintuan">去拼团</div>
+				</div>
+			</div>
+		</div>
+
+		<!--
+        	作者：419634501@qq.com
+        	时间：2017-10-28
+        	描述：添加咨询
+        -->
+
+		<!--添加咨询-->
+		<div class="coupinfo-show mui-hidden" id="userconsolute">
+			<div class="coupinfo-bd">
+				<div class="mui-coupinfo-title mui-row overflow mui-clearfix">
+					<div class="mui-col-xs-8 mui-text-left">商品咨询</div>
+					<div class="mui-col-xs-4 mui-text-right">
+						<span class="close"><i class="iconfont icon__close"></i></span>
+					</div>
+				</div>
+				<div class="pre-activi overflow">
+					<ul class="mui-table-view">
+						<li class="mui-table-view-cell Discount_img">
+							手机/邮箱：<input type="text" id="txtcellphone" />
+						</li>
+						<li class="mui-table-view-cell Discount_img">
+							咨询内容：<textarea rows="4" id="txtareacontent"></textarea>
+						</li>
+					</ul>
+				</div>
+				<div class="has-fixed-bottom  mui-row mui-text-center bg-orage">
+					<div id="btnAddconsolute">添加咨询</div>
+				</div>
+			</div>
+		</div>
+
+	</body>
+
+	<script id="tempswiper" type="text/html">
+		<div class="swiper-wrapper">
+			{{each ProductImg as item}}
+			<div class="swiper-slide editeCss"><img class="guide-img" src="{{item}}" /></div>
+			{{/each}}
+		</div>
+		<div class="swiper-pagination"></div>
+		<div class="swiper-tuan-num tuan-num mui-text-center">
+			<div id="fightbodynum">{{Num}}</div>人团</div>
+
+	</script>
+
+	<script id="tempfight" type="text/html">
+
+		<!--拼团信息-->
+		<div class="tuan-details-bd">
+			<ul class="mui-table-view">
+				<li class="mui-table-view-cell title mui-row">
+					{{if FightDetail.Status==2}}
+					<div class="mui-col-xs-12 l"><i class="iconfont icon__star"></i>&nbsp;开团时间：{{FightDetail.StartTime}}</div>
+					{{else if FightDetail.Status==1}}
+					<div class="mui-col-xs-8 l"><i class="iconfont icon__star"></i>&nbsp;成团时限：{{FightDetail.LimitedHour}}小时</div>
+					<div class="mui-col-xs-4 r mui-text-center">
+						活动截止
+						<div>{{FightDetail.EndTime}}</div>
+					</div>
+					{{else}}
+					<div class="mui-col-xs-12 l"><i class="iconfont icon__star"></i>&nbsp;火拼团活动已结束</div>
+
+					{{/if}}
+
+				</li>
+				<li class="mui-table-view-cell name">
+					{{FightDetail.ProductName}}
+				</li>
+				<li class="mui-table-view-cell price">
+					开团价：¥<span>{{FightDetail.FightPrice}}</span><i>¥{{FightDetail.SalePrice}}</i>
+				</li>
+				<li class="mui-table-view-cell mui-row info">
+					{{if FightDetail.ProductInfo.IsSupportTakeOnStore}}
+					<div class="mui-col-xs-4 {{FightDetail.ProductInfo.IsSupportTakeOnStore?'active':''}}">&bull;&nbsp;上门自提</div>
+					{{/if}}
+					<div class="mui-col-xs-4 mui-text-right">&bull;&nbsp;售后保障</div>
+				</li>
+				<li class="mui-table-view-cell prompt">
+					<img src="images/icon-guize.png">活动规则：邀请{{FightDetail.MaxJoinCount}}人即可成团，人数不足自动退款。
+				</li>
+			</ul>
+		</div>
+
+		<div class="height32"></div>
+
+		<!--其它拼团伙伴-->
+		{{if FightDetail.GroupItems.length>0}}
+		<div class="tuan-buddy">
+			<ul class="mui-table-view">
+				<li class="mui-table-view-cell hd">以下小伙伴正在发起拼团，您可以直接参与：</li>
+				{{each FightDetail.GroupItems as groupactive}}
+				<li class="mui-table-view-cell item" onclick="OpenGroupDetail({{groupactive.FightGroupId}})">
+					<div class="title overflow">
+						<img class="mui-media-object mui-pull-left" src="{{groupactive.HeadImage}}">
+						<div class="mui-media-body">
+							<p class='mui-ellipsis mui-pull-left'>{{groupactive.NickName}}</p>&nbsp;
+							<span class="mui-badge mui-badge-success">团长</span>
+						</div>
+					</div>
+					<div class="mui-row info">
+						<div class="mui-col-xs-3">还差<span>{{groupactive.NeedJoinNumber}}</span>人</div>
+						<div class="mui-col-xs-6 mui-text-center" id="EndTime_{{groupactive.FightGroupId}}"></div>
+						<div class="mui-col-xs-3 mui-text-right">去参团&nbsp;<i class="iconfont  arrow_right right-iconColor"></i></div>
+					</div>
+				</li>
+				{{/each}}
+			</ul>
+
+		</div>
+		{{/if}}
+		<div class="height32"></div>
+
+		<div class="pd24-horizontal bg-white bd-e overflow" onclick="OpenReview({{FightDetail.ProductInfo.ProductId}})">
+			<a class="mui-block">
+				<div class="mui-row product-group-p">
+					<div class="mui-col-xs-10 mui-text-left">商品评价（{{FightDetail.ProductInfo.ReviewCount}}）</div>
+					<div class="mui-col-xs-2 mui-text-right iconfont arrow_right right-iconColor"></div>
+				</div>
+			</a>
+		</div>
+
+		<div class="height32"></div>
+
+		<div class="view-description pd24-horizontal">
+			<div class="bg-white">继续拖动，查看商品描述</div>
+		</div>
+		<div class="height32"></div>
+		<div class="height32"></div>
+
+		<div class="mui-tab-frame bg-white overflow mui-text-left ">
+			<div id="segmentedControl" class="mui-segmented-control bg-white">
+				<a class="mui-control-item mui-active" href="#item1">图文详情</a>
+				<a class="mui-control-item" href="#item2">商品咨询 </a>
+			</div>
+			<div class="mui-tab-content">
+				<div id="item1" class="mui-control-content mui-active">
+					<!--图文详情-->
+					<div class=" mui-content-bd mui-control-details" id="productframe">
+
+					</div>
+				</div>
+
+				<div id="item2" class="mui-control-content">
+					<div id="proconsulationicon" class="zixun">
+					 
+					</div>
+					<!--商品咨询-->
+					<div class=" mui-content-bd mui-control-consul">
+						<iframe id="productconsultations" style="width:100%;" frameborder="0" scrolling="no"></iframe>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="footer-mb overflow"></div>
+	</script>
+
+	<script>
+		var activeid = "",
+			pid = "",
+			fightstate = 1,
+			controltop = 0,
+			sessionid = "";
+		var immersedIos=isIphoneX();	
+		mui.init();
+		mui.plusReady(function() {
+			//判断是否是iphone X 
+			if(immersedIos){
+				document.getElementById("header").className+=" Xheader"; 
+				document.getElementById("content").className+=" Xmui-content";
+			} 	 
+			CurrentView = plus.webview.currentWebview();
+			activeid = CurrentView.activeid;
+			pid = CurrentView.pid;
+
+			if(fxshop.isLogin()) {
+				sessionid = SiteSetting.getSiteInfo().UserInfo.sessionid;
+			}
+			ShowFightDetails();
+			setTimeout(function() {
+				likesproductwiper();
+			}, 300);
+			setTimeout(function() {
+				BindEvent();
+				CalculationFrame();
+			}, 3000);
+
+		});
+
+		window.onscroll = function() {
+			var top = document.documentElement.scrollTop || document.body.scrollTop;
+			if(top > controltop) {
+				fxshop.addClass(document.getElementById("segmentedControl"), "active");
+			} else {
+				fxshop.removeClass(document.getElementById("segmentedControl"), "active");
+			}
+		};
+
+		function BindEvent() {
+			//原价购买
+			document.getElementById("gobuy").addEventListener("tap", function() {
+				if(!fxshop.isLogin()) {
+
+					fxshop.openVW("login");
+					return;
+				}
+				ClickCart(pid, 2);
+				//showProduct(pid);
+			});
+
+			//去拼团
+			document.getElementById("pintuan").addEventListener("tap", function() {
+				if(!fxshop.isLogin()) {
+
+					fxshop.openVW("login");
+					return;
+				}
+				if(fightstate == 1) {
+					ClickCart(pid, 3, activeid);
+				} else {
+					fxshop.openVW("rushgrouplist")
+				}
+			});
+
+			mui(document).on("tap", ".close", function() {
+				fxshop.addClass(document.getElementById("userconsolute"), "mui-hidden");
+			});
+
+			//显示商品咨询
+			document.getElementById("proconsulationicon").addEventListener("tap", function() {
+				fxshop.removeClass(document.getElementById("userconsolute"), "mui-hidden");
+			});
+
+			//点击添加商品咨询按钮
+			document.getElementById("btnAddconsolute").addEventListener("tap", function() {
+				var cellphone = document.getElementById("txtcellphone").value.trim();
+				var areacontent = document.getElementById("txtareacontent").value.trim();
+
+				if(cellphone.length <= 0 || areacontent.length <= 0) {
+					mui.toast("手机/邮箱或咨询内容不允许为空！");
+					return;
+				}
+
+				sessionid = SiteSetting.getSiteInfo().UserInfo.sessionid;
+				mui.ajax(fxshop.goUrl("ProductConsultations"), {
+					dataType: "json",
+					type: "post",
+					data: {
+						'sessionid': sessionid,
+						'productId': pid,
+						'userName': cellphone,
+						'consultationText': areacontent
+					},
+					success: function(res) {
+
+						if(res["ErrorResponse"] != undefined) {
+							mui.toast(res.ErrorResponse.ErrorMsg);
+							return;
+						}
+
+						mui.toast("商品咨询成功！");
+						fxshop.addClass(document.getElementById("userconsolute"), "mui-hidden");
+
+					},
+					error: function(ex) {
+						mui.toast(ex);
+					}
+				});
+			});
+
+		}
+
+		function OpenGroupDetail(gruopid) {
+			fxshop.openVW("rushactivedetail", {
+				'fightgroupId': gruopid,
+				'activeId': activeid
+			})
+		}
+
+		function OpenReview(productid) {
+			var url = apiURL + '/AppShop/ProductReview.aspx?productId=' + productid;
+			fxshop.OpenWapWeb(url, '商品评价');
+		}
+
+		function ShowFightDetails() {
+			mui.ajax(fxshop.goUrl("FightGroupActivityDetail"), {
+				dataType: "json",
+				type: "post",
+				data: {
+					"FightGroupActivityId": activeid,
+					"SessionId": sessionid
+				},
+				success: function(res) {
+					if(res["ErrorResponse"] != undefined) {
+						mui.toast(res.ErrorResponse.ErrorMsg);
+						return;
+					}
+					var swiperhtml = template("tempswiper", {
+						'ProductImg': res.Result.ProductInfo.ProductImages.split(","),
+						"Num": res.Result.MaxJoinCount
+					});
+					document.getElementById("swiper1").innerHTML = swiperhtml; //拼团商品详情图片
+					document.getElementById("List").innerHTML = template("tempfight", {
+						"FightDetail": res.Result
+					});
+
+					for(var i = 0; i < res.Result.GroupItems.length; i++) {
+						var EndTime = res.Result.GroupItems[i].RemainTime;
+						var hour = parseInt(EndTime % 86400 / 3600);
+						var min = parseInt((EndTime % 3600) / 60);
+						var sec = parseInt((EndTime % 3600) % 60);
+						document.getElementById('EndTime_' + res.Result.GroupItems[i].FightGroupId).innerHTML = '<span>' + formatSeconds(EndTime) + '</span>' + '后结束';
+					}
+
+					pid = res.Result.ProductInfo.ProductId;
+
+					fightstate = res.Result.Status;
+					if(res.Result.Status != 1) { //不是正在进行中的
+						document.getElementById("pintuan").innerText = "更多拼团";
+					} else {
+						document.getElementById("pintuan").innerText = "¥" + res.Result.FightPrice + "　去拼团";
+					}
+					document.getElementById("gobuy").innerText = "¥" + res.Result.SalePrice + "　原价买";
+					controltop = document.getElementById("segmentedControl").offsetTop;
+
+					document.getElementById("productframe").innerHTML = fxshop.parseDomImg(res.Result.ProductInfo.Description);
+					delayimg.init({
+						offset: 300,
+						throttle: 0
+					});
+					document.getElementById("productconsultations").src = apiURL + "Appshop/ProductDetailsConsultations.aspx?productId=" + pid;
+				},
+				error: function(ex) {
+					mui.toast(ex);
+				}
+			});
+
+		}
+
+		function CalculationFrame() {
+			var productconsultationsframe = document.getElementById("productconsultations");
+			var outerheight = "";
+			if(productconsultationsframe.contentWindow.document.body) {
+
+				outerheight = productconsultationsframe.contentWindow.document.body.scrollHeight;
+				if(outerheight == 359) {
+					outerheight = 150
+				} else {
+					outerheight = outerheight - 67;
+				}
+				productconsultationsframe.setAttribute("height", outerheight);
+			}
+		}
+
+		function likesproductwiper() {
+			var swiperbanner = new Swiper('#swiper1', {
+				loop: true,
+				autoplay: 3000,
+				pagination: '.swiper-pagination'
+			});
+
+		}
+
+		function formatSeconds(value) {
+			var secondTime = parseInt(value); // 秒
+			var minuteTime = 0; // 分
+			var hourTime = 0; // 小时
+			if(secondTime > 60) { //如果秒数大于60，将秒数转换成整数
+				//获取分钟，除以60取整数，得到整数分钟
+				minuteTime = parseInt(secondTime / 60);
+				//获取秒数，秒数取佘，得到整数秒数
+				secondTime = parseInt(secondTime % 60);
+				//如果分钟大于60，将分钟转换成小时
+				if(minuteTime > 60) {
+					//获取小时，获取分钟除以60，得到整数小时
+					hourTime = parseInt(minuteTime / 60);
+					//获取小时后取佘的分，获取分钟除以60取佘的分
+					minuteTime = parseInt(minuteTime % 60);
+				}
+			}
+			var result = "" + parseInt(secondTime) + "秒";
+
+			if(minuteTime > 0) {
+				result = "" + parseInt(minuteTime) + "分" + result;
+			}
+			if(hourTime > 0) {
+				result = "" + parseInt(hourTime) + "小时" + result;
+			}
+			return result;
+		}
+	</script>
+
+</html>

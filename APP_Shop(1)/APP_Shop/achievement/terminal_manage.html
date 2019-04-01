@@ -1,0 +1,123 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title>终端管理</title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<link href="../css/mui.min.css" rel="stylesheet" />
+		<link rel="stylesheet" href="../css/style.css" />
+		<link rel="stylesheet" href="css/terminal_manage.css" />
+	</head>
+
+	<body>
+		<header class="mui-bar mui-bar-nav" id="header">
+			<div class="home-header">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<h1 class="mui-title">终端管理</h1>
+			</div>
+		</header>
+		<div class="mui-content">
+		    <div class="terminal_manage_body" id="content">
+		    	<div class="terminal_manage_content">
+		    		<img src="../images/select_rideo2.png" data-type = "0"/>
+		    		<div class="terminal_manage_content_right">
+		    			<span>代理商名称： 王二狗</span>
+		    			<span>代理商帐号： ysbybj88</span>
+		    		</div>
+		    	</div>
+		    	
+		    </div>
+		    <div class="terminal_manage_button">
+		    	<button type="button" id="choice_button">选择</button>
+		    </div>
+		</div>
+		<script type="text/html" id="text">
+			{{each List as value i}}
+			<div class="terminal_manage_content">
+	    		<img src="../images/select_rideo2.png" data-type = "0" data-id = "{{value.UserId}}"/>
+	    		<div class="terminal_manage_content_right1">
+	    			<span>代理商名称： {{value.UserName}}</span>
+	    			<span>代理商帐号： {{value.StoreName}}</span>
+	    		</div>
+	    	</div>
+	    	{{/each}}
+		</script>
+		<script type="text/javascript" src="../js/flexible.debug.js" ></script>
+		<script type="text/javascript" src="../js/flexible_css.debug.js" ></script>
+		<script src="../js/mui.min.js"></script>
+		<script type="text/javascript" src="../js/art-template.js" ></script>
+		<script type="text/javascript" src="../js/jquery-1.8.3.min.js" ></script>
+		<script type="text/javascript" src="../js/app.js" ></script>
+		<script type="text/javascript">
+			mui.init();
+			var choice_type=0;
+			var datas;
+			var user_id;
+			mui.plusReady(function(){
+				var self=plus.webview.currentWebview();
+				datas=self.datas;
+				var html=template("text",datas);
+				document.getElementById("content").innerHTML=html;
+				
+				
+				mui('.terminal_manage_content').on('tap','img',function(){
+					var type=$(this).data('type');
+					if(type==0){
+						this.src='../images/select_rideo1.png';
+						$(this).data('type','1');
+						$(this).parent('.terminal_manage_content').siblings().children('img').attr('src','../images/select_rideo2.png');
+						$(this).parent('.terminal_manage_content').siblings().children('img').data('type','0');
+						choice_type=1;
+						user_id=$(this).data('id');
+					}
+	//				else if(type==1){
+	//					this.src='../images/select_rideo2.png';
+	//					$(this).data('type','0');
+	//					var l=$('.terminal_manage_content').length;
+	//					for (var index=0;index<l;index++) {
+	//						var type1=$('.terminal_manage_content').eq(index).children('img').data('type');
+	//						if(type1==1){
+	//							choice_type=1;
+	//						}else if(type1==0){
+	//							choice_type=0;
+	//						}
+	//					}
+	//				}
+				})
+			})
+			document.getElementById("choice_button").addEventListener('tap',function(){
+				if(choice_type==0){
+					mui.toast("请先选择终端~");
+				}else{
+					mui.ajax('http://pos.wulilu.cn/AppShop/PostApi.ashx?action=PosterminalBinding',{
+						dataType: 'json',
+						type: 'post',
+						timeout: 10000,
+						async:false,
+						data:{
+							sessionid:'c2a0c65fdd414216bf3ae93b79cddb25',
+							TerminalId:datas.id,
+							UserId:user_id
+						},
+						success:function(data){
+							console.info(JSON.stringify(data));
+							if(data.Result=='分配成功！'){
+								mui.toast(data.Result);
+								setTimeout(function(){
+									fxshop.openVW("terminal_distribution");
+								},1500)
+							}
+						},
+						error:function(xhr,type,errorThrown){
+							mui.toast("网络请求超时，请重新加载");
+						}
+					})
+				}
+			})
+		</script>
+	</body>
+
+</html>

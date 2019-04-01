@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<meta name="format-detection" content="telephone=no,email=no" />
+		<title>我的积分</title>
+
+		<link rel="stylesheet" href="css/mui.min.css">
+		<link rel="stylesheet" href="css/style.css" />
+
+		<script src="js/mui.js" type="text/javascript"></script>
+		<script src="js/app.js" type="text/javascript"></script>
+		<script type="text/javascript" src="js/template.js" ></script>
+		<script src="js/flexible.debug.js" type="text/javascript"></script>
+		<script src="js/flexible_css.debug.js" type="text/javascript"></script>
+	</head>
+	<body>
+		<header class="mui-bar mui-bar-nav" id="header">
+			<div class="home-header">		
+				<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"><span>返回</span></a>
+				<a id="menu" class="iconfont _more mui-pull-right" href="#topPopover"></a>
+				<h1 class="mui-title">我的积分</h1>			
+			</div>
+		</header>
+		
+<!--右上角弹出菜单-->
+		<div id="topPopover" class="mui-popover">
+			<div class="mui-popover-arrow"></div>
+			<div class="mui-scroll-wrapper">
+				<div class="mui-scroll" id="navbar">
+					<ul class="mui-table-view nav-bar">
+						<li data-page="home"><i class="iconfont home"></i>首页</li>
+						<li data-page="category"><i class="iconfont fenlei"></i>分类</li>
+						<li data-page="shopcart"><i class="iconfont icon__cart"></i>购物车</li>
+						<li data-page="user"><i class="iconfont icon__my"></i>个人中心</li>				
+					</ul>
+				</div>
+			</div>
+
+		</div>		
+ 
+			<div class="integral_top" id="fixed">
+				<div class="integral_top_l">
+					可用积分:<i id="pointTxt">0</i>分
+				</div>
+				<a id="btn-point" class="btn_point">积分兑换</a>
+			</div>
+ 
+			<div id="pullrefresh" class="mui-content mui-scroll-wrapper point-box">
+			<div class="emptyPoint-show" id="emptyShow" style="display: none;">
+				历史积分：0
+			</div>
+			
+			<div class="mui-scroll">
+				<ul id="pointList" class="pointlist">
+
+				</ul>
+			</div>
+ 
+			
+		</div>
+		
+		<script>
+			var isEnd = false,
+				pageIndex = 0,
+				PageSize = 10;
+				var siteifno = SiteSetting.getSiteInfo();
+				var immersedIos=isIphoneX();
+			mui.init({
+				pullRefresh: {
+					container: '#pullrefresh',
+					up: {
+						height: 0,
+						contentrefresh: '正在加载...',
+						contentnomore: '没有更多数据了',
+						callback: LoadData,
+					}
+				}
+			})
+			mui.plusReady(function(){
+				//判断是否是iphone X 
+				if(immersedIos){
+					document.getElementById("header").className+=" Xheader"; 
+				} 	
+				LoadData('reset');
+				BindEvent();
+			});
+			
+			function LoadData(re){
+				var that = this;
+				if(!isEnd) {
+					pageIndex++;
+					mui.ajax(fxshop.goUrl('GetPointList'), {
+						data: {
+							sessionid: siteifno.UserInfo.sessionid,
+							pageNumber: pageIndex,
+							PageSize: PageSize,
+						},
+						dataType: 'json',
+						type: 'get',
+						success: function(data) {
+							var result = data.Result;
+							if(data.ErrorResponse != undefined) {
+								plus.nativeUI.toast(data.ErrorResponse.ErrorMsg);
+								fxshop.openVW('login');								
+								return;
+							}
+							document.getElementById('pointTxt').innerText=result.TotalPoints;
+							if(result.List.length < 10) {
+								isEnd = true;
+							}
+
+							if(re) {
+								document.getElementById("pointList").innerHTML = template('initpoint', {'result': result});
+								mui('#pullrefresh').pullRefresh().scrollTo(0, 0, 20);;
+							} else {
+								document.getElementById("pointList").insertAdjacentHTML('beforeend', template('initpoint', {'result': result}));
+								that.endPullupToRefresh(isEnd);
+							}
+
+							if(pageIndex == 1) {
+								if(data.Result.List.length > 0) {
+									document.querySelector('.mui-pull-bottom-pocket').style.opacity = 1;
+									document.getElementById("pointList").style.display = "block";
+									document.getElementById("emptyShow").style.display = "none";
+								} else {
+									document.querySelector('.mui-pull-bottom-pocket').style.opacity = 0;
+									document.getElementById("pointList").style.display = "none";
+									document.getElementById("emptyShow").style.display = "block";
+								}
+							}
+						},
+						error: function(xhr, type, errorThrown) {
+							plus.nativeUI.toast('请求失败，请检查网络')
+						}
+					});
+				} else {
+					that.endPullupToRefresh(isEnd);
+				}
+			
+			}
+			
+			function BindEvent(){
+				showNav();
+				document.getElementById('btn-point').addEventListener('tap',function(){
+					if(fxshop.isLogin()) {
+						var requesturl = apiURL + "appShop/PointMall";
+						fxshop.OpenWapWeb(requesturl,'积分商城');
+					} else {
+						mui.toast('您还未登录,请先登录！');
+						return;
+					}
+				})
+			}
+ 
+		</script>
+		
+		
+		
+	</body>
+	
+	<script type="text/html" id="initpoint">
+		{{each result.List as pointValue}}
+			<li class="point-List">
+			<div class="left-div">
+				<div class="type">{{pointValue.TradeTypeName}}</div>
+				<div class="time">{{pointValue.TradeDate}}</div>
+			</div>
+			{{if pointValue.TradeType==2||pointValue.TradeType==4||pointValue.TradeType==6||pointValue.TradeType==8||pointValue.TradeType==9||pointValue.TradeType==10||pointValue.TradeType==16}}
+			<div class="right-div expend">{{pointValue.Point}}</div>
+			{{else}}
+			{{if pointValue.Point>0}}
+			<div class="right-div expend">{{pointValue.Point}}</div>
+			{{else}}
+			<div class="right-div income">{{pointValue.Point}}</div>
+			{{/if}}
+			{{/if}}		
+
+			</li>
+		{{/each}}
+	</script>
+	
+ 
+	
+</html>

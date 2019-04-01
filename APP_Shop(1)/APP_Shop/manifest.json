@@ -1,0 +1,937 @@
+{
+    "@platforms": ["android", "iPhone", "iPad"],
+    "id": "H5C797B22",/*应用的标识，创建应用时自动生成，勿手动修改*/
+    "name": "www",/*应用名称，程序桌面图标名称*/
+    "version": {
+        "name": "1.0",/*应用版本名称*/
+        "code": ""
+    },
+    "description": "",/*应用描述信息*/
+    "icons": {
+        "72": "icon.png"
+    },
+    "launch_path": "index.html",/*应用的入口页面，默认为根目录下的index.html；支持网络地址，必须以http://或https://开头*/
+    "developer": {
+        "name": "",/*开发者名称*/
+        "email": "",/*开发者邮箱地址*/
+        "url": ""/*开发者个人主页地址*/
+    },
+    "permissions": {
+        "Messaging":{},
+        "Cache": {
+            "description": "管理应用缓存"
+        },
+        "Console": {
+            "description": "跟踪调试输出日志"
+        },
+        "Contacts": {
+            "description": "访问系统联系人信息"
+        },
+        "Events": {
+            "description": "应用扩展事件"
+        },
+        "Maps": {
+            "description": "管理地图插件"
+        },
+        "Speech": {}
+    },
+    "plus": {
+        "splashscreen": {
+            "autoclose": true,/*是否自动关闭程序启动界面，true表示应用加载应用入口页面后自动关闭；false则需调plus.navigator.closeSplashscreen()关闭*/
+            "waiting": true/*是否在程序启动界面显示等待雪花，true表示显示，false表示不显示。*/
+        },
+        "popGesture": "close",/*设置应用默认侧滑返回关闭Webview窗口，"none"为无侧滑返回功能，"hide"为侧滑隐藏Webview窗口。参考http://ask.dcloud.net.cn/article/102*/
+        "runmode": "normal",/*应用的首次启动运行模式，可取liberate或normal，liberate模式在第一次启动时将解压应用资源（Android平台File API才可正常访问_www目录）*/
+        "signature": "Sk9JTiBVUyBtYWlsdG86aHIyMDEzQGRjbG91ZC5pbw==",/*可选，保留给应用签名，暂不使用*/
+        "distribute": {
+            "apple": {
+                "appid": "",/*iOS应用标识，苹果开发网站申请的appid，如io.dcloud.HelloH5*/
+                "mobileprovision": "",/*iOS应用打包配置文件*/
+                "password": "",/*iOS应用打包个人证书导入密码*/
+                "p12": "",/*iOS应用打包个人证书，打包配置文件关联的个人证书*/
+                "devices": "universal",/*iOS应用支持的设备类型，可取值iphone/ipad/universal*/
+                "frameworks":[
+                ]/*调用Native.js调用原生Objective-c API需要引用的FrameWork，如需调用GameCenter，则添加"GameKit.framework"*/
+            },
+            "google": {
+                "packagename": "",/*Android应用包名，如io.dcloud.HelloH5*/
+                "keystore": "",/*Android应用打包使用的密���库文件*/
+                "password": "",/*Android应用打包使用密钥库中证书的密码*/
+                "aliasname": "",/*Android应用打包使用密钥库中证书的别名*/
+               "permissions": ["<uses-permission android:name=\"android.permission.CHANGE_NETWORK_STATE\"/>","<uses-permission android:name=\"android.permission.READ_CONTACTS\"/>","<uses-permission android:name=\"android.permission.MOUNT_UNMOUNT_FILESYSTEMS\"/>","<uses-permission android:name=\"android.permission.VIBRATE\"/>","<uses-permission android:name=\"android.permission.READ_LOGS\"/>","<uses-permission android:name=\"android.permission.ACCESS_WIFI_STATE\"/>","<uses-feature android:name=\"android.hardware.camera.autofocus\"/>","<uses-permission  android:name=\"android.permission.WRITE_EXTERNAL_STORAGE\"/>","<uses-permission android:name=\"android.permission.WRITE_CONTACTS\"/>","<uses-permission android:name=\"android.permission.ACCESS_NETWORK_STATE\"/>","<uses-permission android:name=\"android.permission.CAMERA\"/>","<uses-permission android:name=\"android.permission.GET_ACCOUNTS\"/>","<uses-permission android:name=\"android.permission.RECORD_AUDIO\"/>","<uses-permission android:name=\"android.permission.MODIFY_AUDIO_SETTINGS\"/>","<uses-permission android:name=\"android.permission.SEND_SMS\"/>","<uses-permission android:name=\"android.permission.INTERNET\"/>","<uses-permission android:name=\"android.permission.READ_PHONE_STATE\"/>","<uses-permission android:name=\"android.permission.CHANGE_WIFI_STATE\"/>","<uses-permission android:name=\"android.permission.WAKE_LOCK\"/>","<uses-permission android:name=\"android.permission.FLASHLIGHT\"/>","<uses-permission android:name=\"android.permission.CALL_PHONE\"/>","<uses-permission android:name=\"android.permission.ACCESS_COARSE_LOCATION\"/>","<uses-feature android:name=\"android.hardware.camera\"/>","<uses-permission android:name=\"android.permission.ACCESS_FINE_LOCATION\"/>","<uses-permission android:name=\"android.permission.WRITE_EXTERNAL_STORAGE\"/>","<uses-permission android:name=\"android.permission.WRITE_SETTINGS\"/>","<uses-permission android:name=\"android.permission.WRITE_SMS\"/>","<uses-permission android:name=\"android.permission.READ_SMS\"/>"]
+				/*使用Native.js调用原生安卓API需要使用到的系统权限*/
+            },
+            "orientation": [
+                "portrait-primary"
+            ],/*应用支持的方向，portrait-primary：竖屏正方向；portrait-secondary：竖屏反方向；landscape-primary：横屏正方向；landscape-secondary：横屏反方向*/
+            "icons": {
+                "ios": {
+                    "prerendered": true, /*应用图标是否已经高亮处理，在iOS6及以下设备上有效*/
+                    "auto": "", /*应用图标，分辨率：512x512，用于自动生成各种尺寸程序图标*/
+                    "iphone": {
+                        "normal": "", /*iPhone3/3GS程序图标，分辨率：57x57*/
+                        "retina": "", /*iPhone4程序图标，分辨率：114x114*/
+                        "retina7": "", /*iPhone4S/5/6程序图标，分辨率：120x120*/
+			"retina8": "", /*iPhone6 Plus程序图标，分辨率：180x180*/
+                        "spotlight-normal": "", /*iPhone3/3GS Spotlight搜索程序图标，分辨率：29x29*/
+                        "spotlight-retina": "", /*iPhone4 Spotlight搜索程序图标，分辨率：58x58*/
+                        "spotlight-retina7": "", /*iPhone4S/5/6 Spotlight搜索程序图标，分辨率：80x80*/
+                        "settings-normal": "", /*iPhone4设置页面程序图标，分辨率：29x29*/
+                        "settings-retina": "", /*iPhone4S/5/6设置页面程序图标，分辨率：58x58*/
+			"settings-retina8": "" /*iPhone6Plus设置页面程序图标，分辨率：87x87*/
+                    },
+                    "ipad": {
+                        "normal": "", /*iPad普通屏幕程序图标，分辨率：72x72*/
+                        "retina": "", /*iPad高分屏程序图标，分辨率：144x144*/
+                        "normal7": "", /*iPad iOS7程序图标，分辨率：76x76*/
+                        "retina7": "", /*iPad iOS7高分屏程序图标，分辨率：152x152*/
+                        "spotlight-normal": "", /*iPad Spotlight搜索程序图标，分辨率：50x50*/
+                        "spotlight-retina": "", /*iPad高分屏Spotlight搜索程序图标，分辨率：100x100*/
+                        "spotlight-normal7": "",/*iPad iOS7 Spotlight搜索程序图标，分辨率：40x40*/
+                        "spotlight-retina7": "",/*iPad iOS7高分屏Spotlight搜索程序图标，分辨率：80x80*/
+                        "settings-normal": "",/*iPad设置页面程序图标，分辨率：29x29*/
+                        "settings-retina": "" /*iPad高分屏设置页面程序图标，分辨率：58x58*/
+                    }
+                },
+                "android": {
+                    "mdpi": "", /*普通屏程序图标，分辨率：48x48*/
+                    "ldpi": "", /*大屏程序图标，分辨率：48x48*/
+                    "hdpi": "", /*高分屏程序图标，分辨率：72x72*/
+                    "xhdpi": "",/*720P高分屏程序图标，分辨率：96x96*/
+                    "xxhdpi": ""/*1080P 高分屏程序图标，分辨率：144x144*/
+                }
+            },
+            "splashscreen": {
+                "ios": {
+                    "iphone": {
+                        "default": "", /*iPhone3启动图片选，分辨率：320x480*/
+                        "retina35": "",/*3.5英寸设备(iPhone4)启动图片，分辨率：640x960*/
+                        "retina40": "",/*4.0 英寸设备(iPhone5/iPhone5s)启动图片，分辨率：640x1136*/
+                        "retina47": "",/*4.7 英寸设备(iPhone6)启动图片，分辨率：750x1334*/
+                        "retina55": "",/*5.5 英寸设备(iPhone6 Plus)启动图片，分辨率：1242x2208*/
+                        "retina55l": ""/*5.5 英寸设备(iPhone6 Plus)横屏启动图片，分辨率：2208x1242*/
+                    },
+                    "ipad": {
+                        "portrait": "", /*iPad竖屏启动图片，分辨率：768x1004*/
+                        "portrait-retina": "",/*iPad高分屏竖屏图片，分辨率：1536x2008*/
+                        "landscape": "", /*iPad横屏启动图片，分辨率：1024x748*/
+                        "landscape-retina": "", /*iPad高分屏横屏启动图片，分辨率：2048x1496*/
+                        "portrait7": "", /*iPad iOS7竖屏启动图片，分辨率：768x1024*/
+                        "portrait-retina7": "",/*iPad iOS7高分屏竖屏图片，分辨率：1536x2048*/
+                        "landscape7": "", /*iPad iOS7横屏启动图片，分辨率：1024x768*/
+                        "landscape-retina7": ""/*iPad iOS7高分屏横屏启动图片，分辨率：2048x1536*/
+                    }
+                },
+                "android": {
+                    "mdpi": "", /*普通屏启动图片，分辨率：240x282*/
+                    "ldpi": "", /*大屏启动图片，分辨率：320x442*/
+                    "hdpi": "", /*高分屏启动图片，分辨率：480x762*/
+                    "xhdpi": "", /*720P高分屏启动图片，分辨率：720x1242*/
+                    "xxhdpi": ""/*1080P高分屏启动图片，分辨率：1080x1882*/
+                }
+            }
+        },"adid":"122016240101"
+    },
+	"dependencies":{
+		"pages": {
+			"shopcart.html": {
+				"href": "shopcart.html",
+				"resources": [
+					"images/reduce.png",
+					"images/add.png",
+					"images/shopcart-empty.png",
+					"css/mui.min.css",
+					"fonts/mui.ttf",
+					"css/swiper.min.css",
+					"css/style.css",
+					"fonts/iconfont.ttf",
+					"images/coupon_n.png",
+					"images/SendRedEnvelope.png",
+					"images/icon-see.png",
+					"images/icon-tuan-num.png",
+					"images/more5.png",
+					"images/icon-tuan-num1.png",
+					"images/icon-tuan-list.png",
+					"images/FAB_consult.png",
+					"images/lottery_sprite_bg.png",
+					"images/lottery_bottom.png",
+					"images/lottery_history_btn.png",
+					"images/lottery_result_ticket.png",
+					"css/mescroll.min.css",
+					"js/mui.js",
+					"js/mescroll.min.js",
+					"js/app.js",
+					"js/template.js",
+					"js/swiper.min.js",
+					"js/flexible.debug.js",
+					"js/flexible_css.debug.js"
+				],
+				"priority": 0,
+				"refer": [
+					"appauto.html",
+					"product-detail.html"
+				]
+			},
+			"skuProduct.html": {
+				"href": "skuProduct.html",
+				"resources": [
+					"js/mui.min.js",
+					"js/app.js",
+					"js/template.js",
+					"js/flexible.debug.js",
+					"js/flexible_css.debug.js",
+					"css/mui.min.css",
+					"fonts/mui.ttf",
+					"css/style.css",
+					"fonts/iconfont.ttf",
+					"images/coupon_n.png",
+					"images/SendRedEnvelope.png",
+					"images/icon-see.png",
+					"images/icon-tuan-num.png",
+					"images/more5.png",
+					"images/icon-tuan-num1.png",
+					"images/icon-tuan-list.png",
+					"images/FAB_consult.png",
+					"images/lottery_sprite_bg.png",
+					"images/lottery_bottom.png",
+					"images/lottery_history_btn.png",
+					"images/lottery_result_ticket.png"
+				],
+				"refer": [
+					"shopcart.html",
+					"appauto.html"
+				],
+				"priority": 0
+			},
+			"category.html": {
+				"href": "category.html",
+				"resources": [
+					"js/flexible.debug.js",
+					"js/flexible_css.debug.js",
+					"js/mui.min.js",
+					"js/app.js",
+					"js/template.js",
+					"css/mui.min.css",
+					"fonts/mui.ttf",
+					"css/style.css",
+					"fonts/iconfont.ttf",
+					"images/coupon_n.png",
+					"images/SendRedEnvelope.png",
+					"images/icon-see.png",
+					"images/icon-tuan-num.png",
+					"images/more5.png",
+					"images/icon-tuan-num1.png",
+					"images/icon-tuan-list.png",
+					"images/FAB_consult.png",
+					"images/lottery_sprite_bg.png",
+					"images/lottery_bottom.png",
+					"images/lottery_history_btn.png",
+					"images/lottery_result_ticket.png"
+				],
+				"priority": 1,
+				"refer": [
+					"search-result.html"
+				]
+			},
+			"login.html": {
+				"href": "login.html",
+				"resources": [
+					"css/mui.min.css",
+					"fonts/mui.ttf",
+					"css/style.css",
+					"fonts/iconfont.ttf",
+					"images/coupon_n.png",
+					"images/SendRedEnvelope.png",
+					"images/icon-see.png",
+					"images/icon-tuan-num.png",
+					"images/more5.png",
+					"images/icon-tuan-num1.png",
+					"images/icon-tuan-list.png",
+					"images/FAB_consult.png",
+					"images/lottery_sprite_bg.png",
+					"images/lottery_bottom.png",
+					"images/lottery_history_btn.png",
+					"images/lottery_result_ticket.png",
+					"css/account.css",
+					"images/user-bg.png",
+					"js/flexible.debug.js",
+					"js/flexible_css.debug.js",
+					"js/mui.min.js",
+					"js/app.js"
+				],
+				"refer": [
+					"userhome.html",
+					"shopcart.html"
+				],
+				"priority": 2
+			},
+			"userhome.html": {
+				"href": "userhome.html",
+				"resources": [
+					"css/userhome.css",
+					"fonts/iconfont.ttf",
+					"images/headbg.png",
+					"css/mescroll.min.css",
+					"js/flexible.debug.js",
+					"js/flexible_css.debug.js",
+					"js/mescroll.min.js",
+					"js/mui.min.js",
+					"js/app.js",
+					"images/default_img.jpg",
+					"images/icon_deposit.png",
+					"images/icon_point.png",
+					"images/icon_coupn.png",
+					"images/icon_envelopes.png",
+					"images/icon_prize.png",
+					"images/icon_extension.png",
+					"images/icon_fight.png",
+					"images/icon_address.png",
+					"images/icon_about.png",
+					"images/sign_coin.png"
+				],
+				"refer": [
+					"login.html",
+					"Point.html",
+					"AccountSummary.html",
+					"appauto.html",
+					"order-list.html",
+					"MyFavorites.html",
+					"aboutus.html",
+					"FightGroups.html",
+					"Extension.html",
+					"AccountManagement.html",
+					"messageList.html"
+				],
+				"priority": 2
+			},
+			"categoryTemp2.html": {
+				"href": "categoryTemp2.html",
+				"resources": [
+					"js/flexible.debug.js",
+					"js/flexible_css.debug.js",
+					"js/mui.min.js",
+					"js/app.js",
+					"js/template.js",
+					"css/mui.min.css",
+					"fonts/mui.ttf",
+					"css/style.css",
+					"fonts/iconfont.ttf",
+					"images/coupon_n.png",
+					"images/SendRedEnvelope.png",
+					"images/icon-see.png",
+					"images/icon-tuan-num.png",
+					"images/more5.png",
+					"images/icon-tuan-num1.png",
+					"images/icon-tuan-list.png",
+					"images/FAB_consult.png",
+					"images/lottery_sprite_bg.png",
+					"images/lottery_bottom.png",
+					"images/lottery_history_btn.png",
+					"images/lottery_result_ticket.png",
+					"images/order_null.png"
+				],
+				"priority": 3
+			},
+			"categoryTemp3.html": {
+				"href": "categoryTemp3.html",
+				"resources": [
+					"js/flexible.debug.js",
+					"js/flexible_css.debug.js",
+					"js/mui.min.js",
+					"js/app.js",
+					"js/template.js",
+					"css/mui.min.css",
+					"fonts/mui.ttf",
+					"css/style.css",
+					"fonts/iconfont.ttf",
+					"images/coupon_n.png",
+					"images/SendRedEnvelope.png",
+					"images/icon-see.png",
+					"images/icon-tuan-num.png",
+					"images/more5.png",
+					"images/icon-tuan-num1.png",
+					"images/icon-tuan-list.png",
+					"images/FAB_consult.png",
+					"images/lottery_sprite_bg.png",
+					"images/lottery_bottom.png",
+					"images/lottery_history_btn.png",
+					"images/lottery_result_ticket.png"
+				],
+				"priority": 4
+			},
+			"storehome.html": {
+				"href": "storehome.html",
+				"resources": [
+					"css/mui.min.css",
+					"fonts/mui.ttf",
+					"css/swiper.min.css",
+					"js/mui.min.js",
+					"js/app.js",
+					"js/template.js",
+					"js/flexible.debug.js",
+					"js/flexible_css.debug.js",
+					"js/swiper.min.js",
+					"css/store.css",
+					"fonts/iconfont.ttf",
+					"images/phone.png",
+					"images/more4.png",
+					"images/more5.png",
+					"images/store_02.jpg",
+					"css/style.css",
+					"fonts/iconfont.ttf",
+					"images/coupon_n.png",
+					"images/SendRedEnvelope.png",
+					"images/icon-see.png",
+					"images/icon-tuan-num.png",
+					"images/more5.png",
+					"images/icon-tuan-num1.png",
+					"images/icon-tuan-list.png",
+					"images/FAB_consult.png",
+					"images/lottery_sprite_bg.png",
+					"images/lottery_bottom.png",
+					"images/lottery_history_btn.png",
+					"images/lottery_result_ticket.png"
+				],
+				"priority": 5
+			},
+			"storehome1.html": {
+				"href": "storehome1.html",
+				"resources": [
+					"css/mui.min.css",
+					"fonts/mui.ttf",
+					"css/swiper.min.css",
+					"js/mui.min.js",
+					"js/app.js",
+					"js/template.js",
+					"js/flexible.debug.js",
+					"js/flexible_css.debug.js",
+					"js/swiper.min.js",
+					"css/store.css",
+					"fonts/iconfont.ttf",
+					"images/phone.png",
+					"images/more4.png",
+					"images/more5.png",
+					"images/store_02.jpg",
+					"css/style.css",
+					"fonts/iconfont.ttf",
+					"images/coupon_n.png",
+					"images/SendRedEnvelope.png",
+					"images/icon-see.png",
+					"images/icon-tuan-num.png",
+					"images/more5.png",
+					"images/icon-tuan-num1.png",
+					"images/icon-tuan-list.png",
+					"images/FAB_consult.png",
+					"images/lottery_sprite_bg.png",
+					"images/lottery_bottom.png",
+					"images/lottery_history_btn.png",
+					"images/lottery_result_ticket.png"
+				],
+				"priority": 7
+			},
+			"storeproduct-detail.html": {
+				"href": "storeproduct-detail.html",
+				"resources": [
+					"js/mui.js",
+					"js/app.js",
+					"js/template.js",
+					"js/swiper.min.js",
+					"js/delayimg.min.js",
+					"js/flexible.debug.js",
+					"js/flexible_css.debug.js",
+					"js/jquery-1.8.3.min.js",
+					"js/jquery.scrollLoading.min.js",
+					"images/ic_map.png",
+					"css/mui.min.css",
+					"fonts/mui.ttf",
+					"css/swiper.min.css",
+					"css/style.css",
+					"fonts/iconfont.ttf",
+					"images/coupon_n.png",
+					"images/SendRedEnvelope.png",
+					"images/icon-see.png",
+					"images/icon-tuan-num.png",
+					"images/more5.png",
+					"images/icon-tuan-num1.png",
+					"images/icon-tuan-list.png",
+					"images/FAB_consult.png",
+					"images/lottery_sprite_bg.png",
+					"images/lottery_bottom.png",
+					"images/lottery_history_btn.png",
+					"images/lottery_result_ticket.png",
+					"images/icon_wechat.png",
+					"images/icon_wxTimeLine.png",
+					"images/icon_qq.png",
+					"images/icon_weibo.png"
+				],
+				"refer": [
+					"storehome1.html"
+				],
+				"priority": 7
+			},
+			"product-detail.html": {
+				"href": "product-detail.html",
+				"resources": [
+					"js/mui.js",
+					"js/app.js",
+					"js/template.js",
+					"js/swiper.min.js",
+					"js/delayimg.min.js",
+					"js/flexible.debug.js",
+					"js/flexible_css.debug.js",
+					"js/jquery-1.8.3.min.js",
+					"js/jquery.scrollLoading.min.js",
+					"images/img_only_phone.png",
+					"images/ic_supplier.png",
+					"images/icon_service_online.png",
+					"css/mui.min.css",
+					"fonts/mui.ttf",
+					"css/swiper.min.css",
+					"css/style.css",
+					"fonts/iconfont.ttf",
+					"images/coupon_n.png",
+					"images/SendRedEnvelope.png",
+					"images/icon-see.png",
+					"images/icon-tuan-num.png",
+					"images/more5.png",
+					"images/icon-tuan-num1.png",
+					"images/icon-tuan-list.png",
+					"images/FAB_consult.png",
+					"images/lottery_sprite_bg.png",
+					"images/lottery_bottom.png",
+					"images/lottery_history_btn.png",
+					"images/lottery_result_ticket.png",
+					"images/icon_wechat.png",
+					"images/icon_wxTimeLine.png",
+					"images/icon_qq.png",
+					"images/icon_weibo.png"
+				],
+				"priority": 8,
+				"refer": [
+					"proStroeInfo.html",
+					"appauto.html",
+					"shopcart.html"
+				]
+			},
+			"nearstorelist.html": {
+				"href": "nearstorelist.html",
+				"resources": [
+					"css/mui.min.css",
+					"fonts/mui.ttf",
+					"js/mui.min.js",
+					"js/app.js",
+					"js/template.js",
+					"js/flexible.debug.js",
+					"js/flexible_css.debug.js",
+					"css/style.css",
+					"fonts/iconfont.ttf",
+					"images/coupon_n.png",
+					"images/SendRedEnvelope.png",
+					"images/icon-see.png",
+					"images/icon-tuan-num.png",
+					"images/more5.png",
+					"images/icon-tuan-num1.png",
+					"images/icon-tuan-list.png",
+					"images/FAB_consult.png",
+					"images/lottery_sprite_bg.png",
+					"images/lottery_bottom.png",
+					"images/lottery_history_btn.png",
+					"images/lottery_result_ticket.png",
+					"css/store.css",
+					"fonts/iconfont.ttf",
+					"images/phone.png",
+					"images/more4.png",
+					"images/more5.png",
+					"images/store_02.jpg"
+				],
+				"refer": [
+					"storehome1.html"
+				],
+				"priority": 10
+			},
+			"home.html": {
+				"href": "home.html",
+				"resources": [
+					"js/mui.min.js",
+					"js/mescroll.min.js",
+					"js/app.js",
+					"js/template.js",
+					"js/flexible.debug.js",
+					"js/flexible_css.debug.js",
+					"js/swiper.min.js",
+					"js/home.js",
+					"css/mui.min.css",
+					"fonts/mui.ttf",
+					"css/swiper.min.css",
+					"css/mescroll.min.css",
+					"css/style.css",
+					"fonts/iconfont.ttf",
+					"images/coupon_n.png",
+					"images/SendRedEnvelope.png",
+					"images/icon-see.png",
+					"images/icon-tuan-num.png",
+					"images/more5.png",
+					"images/icon-tuan-num1.png",
+					"images/icon-tuan-list.png",
+					"images/FAB_consult.png",
+					"images/lottery_sprite_bg.png",
+					"images/lottery_bottom.png",
+					"images/lottery_history_btn.png",
+					"images/lottery_result_ticket.png",
+					"images/icon_like.png"
+				],
+				"refer": [
+					"home.html",
+					"nearstorelist.html",
+					"userhome.html",
+					"shopcart.html",
+					"storehome1.html",
+					"category.html",
+					"search.html",
+					"barcode.html",
+					"achievement/achievement_index.html",
+					"appauto.html"
+				],
+				"priority": 9
+			},
+			"storelist.html": {
+				"href": "storelist.html",
+				"resources": [
+					"css/mui.min.css",
+					"fonts/mui.ttf",
+					"css/swiper.min.css",
+					"js/mui.min.js",
+					"js/app.js",
+					"js/template.js",
+					"js/flexible.debug.js",
+					"js/flexible_css.debug.js",
+					"js/swiper.min.js",
+					"css/store.css",
+					"fonts/iconfont.ttf",
+					"images/phone.png",
+					"images/more4.png",
+					"images/more5.png",
+					"images/store_02.jpg",
+					"css/style.css",
+					"fonts/iconfont.ttf",
+					"images/coupon_n.png",
+					"images/SendRedEnvelope.png",
+					"images/icon-see.png",
+					"images/icon-tuan-num.png",
+					"images/more5.png",
+					"images/icon-tuan-num1.png",
+					"images/icon-tuan-list.png",
+					"images/FAB_consult.png",
+					"images/lottery_sprite_bg.png",
+					"images/lottery_bottom.png",
+					"images/lottery_history_btn.png",
+					"images/lottery_result_ticket.png"
+				],
+				"refer": [
+					"storehome1.html"
+				],
+				"priority": 10
+			},
+			"categoryTemp4.html": {
+				"href": "categoryTemp4.html",
+				"resources": [
+					"js/flexible.debug.js",
+					"js/flexible_css.debug.js",
+					"js/mui.min.js",
+					"js/app.js",
+					"js/template.js",
+					"css/mui.min.css",
+					"fonts/mui.ttf",
+					"css/style.css",
+					"fonts/iconfont.ttf",
+					"images/coupon_n.png",
+					"images/SendRedEnvelope.png",
+					"images/icon-see.png",
+					"images/icon-tuan-num.png",
+					"images/more5.png",
+					"images/icon-tuan-num1.png",
+					"images/icon-tuan-list.png",
+					"images/FAB_consult.png",
+					"images/lottery_sprite_bg.png",
+					"images/lottery_bottom.png",
+					"images/lottery_history_btn.png",
+					"images/lottery_result_ticket.png"
+				],
+				"priority": 11,
+				"refer": [
+					"search-result.html",
+					"search.html"
+				]
+			},
+			"index.html": {
+				"href": "index.html",
+				"resources": [
+					"css/mui.min.css",
+					"fonts/mui.ttf",
+					"js/mui.min.js",
+					"js/app.js",
+					"images/blank.gif"
+				],
+				"refer": [
+					"skuProduct.html",
+					"category.html",
+					"userhome.html",
+					"categoryTemp2.html",
+					"categoryTemp3.html",
+					"storehome.html",
+					"login.html",
+					"storeproduct-detail.html",
+					"product-detail.html",
+					"home.html",
+					"storelist.html",
+					"categoryTemp4.html",
+					"main.html",
+					"guide.html"
+				],
+				"priority": 0
+			},
+			"main.html": {
+				"resources": [
+					"home.html"
+				],
+				"refer": [
+					"product-detail.html",
+					"userhome.html",
+					"storehome1.html",
+					"shopcart.html",
+					"categoryTemp4.html",
+					"skuProduct.html",
+					"storeproduct-detail.html",
+					"nearstorelist.html",
+					"Fight_sku_Product.html",
+					"categoryTemp3.html",
+					"categoryTemp2.html",
+					"category.html"
+				],
+				"priority": 0
+			},
+			"search.html": {
+				"resources": [],
+				"refer": [
+					"search-result.html"
+				],
+				"priority": 0
+			},
+			"guide.html": {
+				"resources": [],
+				"refer": [
+					"main.html"
+				],
+				"priority": 0
+			},
+			"achievement/achievement_index.html": {
+				"resources": [],
+				"refer": [
+					"achievement/share_select.html",
+					"achievement/trade_select.html",
+					"achievement/terminal_manage.html",
+					"achievement/agent_manage.html",
+					"achievement/activation_select.html",
+					"achievement/terminal_select.html",
+					"achievement/terminal_binding.html",
+					"achievement/statistics_analysis.html",
+					"achievement/terminal_distribution.html"
+				],
+				"priority": 0
+			},
+			"achievement/share_select.html": {
+				"resources": [],
+				"refer": [
+					"achievement/transaction_stream.html",
+					"achievement/share_details.html"
+				],
+				"priority": 0
+			},
+			"MyFavorites.html": {
+				"resources": [],
+				"refer": [
+					"editFavorites.html"
+				],
+				"priority": 0
+			},
+			"AccountSummary.html": {
+				"resources": [],
+				"refer": [
+					"AccountSummaryDetails.html"
+				],
+				"priority": 0
+			},
+			"AccountManagement.html": {
+				"resources": [],
+				"refer": [
+					"BindPhone.html"
+				],
+				"priority": 0
+			},
+			"achievement/trade_select.html": {
+				"resources": [],
+				"refer": [
+					"achievement/transaction_stream.html"
+				],
+				"priority": 0
+			},
+			"achievement/transaction_stream.html": {
+				"resources": [],
+				"refer": [
+					"achievement/stream_details.html"
+				],
+				"priority": 0
+			},
+			"achievement/share_details.html": {
+				"resources": [],
+				"refer": [
+					"achievement/share_result.html"
+				],
+				"priority": 0
+			},
+			"achievement/terminal_manage.html": {
+				"resources": [],
+				"refer": [
+					"achievement/terminal_distribution.html"
+				],
+				"priority": 0
+			},
+			"achievement/terminal_distribution.html": {
+				"resources": [],
+				"refer": [
+					"achievement/withdraw_distribution.html",
+					"achievement/terminal_manage.html"
+				],
+				"priority": 0
+			},
+			"achievement/agent_manage.html": {
+				"resources": [],
+				"refer": [
+					"achievement/transaction_stream.html",
+					"achievement/agent_select_result.html"
+				],
+				"priority": 0
+			},
+			"achievement/terminal_binding.html": {
+				"resources": [],
+				"refer": [
+					"achievement/terminal_binding_select.html",
+					"achievement/terminal_confirm_binding.html"
+				],
+				"priority": 0
+			},
+			"achievement/activation_select.html": {
+				"resources": [],
+				"refer": [
+					"achievement/activation_details.html"
+				],
+				"priority": 0
+			},
+			"achievement/terminal_select.html": {
+				"resources": [],
+				"refer": [
+					"achievement/terminal_select_result.html"
+				],
+				"priority": 0
+			},
+			"achievement/activation_details.html": {
+				"resources": [],
+				"refer": [
+					"achievement/activation_result.html"
+				],
+				"priority": 0
+			},
+			"achievement/agent_select_result.html": {
+				"resources": [],
+				"refer": [
+					"achievement/agent_authority_manage.html"
+				],
+				"priority": 0
+			}
+		},
+		"idle": {
+			"resources": [
+				"nearstore.html",
+				"images/lottery_sprite.png",
+				"wapwebview.html",
+				"images/overfight.png",
+				"FightGroupDetails.html",
+				"images/fg_user.png",
+				"images/shakedown.png",
+				"images/success_man.png",
+				"images/icon_groupbuy.png",
+				"images/icon_bell_new.png",
+				"images/icon_orders.png",
+				"images/icon-tuan-time.png",
+				"images/index_01.jpg",
+				"js/delayimg.js",
+				"images/icon_points.png",
+				"images/prize.png",
+				"images/icon_coupon.png",
+				"forget_password.html",
+				"images/mescroll-totop.png",
+				"images/icon-guize.png",
+				"images/store_map.png",
+				"images/code.png",
+				"meiqia.html",
+				"images/icon_market.png",
+				"images/log.png",
+				"rushactivedetail.html",
+				"images/default-photo.png",
+				"images/icon14.png",
+				"css/mui.css",
+				"js/immersed.js",
+				"images/ic_history.png",
+				"images/sina.png",
+				"BindEmail.html",
+				"images/coupicon_04.jpg",
+				"images/accout-bg.png",
+				"images/hongbao.png",
+				"NoStoreTip.html",
+				"images/index_02.jpg",
+				"images/index_03.jpg",
+				"images/null_search.png",
+				"js/md5.js",
+				"css/search.css",
+				"images/icon_commission.png",
+				"images/icon_message_type_link.png",
+				"storelistTag.html",
+				"images/shouzhi.png",
+				"rushgrouplist.html",
+				"images/reward.png",
+				"images/weixin.png",
+				"images/qq.png",
+				"images/icon_bell.png",
+				"images/icon_platform_v.png",
+				"images/noposi-tip.png",
+				"images/money.png",
+				"register.html",
+				"images/nostore-tip.png",
+				"images/icon_message_type_special.png",
+				"images/logo.png",
+				"images/tuanzhang.png",
+				"images/coupicon_03.jpg",
+				"images/sinaweibo.png",
+				"images/icon_prepayment.png",
+				"js/LimitTime.js",
+				"images/icon_setting.png",
+				"images/lottery_bg.png",
+				"images/tuan.png",
+				"images/aboutus.png",
+				"arealist.html",
+				"shake.html",
+				"rushgroupdetail.html",
+				"images/icon_message_type_product.png",
+				"images/icon_message_type_party.png",
+				"images/shakeup.png",
+				"images/shake.wav",
+				"images/failfight.png",
+				"images/taobao.png",
+				"images/yuantiao.jpg",
+				"images/1.jpg",
+				"images/Fav_icon13.png",
+				"SubmitFightSuccess.html"
+			]
+		}
+	}
+}

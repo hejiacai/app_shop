@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title>单门店首页</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<link rel="stylesheet" href="css/mui.min.css">
+		<link rel="stylesheet" href="css/swiper.min.css">
+
+		<script src="js/mui.min.js"></script>
+		<script src="js/app.js"></script>
+		<script src="js/template.js"></script>
+		<script type="text/javascript" src="js/flexible.debug.js"></script>
+		<script type="text/javascript" src="js/flexible_css.debug.js"></script>
+		<script type="text/javascript" src="js/swiper.min.js"></script>
+
+		<link rel="stylesheet" href="css/store.css">
+		<link rel="stylesheet" href="css/style.css" />
+	</head>
+
+	<body>
+		<style>
+			body,
+			.mui-content {
+				background: #f5f5f5;
+			}
+			
+			.mui-table-view-cell>a:not(.mui-btn).mui-active {
+				background: none;
+			}
+			
+			.mui-table-view-cell>a:not(.mui-btn) {
+				margin: 0;
+				display: inline-block;
+				float: right;
+				position: relative;
+				right: 0.32rem;
+			}
+		</style>
+		<header class="mui-bar mui-bar-nav" id="header">
+			<!--首页导航栏开始-->
+			<div class="home-header">
+				<div class="store-address"><span class="iconfont location"></span><span id="homeaddress">湖南文化大厦44</span></div>
+				<div class="store-map" id="map">查看地图</div>
+			</div>
+
+			<!--首页导航栏结束-->
+		</header>
+		<div class="mui-content" id="content">
+
+			<!--店铺信息-->
+			<div class="mui-card-header mui-card-media mui-store-info" id="headdcontent">
+
+			</div>
+
+			<div class="mui-store-sm">
+				<form onsubmit="return false;">
+					<!--搜索-->
+					<div class="mui-input-row mui-search">
+						<input type="search" class="mui-input-clear" placeholder="请输入商品名称" id="keywordsText">
+					</div>
+				</form>
+				<!--菜单-->
+				<ul id="ul_menu" class="mui-table-view mui-grid-view mui-grid-9 mui-store-table">
+
+				</ul>
+
+			</div>
+
+			<div id="storeproduct">
+
+			</div>
+		</div>
+
+	</body>
+	<!--
+	作者：419634501@qq.com
+	时间：2017-09-15
+	描述：门店头部
+-->
+	<script id="temphead" type="text/html">
+
+		<img src="{{StoreInfo.StoreLogo}}">
+		<div class="mui-media-body">
+			<div class="">
+				<div><span id="stroe-name" class="storehome-name">{{StoreInfo.StoreName}}</span>
+					<span class="stroe-phone" data-tel="{{StoreInfo.Tel}}" id="telphone"></span></div>
+				<p class="size3 storeTime">营业时间:{{StoreInfo.OpenStartDate}}AM 至 {{StoreInfo.OpenEndDate}}PM</p>
+				{{if StoreInfo.IsStoreDelive}}
+				<p class="size3 storeTime">起送价: {{StoreInfo.MinOrderPrice}}元 配送费: {{StoreInfo.StoreFreight}}元</p>
+				{{/if}}
+
+			</div>
+
+			{{if StoreInfo.ActivityList.ActivityCount>0}}
+			<div class="youhui" id="SHyouhui">
+				<div class="left">
+					<div class="main" id="main">
+						{{if StoreInfo.ActivityList.FullAmountReduceList.length>0}}
+						<div class="size3 mui-pull-left"><i class="iconfont badge_jian_ jian-icon youhui-icon"></i>{{StoreInfo.ActivityList.FullAmountReduceList[0].ActivityName}}</div>
+						{{else if StoreInfo.ActivityList.FullAmountSentGiftList.length>0}}
+						<div class="size3 mui-pull-left"><i class="iconfont badge_song_ song youhui-icon"></i>{{StoreInfo.ActivityList.FullAmountSentGiftList[0].ActivityName}}</div>
+						{{else}}
+						<div class="size3 mui-pull-left"><i class="iconfont badge_mian_ mian youhui-icon"></i>{{StoreInfo.ActivityList.FullAmountSentFreightList[0].ActivityName}}</div>
+						{{/if}}
+					</div>
+
+					<div class="song" id="song">
+						<div class="mui-collapse-content showStore-huodong">
+							{{each StoreInfo.ActivityList.FullAmountReduceList as activeitem}}
+
+							<div class="size3 mui-pull-left"><i class="iconfont badge_jian_ jian-icon youhui-icon"></i>{{activeitem.ActivityName}}</div>
+
+							{{/each}} {{each StoreInfo.ActivityList.FullAmountSentGiftList as activeitem}}
+
+							<div class="size3 mui-pull-left"><i class="iconfont badge_song_ song youhui-icon"></i>{{activeitem.ActivityName}}</div>
+
+							{{/each}} {{each StoreInfo.ActivityList.FullAmountSentFreightList as activeitem}}
+
+							<div class="size3 mui-pull-left"><i class="iconfont badge_mian_ mian youhui-icon"></i>{{activeitem.ActivityName}}</div>
+
+							{{/each}}
+						</div>
+					</div>
+
+				</div>
+
+				{{if StoreInfo.ActivityList.ActivityCount>1}}
+				<div id="huod-b" class="showStore_box">
+					<a class="huodong-bg" id="huodong-bg">{{StoreInfo.ActivityList.ActivityCount}}个活动</a>
+					<i id="icon-updown" class="down"></i>
+				</div>
+				{{/if}}
+			</div>
+			{{/if}}
+		</div>
+	</script>
+
+	<script id="tempmenu" type="text/html">
+		{{each StoreInfo as menu}}
+		<li class="">
+			<a data-src="{{menu.RedirectTo}}" data-title="{{menu.IconName}}" class="menu_icon">
+				<span class="mui-icon"><img src="{{menu.IconUrl}}" width="100%"></span>
+				<div class="mui-media-body stroefont-size">{{menu.IconName}}</div>
+			</a>
+		</li>
+		{{/each}}
+	</script>
+
+	<script id="tempproduct" type="text/html">
+		{{each Result as item}} {{if item.Products.length>0}}
+		<div class="mui-store-recomm pt24">
+
+			<div class="storetitle">
+				<em id="leftLine" class="leftLine"></em>
+				<span id="storetitle" class="showtitle">{{item.FloorName}}</span>
+				<em id="rightLine" class="rightStyle"></em>
+			</div>
+			{{if item.ImageUrl!=null}}
+			<div class="storepic pd24-horizontal" data-imgid="{{item.ImageId}}">{{item.ImageUrl!=null}}<img src="{{item.ImageUrl}}" width="100%"></div>
+			{{/if}}
+
+			<div class="storeinfo-pro pd24-horizontal overflow">
+				{{each item.Products as product}}
+				<div class="storeinfo-pro-info overflow">
+					<div class="pro-img" data-pid="{{product.ProductId}}" onclick="openprodcutdetail(this)"><img class="guide-img" src="{{product.ProductImage}}" width="100%" /></div>
+					<div class="pro-name" data-pid="{{product.ProductId}}" onclick="openprodcutdetail(this)">{{product.ProductName}}</div>
+					<div class="pro-txt overflow">
+						<span class="pro-price mui-pull-left"><span>¥</span>{{product.Price}}</span>
+						<span class="iconfont add_ add  mui-pull-right" onclick="AddCart({{product.ProductId}})"></span>
+					</div>
+				</div>
+				{{/each}}
+			</div>
+		</div>
+		{{/if}} {{/each}}
+	</script>
+
+	<script>
+		var pageindex = 1,
+			pagesize = 100,
+			sotreid = 0,
+			epointx = 0,
+			epointy = 0,
+			storeaddress = "文化大厦";
+		var immersedIos = isIphoneX();
+		mui.init();
+
+		mui.plusReady(function() {
+			//判断是否是iphone X 
+			if(immersedIos) {
+				document.getElementById("header").className += " Xheader";
+				document.getElementById("content").className += " Xmui-content";
+			}
+			var self = plus.webview.currentWebview();
+			CurrentView = self;
+			sotreid = localStorage.getItem('DefaultStorid');
+
+			if(sotreid && parseInt(sotreid) <= 0) {
+				sotreid = self.storeid; //店铺iD
+			}
+			if(sotreid > 0) {
+				LoadStoreDetails();
+			}
+
+			plus.webview.currentWebview().addEventListener("hide", function(e) {
+				mui.scrollTo(0, 0);
+			});
+
+		});
+
+		mui("#storeproduct").on("tap", ".storepic", function() {
+			var imgid = this.dataset.imgid;
+			var requesturl = apiURL + "appshop/StoreMarketing?StoreId=" + sotreid + "&ImageId=" + imgid;
+			fxshop.OpenWapWeb(requesturl, '门店首页');
+
+		});
+
+		//菜单监听
+		mui("#ul_menu").on("tap", ".menu_icon", function() {
+			var ulrstr = this.dataset.src;
+			var title = this.dataset.title;
+			if(ulrstr == "page:FightGroupList") {
+				fxshop.openVW("rushgrouplist")
+			} else {
+				fxshop.OpenWapWeb(ulrstr, title);
+			}
+		});
+
+		document.addEventListener("UpdateStoreData", function(e) {
+			sotreid = e.detail.storeid; //店铺iD
+			if(sotreid > 0) {
+				LoadStoreDetails();
+			}
+		});
+
+		//打开产品详情页
+		function openprodcutdetail(obj) {
+			mui.scrollTo(0, 0, 100);
+			var pid = obj.dataset.pid;
+			ShowStoreProdduct(pid, sotreid);
+		}
+		//加载店铺首页信息
+		function LoadStoreDetails() {
+
+			mui.ajax(fxshop.goUrl('GetStoreHomePageBaseInfo'), {
+				dataType: "json",
+				type: "post",
+				data: {
+					StoreId: sotreid
+				},
+				success: function(res) {
+					if(res["ErrorResponse"]) {
+						mui.toast(res.ErrorResponse.ErrorMsg);
+						return;
+					}
+					epointx = res.Result.Longitude; //经度
+					epointy = res.Result.Latitude; //纬度
+					storeaddress = res.Result.StoreAddress; //地址
+
+					document.getElementById("homeaddress").innerHTML = storeaddress;
+
+					ShowStoreHead(res.Result); //头部
+
+					ShowMenus(res.Result); //菜单
+
+					ShowFloors(); //加载楼层
+				},
+				error: function(ex) {
+					mui.toast(ex);
+				},
+				complete: function() {
+					loadHuodong();
+				}
+			})
+		}
+
+		document.getElementById("map").addEventListener("tap", function() {
+			var requesturl = "https://apis.map.qq.com/tools/routeplan/eword=" + storeaddress + "&epointx=" + epointx + "&epointy=" + epointy + "?referer=myapp&key=" + qqKey;
+
+			fxshop.OpenWapWeb(requesturl, '查看地图');
+		});
+
+		function AddCart(productid) {
+			ClickCart(productid, 4, sotreid);
+		}
+ 
+		function ShowStoreStatus(storeobjct) {
+			switch(storeobjct.StoreStatus) {
+				case 1: //歇业
+					plus.ui.toast("很抱歉，门店歇业中，门店暂不提供服务！", {
+						verticalAlign: 'center',
+						duration: 'long'
+					});
+					break;
+				case 4: //非营业时间
+					plus.ui.toast("很抱歉，现在是非营业时间，门店暂不提供服务！", {
+						verticalAlign: 'center',
+						duration: 'long'
+					});
+					break;
+				default:
+					break;
+			}
+		}
+
+		//显示店铺基本信息
+		function ShowStoreHead(storeobject) {
+			document.getElementById("headdcontent").innerHTML = template("temphead", {
+				'StoreInfo': storeobject
+			});
+
+			document.getElementById("telphone").addEventListener("tap", function() {
+				plus.device.dial(this.dataset.tel);
+			});
+
+			document.getElementById("stroe-name").addEventListener("tap", function() {
+				var requesturl = apiURL + "appshop/StoreAbout?StoreId=" + sotreid;
+				fxshop.OpenWapWeb(requesturl, "门店介绍")
+			});
+		}
+
+		//显示菜单
+		function ShowMenus(storeobject) {
+			document.getElementById("ul_menu").innerHTML = template("tempmenu", {
+				'StoreInfo': storeobject.Marktings
+			});
+		}
+
+		//显示楼层
+		function ShowFloors() {
+			mui.ajax(fxshop.goUrl('GetStoreHomePageFloorList'), {
+				dataType: "json",
+				type: "post",
+				timeout: 10000,
+				data: {
+					PageIndex: pageindex,
+					PageSize: 10,
+					StoreId: sotreid
+				},
+				success: function(res) {
+					document.getElementById("storeproduct").innerHTML = template("tempproduct", res);
+				},
+				complete: function() {
+					setTimeout(function() {
+						showTagWidth();
+					}, 600);
+				},
+				error: function(ex) {
+					mui.toast(ex);
+				}
+			})
+		}
+
+		//搜索
+		document.addEventListener("keyup", function(event) {
+			if((event || window.event).keyCode == 13) {
+				keywordsText.blur();
+				keywords = keywordsText.value;
+				if(keywords != '') {
+					fxshop.openVW('search-result', {
+						'keywords': keywords,
+						'storeId': sotreid
+					});
+				}
+			}
+		});
+
+		//收缩营销活动
+		function loadHuodong() {
+			if(document.getElementById('main')) {
+				var main = document.getElementById('main').style.display;
+				var song = document.getElementById('song').style.display = 'none';
+				mui('#huod-b').on('tap', 'a', function() {
+					if(main == "block" || main == "") {
+						document.getElementById('main').style.display = 'none';
+						document.getElementById('song').style.display = 'block';
+						main = document.getElementById('main').style.display;
+						fxshop.removeClass(document.getElementById('icon-updown'), "down");
+						fxshop.addClass(document.getElementById('icon-updown'), "up");
+
+					} else {
+						document.getElementById('main').style.display = 'block';
+						document.getElementById('song').style.display = 'none';
+						main = document.getElementById('main').style.display;
+						fxshop.removeClass(document.getElementById('icon-updown'), "up");
+						fxshop.addClass(document.getElementById('icon-updown'), "down");
+					}
+				})
+			}
+
+		}
+
+		//点击楼层图片
+	</script>
+
+</html>

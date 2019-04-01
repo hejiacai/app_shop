@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<meta name="format-detection" content="telephone=no,email=no" />
+		<title>订单列表</title>
+		<link href="css/mui.min.css" rel="stylesheet" />
+		<link href="css/style.css" rel="stylesheet" />
+		<link rel="stylesheet" href="css/mescroll.min.css">
+		<script src="js/mescroll.min.js"></script>
+		<script type="text/javascript" src="js/flexible.debug.js"></script>
+		<script type="text/javascript" src="js/flexible_css.debug.js"></script>
+		<script type="text/javascript" src="js/template.js"></script>
+		<script type="text/javascript" src="js/mui.min.js"></script>
+		<script type="text/javascript" src="js/app.js"></script>
+	</head>
+
+	<style>
+		.mescroll {
+			position: relative;
+			z-index: 99;
+		}
+	</style>
+
+	<body>
+		<header class="mui-bar mui-bar-nav" id="header">
+			<div class="home-header">
+				<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"><span>返回</span></a>
+				<a id="menu" class="iconfont _more mui-pull-right" href="#topPopover"></a>
+				<h1 class="mui-title">订单列表</h1>
+			</div>
+		</header>
+
+		<!--右上角弹出菜单-->
+		<div id="topPopover" class="mui-popover">
+			<div class="mui-popover-arrow"></div>
+			<div class="mui-scroll-wrapper">
+				<div class="mui-scroll" id="navbar">
+					<ul class="mui-table-view nav-bar">
+						<li data-page="home"><i class="iconfont home"></i>首页</li>
+						<li data-page="category"><i class="iconfont fenlei"></i>分类</li>
+						<li data-page="shopcart"><i class="iconfont icon__cart"></i>购物车</li>
+						<li data-page="user"><i class="iconfont icon__my"></i>个人中心</li>
+					</ul>
+				</div>
+			</div>
+
+		</div>
+		
+		<!--分享-->
+		<ul class="mui-share mui-list-inline mui-hidden" id="shareRedEnvelop">
+			<li data-id="weixin" data-scene="WXSceneSession">
+				<img src="images/icon_wechat.png" />
+				<span class="mui-subtitle">微信</span>
+			</li>
+			<li data-id="weixin" data-scene="WXSceneTimeline">
+				<img src="images/icon_wxTimeLine.png" />
+				<span class="mui-subtitle">朋友圈</span>
+			</li>
+			<li data-id="qq">
+				<img src="images/icon_qq.png" />
+				<span class="mui-subtitle">QQ</span>
+			</li>
+			<li data-id="sinaweibo">
+				<img src="images/icon_weibo.png" />
+				<span class="mui-subtitle">新浪微博</span>
+			</li>
+			<div id="RedEnvelopcancel">
+				<a class="cancel">取消</a>
+			</div>
+
+		</ul>
+
+		<div class="mui-content" id="content">
+			<div id="mescroll" class="mescroll">
+				<div class="mui-col-xs-12" id="orderNull">
+					<img src="images/order_null.png" />
+					<p>暂无订单</p>
+				</div>
+
+				<ul id="orderList" class="order-list">
+
+				</ul>
+
+			</div>
+		</div>
+		<ul class="nav-list fixed" id="fixedNav">
+			<li data-status="0">全部订单</li>
+			<li data-status="1">待付款</li>
+			<li data-status="2">待发货</li>
+			<li data-status="3">待收货</li>
+			<li data-status="5">待评价</li>
+		</ul>
+
+		<script>
+			var isEnd = false,
+				pageIndex = 0,
+				pagesize = 10,
+				orderStatus = 0,
+				proStatus;
+			var mescroll = "";
+			var immersedIos=isIphoneX();
+			var siteinfo = SiteSetting.getSiteInfo();
+			mui.init();
+
+			mui.plusReady(function() {
+				var ws = plus.webview.currentWebview();
+				if(ws.orderStatus) {
+					orderStatus = ws.orderStatus;
+				}
+				//判断是否是iphone X 
+				if(immersedIos){
+					document.getElementById("header").className+=" Xheader"; 
+					document.getElementById("content").className+=" Xmui-content";
+					document.getElementById("fixedNav").className+=" iphoneXNav";
+				} 	 
+				document.querySelector('li[data-status="' + orderStatus + '"]').className = 'active';
+				mescroll = new MeScroll("mescroll", { //第一个参数"mescroll"对应上面布局结构div的id
+					//如果您的下拉刷新是重置列表数据,那么down完全可以不用配置,具体用法参考第一个基础案例
+					//解析: down.callback默认调用mescroll.resetUpScroll(),而resetUpScroll会将page.num=1,再触发up.callback
+					down: {
+						callback: loadOrder //下拉刷新的回调,别写成downCallback(),多了括号就自动执行方法了
+					}
+				});
+				//loadOrder('reset');
+				BindEvent();
+
+			});
+
+			document.addEventListener("UpdateDataOrder", function() {
+				loadOrder();
+				BindEvent();
+			});
+
+			template.helper('ShowPrice', function(price) {
+				return parseFloat(price).toFixed(2);
+			});
+
+			// 绑定事件
+			function BindEvent() {
+				showNav();
+				mui('#fixedNav').on('tap', 'li', function() {
+					orderStatus = this.getAttribute('data-status');
+					document.getElementById("fixedNav").querySelector('.active').className = '';
+					this.className = 'active';
+					loadOrder();
+				});
+
+				//申请退款
+				mui("#orderList").on("tap", ".refundOrder", function() {
+					var orderId = this.getAttribute('data-id');
+					var refundurl = apiURL + "Appshop/ApplyRefund.aspx?OrderId=" + orderId;
+					fxshop.OpenWapWeb(refundurl, "申请退款");
+				});
+
+				//取消订单
+				mui('#orderList').on('tap', '.cancelOrder', function() {
+
+					var orderId = this.getAttribute('data-id'),
+						btnArray = ['取消', '确认'];
+					mui.confirm('确定要取消此订单吗？', '', btnArray, function(e) {
+						if(e.index == 1) {
+							mui.ajax(fxshop.goUrl('CloseOrder'), {
+								data: {
+									SessionId: siteinfo.UserInfo.sessionid,
+									orderId: orderId,
+								},
+								dataType: 'json',
+								type: 'POST',
+								timeout: 10000,
+								success: function(data) {
+									if(data.Success.Status) {
+										plus.nativeUI.toast('订单取消成功');
+										reloadOrder();
+										setTimeout(function() {
+											mui.fire(plus.webview.getWebviewById('userhome.html'), 'updateData')
+										}, 1000);
+									} else {
+										plus.nativeUI.toast('订单取消失败，请检查网络')
+									}
+								},
+								error: function(xhr, type, errorThrown) {
+									plus.nativeUI.toast('订单取消失败，请检查网络')
+								}
+							});
+						}
+					});
+				});
+
+				//确认收货 
+				mui('#orderList').on('tap', '.enterOrder', function() {
+					var orderId = this.getAttribute('data-id'),
+						btnArray = ['取消', '确认'];
+					mui.confirm('请确保您已收到宝贝,再收货！', '', btnArray, function(e) {
+						if(e.index == 1) {
+							mui.ajax(fxshop.goUrl('FinishOrder'), {
+								data: {
+									orderId: orderId,
+									SessionId: siteinfo.UserInfo.sessionid,
+								},
+								dataType: 'json',
+								type: 'POST',
+								timeout: 10000,
+								success: function(data) {
+									if(data.Success.Status) {
+										plus.nativeUI.toast('已确认收货');
+										reloadOrder();
+										setTimeout(function() {
+											mui.fire(plus.webview.getWebviewById('userhome.html'), 'updateData')
+										}, 1000);
+									} else {
+										plus.nativeUI.toast(data.Success.Msg)
+									}
+								},
+								error: function(xhr, type, errorThrown) {
+									plus.nativeUI.toast('请求失败，请检查网络')
+								}
+							});
+						}
+					});
+				});
+
+				//查看物流
+				mui('#orderList').on('tap', '.logistics', function() {
+					//					var requesturl = apiURL + "appshop/MyLogistics?OrderId=" + this.getAttribute('data-id');
+					var requesturl = apiURL + "AppDepot/OrderLogistics?orderid=" + this.getAttribute('data-id');
+					fxshop.OpenWapWeb(requesturl, '查看物流');
+				});
+
+				//评价订单
+				mui('#orderList').on('tap', '.evaluateOrder', function() {
+					var requesturl = apiURL + "appshop/MemberSubmitProductReview?orderId=" + this.getAttribute('data-id');
+					fxshop.OpenWapWeb(requesturl, '评价订单');
+				});
+
+				//查看订单详情
+				mui('#orderList').on('tap', 'dd', function() {
+					var requesturl = apiURL + "appshop/MemberOrderDetails?OrderId=" + this.getAttribute('data-id');
+					fxshop.OpenWapWeb(requesturl, "订单详情");
+				});
+
+				//上门自提订单   二维码链接
+				mui('#orderList').on('tap', '.code', function() {
+					var requesturl = apiURL + "appshop/ViewQRCode?orderId=" + this.getAttribute('data-id');
+					fxshop.OpenWapWeb(requesturl, "上门自提订单");
+				});
+	 
+			}
+
+			function reloadOrder() {
+				isEnd = false;
+				pageIndex = 0;
+				loadOrder();
+			}
+
+			function loadOrder() {
+				var w = plus.nativeUI.showWaiting('', {
+					padlock: true
+				});
+				mui.ajax(fxshop.goUrl('Orders'), {
+					data: {
+						SessionId: siteinfo.UserInfo.sessionid,
+						status: orderStatus,
+						pageIndex: pageIndex,
+						pagesize: pagesize,
+					},
+					dataType: 'json',
+					type: 'get',
+					timeout: 10000,
+					success: function(data) {
+						
+						var result = data.Result;
+						if(data.ErrorResponse != undefined) {
+							plus.nativeUI.toast(data.ErrorResponse.ErrorMsg);
+							mescroll.endErr();
+							return;
+						}
+						console.info(result.RecordCount);
+						if(result.RecordCount <= 0) {
+							document.getElementById("orderNull").style.display = "block";
+							document.getElementById("orderList").style.display = "none";
+							mescroll.endSuccess();
+						} else {
+							document.getElementById("orderList").style.display = "block";
+							document.getElementById("orderList").innerHTML = template('orderListTemp', {
+								'result': result
+							});
+							document.getElementById("orderNull").style.display = "none";
+						}
+						mescroll.scrollTo(0, 0, 20);
+						mescroll.endSuccess();
+					},
+					error: function(xhr, type, errorThrown) {
+						plus.nativeUI.toast('请求失败，请检查网络');
+						mescroll.endErr();
+					},
+					complete: function() {
+						//w.close();
+						plus.nativeUI.closeWaiting();
+					}
+				});
+			};
+
+			document.addEventListener('updateData', function(e) {
+				reloadOrder();
+			});
+		</script>
+
+	</body>
+
+	<script type="text/html" id="orderListTemp">
+		{{each result.List as orderlist}}
+		<li>
+			<div class="order-hd">
+				{{if orderlist.StoreName==''}} 
+				  {{if orderlist.SupplierId>0}}
+				<div class="store-name">
+					<em class="iconfont _gongyingshang"></em>
+					<span>{{orderlist.ShipperName==""?orderlist.OrderId:orderlist.ShipperName}}</span>
+				</div>
+				  {{else}}
+				<div class="store-name">
+					{{if orderlist.ShipperName != ""}}<em class="iconfont _pingtai"></em>{{/if}}
+					<span>{{orderlist.ShipperName==""?orderlist.OrderId:orderlist.ShipperName}}</span>
+				</div>
+				{{/if}} 
+				{{else if orderlist.StoreName!=''}}
+				<div class="store-name">
+					<em class="iconfont store"></em>
+					<span>{{orderlist.StoreName}}</span>
+				</div>
+				{{/if}} {{if orderlist.IsShowTakeCodeQRCode}}
+				<div class="order-status">待上门自提</div>
+				{{else}}
+				<div class="order-status">{{orderlist.StatusText}}</div>
+				{{/if}}
+				
+			</div>
+			
+			
+			
+			
+			<dl class="order-content">
+				{{each orderlist.LineItems as product}}
+				<dd data-id="{{orderlist.OrderId}}">
+					<div class="order-img mr16"><img src="{{product.Image}}"></div>
+					<div class="order-txt">
+						<div class="hd">{{product.Name}}</div>
+						<div class="order-size">{{product.SkuText}}</div>
+					</div>
+					<div class="price-count">
+						<div class="price mb8">¥<span>{{ShowPrice(product.Price)}}</span></div>
+						<div class="count"><em class="iconfont icon__close font28 mr8"></em>{{product.Amount+(product.SendCount>0?("　赠"+product.SendCount):"")}}</div>
+						<div class="statu-txt">{{product.StatusText}}</div>
+					</div>
+				</dd>
+				{{/each}}
+				{{each orderlist.Gifts as gift}}
+				<dd data-id="{{orderlist.OrderId}}">
+					<div class="order-img mr16"><img src="{{gift.Image}}"></div>
+					<div class="order-txt">
+						<div class="hd">{{gift.GiftName}}</div>
+					</div>
+					<div class="price-count">
+						<div class="price mb8">¥<span>0</span></div>
+						<div class="count"><em class="iconfont icon__close font28 mr8"></em>{{gift.Quantity}}</div>
+					</div>
+				</dd>
+				{{/each}}
+			</dl>
+			<div class="Total">
+				{{if orderlist.Quantity>0}}<span>共{{orderlist.Quantity}}件商品</span>
+				{{else}}<span>共{{orderlist.Gifts.length}}件礼品</span>{{/if}}
+				<span>总价：<em class="font20 mr8 ml8">¥</em>{{orderlist.Amount}}</span>
+			</div>
+
+			<div class="order-btns">
+				{{if orderlist.IsShowClose}}
+				<button class="mui-btn cancelOrder" data-id='{{orderlist.OrderId}}'>取消订单</button> {{/if}}
+				{{if orderlist.IsShowRefund}}
+					<button class="mui-btn refundOrder" data-id='{{orderlist.OrderId}}'>申请退款</button>		
+				{{/if}}
+
+				{{if orderlist.IsShowTakeCodeQRCode}}
+				<button class="mui-btn code" data-id='{{orderlist.OrderId}}'>提货二维码</button> {{/if}} {{if orderlist.IsShowLogistics}}
+				<button class="mui-btn logistics" data-id='{{orderlist.OrderId}}'>查看物流</button> {{/if}} {{if orderlist.IsShowFinishOrder}}
+				<button class="mui-btn enterOrder" data-id='{{orderlist.OrderId}}'>确认收货</button> {{/if}} {{if orderlist.IsShowCreview}}
+				<button class="mui-btn evaluateOrder" data-id='{{orderlist.OrderId}}'>{{orderlist.CreviewText}}</button> {{/if}}
+			</div>
+			
+			{{if orderlist.ShowRedEnvelope.IsShowRedEnvelope}}
+				<div class="order-status-sendRedEnvelope" onclick="shareRedEvenlope('{{orderlist.ShowRedEnvelope.ShareTitle}}','{{orderlist.ShowRedEnvelope.Href}}','{{orderlist.ShowRedEnvelope.ShareIcon}}','{{orderlist.ShowRedEnvelope.ShareDetails}}','{{orderlist.OrderId}}','{{orderlist.ShowRedEnvelope.RedEnvelopeID}}','{{orderlist.ShowRedEnvelope.SendCode}}')">
+                                     
+                </div>
+			{{/if}}	
+
+		</li>
+		{{/each}}
+	</script>
+
+</html>

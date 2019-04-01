@@ -1,0 +1,442 @@
+{
+	"@platforms": [
+		"android",
+		"iPhone",
+		"iPad"
+	],
+	"id": "H503FD411",/*应用的标识，创建应用时自动生成，勿手动修改*/
+	"name": "APP_Shop",/*应用名称，程序桌面图标名称*/
+	"version": {
+		"name": "1.0",/*应用版本名称*/
+		"code": ""
+	},
+	"description": "",/*应用描述信息*/
+	"icons": {
+		"72": "icon.png"
+	},
+	"launch_path": "APP_Shop/index.html",/*应用的入口页面，默认为根目录下的index.html；支持网络地址，必须以http://或https://开头*/
+	"developer": {
+		"name": "",/*开发者名称*/
+		"email": "",/*开发者邮箱地址*/
+		"url": ""
+	},
+	"permissions": {
+		
+		"Cache": {
+			"description": "管理应用缓存"
+		},
+		"Console": {
+			"description": "跟踪调试输出日志"
+		},
+		"Contacts": {
+			"description": "访问系统联系人信息"
+		},
+		"Events": {
+			"description": "应用扩展事件"
+		},
+		"Maps": {
+			"description": "管理地图插件"
+		},
+		
+		"Push": {}
+	},
+	"plus": {
+		"splashscreen": {
+			"autoclose": true,/*是否自动关闭程序启动界面，true表示应用加载应用入口页面后自动关闭；false则需调plus.navigator.closeSplashscreen()关闭*/
+			"waiting": true
+		},
+		"popGesture": "close",/*设置应用默认侧滑返回关闭Webview窗口，"none"为无侧滑返回功能，"hide"为侧滑隐藏Webview窗口。参考http://ask.dcloud.net.cn/article/102*/
+		"runmode": "normal",/*应用的首次启动运行模式，可取liberate或normal，liberate模式在第一次启动时将解压应用资源（Android平台File API才可正常访问_www目录）*/
+		"signature": "Sk9JTiBVUyBtYWlsdG86aHIyMDEzQGRjbG91ZC5pbw==",/*可选，保留给应用签名，暂不使用*/
+		"distribute": {
+			"apple": {
+				"appid": "",/*iOS应用标识，苹果开发网站申请的appid，如io.dcloud.HelloH5*/
+				"mobileprovision": "",/*iOS应用打包配置文件*/
+				"password": "",/*iOS应用打包个人证书导入密码*/
+				"p12": "",/*iOS应用打包个人证书，打包配置文件关联的个人证书*/
+				"devices": "universal",/*iOS应用支持的设备类型，可取值iphone/ipad/universal*/
+				"frameworks": []
+			},
+			
+			"google": {
+				"packagename": "",/*Android应用包名，如io.dcloud.HelloH5*/
+				"keystore": "",/*Android应用打包使用的密���库文件*/
+				"password": "",/*Android应用打包使用密钥库中证书的密码*/
+				"aliasname": "",/*Android应用打包使用密钥库中证书的别名*/
+				"permissions": ["<uses-permission android:name=\"android.permission.CHANGE_NETWORK_STATE\"/>","<uses-permission android:name=\"android.permission.READ_CONTACTS\"/>","<uses-permission android:name=\"android.permission.MOUNT_UNMOUNT_FILESYSTEMS\"/>","<uses-permission android:name=\"android.permission.VIBRATE\"/>","<uses-permission android:name=\"android.permission.READ_LOGS\"/>","<uses-permission android:name=\"android.permission.ACCESS_WIFI_STATE\"/>","<uses-feature android:name=\"android.hardware.camera.autofocus\"/>","<uses-permission android:name=\"android.permission.SYSTEM_ALERT_WINDOW\"/>","<uses-permission android:name=\"android.permission.WRITE_CONTACTS\"/>","<uses-permission android:name=\"android.permission.ACCESS_NETWORK_STATE\"/>","<uses-permission android:name=\"android.permission.RECEIVE_BOOT_COMPLETED\"/>","<uses-permission android:name=\"android.permission.CAMERA\"/>","<uses-permission android:name=\"android.permission.GET_ACCOUNTS\"/>","<uses-permission android:name=\"android.permission.RECORD_AUDIO\"/>","<uses-permission android:name=\"android.permission.MODIFY_AUDIO_SETTINGS\"/>","<uses-permission android:name=\"android.permission.INTERNET\"/>","<uses-permission android:name=\"android.permission.READ_PHONE_STATE\"/>","<uses-permission android:name=\"android.permission.CHANGE_WIFI_STATE\"/>","<uses-permission android:name=\"android.permission.WAKE_LOCK\"/>","<uses-permission android:name=\"android.permission.CALL_PHONE\"/>","<uses-permission android:name=\"android.permission.FLASHLIGHT\"/>","<uses-permission android:name=\"android.permission.ACCESS_COARSE_LOCATION\"/>","<uses-feature android:name=\"android.hardware.camera\"/>","<uses-permission android:name=\"android.permission.ACCESS_FINE_LOCATION\"/>","<uses-permission android:name=\"android.permission.WRITE_EXTERNAL_STORAGE\"/>","<uses-permission android:name=\"android.permission.WRITE_SETTINGS\"/>"]
+			},
+			"orientation": [
+				"portrait-primary"
+			],/*应用支持的方向，portrait-primary：竖屏正方向；portrait-secondary：竖屏反方向；landscape-primary：横屏正方向；landscape-secondary：横屏反方向*/
+			"icons": {
+				"ios": {
+					"prerendered": true, /*应用图标是否已经高亮处理，在iOS6及以下设备上有效*/
+					"auto": "", /*应用图标，分辨率：512x512，用于自动生成各种尺寸程序图标*/
+					"iphone": {
+						"normal": "", /*iPhone3/3GS程序图标，分辨率：57x57*/
+						"retina": "", /*iPhone4程序图标，分辨率：114x114*/
+						"retina7": "", /*iPhone4S/5/6程序图标，分辨率：120x120*/
+						"retina8": "", /*iPhone6 Plus程序图标，分辨率：180x180*/
+						"spotlight-normal": "", /*iPhone3/3GS Spotlight搜索程序图标，分辨率：29x29*/
+						"spotlight-retina": "", /*iPhone4 Spotlight搜索程序图标，分辨率：58x58*/
+						"spotlight-retina7": "", /*iPhone4S/5/6 Spotlight搜索程序图标，分辨率：80x80*/
+						"settings-normal": "", /*iPhone4设置页面程序图标，分辨率：29x29*/
+						"settings-retina": "", /*iPhone4S/5/6设置页面程序图标，分辨率：58x58*/
+						"settings-retina8": ""
+					},
+					"ipad": {
+						"normal": "", /*iPad普通屏幕程序图标，分辨率：72x72*/
+						"retina": "", /*iPad高分屏程序图标，分辨率：144x144*/
+						"normal7": "", /*iPad iOS7程序图标，分辨率：76x76*/
+						"retina7": "", /*iPad iOS7高分屏程序图标，分辨率：152x152*/
+						"spotlight-normal": "", /*iPad Spotlight搜索程序图标，分辨率：50x50*/
+						"spotlight-retina": "", /*iPad高分屏Spotlight搜索程序图标，分辨率：100x100*/
+						"spotlight-normal7": "",/*iPad iOS7 Spotlight搜索程序图标，分辨率：40x40*/
+						"spotlight-retina7": "",/*iPad iOS7高分屏Spotlight搜索程序图标，分辨率：80x80*/
+						"settings-normal": "",/*iPad设置页面程序图标，分辨率：29x29*/
+						"settings-retina": ""
+					}
+				},
+				"android": {
+					"mdpi": "", /*普通屏程序图标，分辨率：48x48*/
+					"ldpi": "", /*大屏程序图标，分辨率：48x48*/
+					"hdpi": "", /*高分屏程序图标，分辨率：72x72*/
+					"xhdpi": "",/*720P高分屏程序图标，分辨率：96x96*/
+					"xxhdpi": ""
+				}
+			},
+			"splashscreen": {
+				"ios": {
+					"iphone": {
+						"default": "", /*iPhone3启动图片选，分辨率：320x480*/
+						"retina35": "",/*3.5英寸设备(iPhone4)启动图片，分辨率：640x960*/
+						"retina40": "",/*4.0 英寸设备(iPhone5/iPhone5s)启动图片，分辨率：640x1136*/
+						"retina47": "",/*4.7 英寸设备(iPhone6)启动图片，分辨率：750x1334*/
+						"retina55": "",/*5.5 英寸设备(iPhone6 Plus)启动图片，分辨率：1242x2208*/
+						"retina55l": ""
+					},
+					"ipad": {
+						"portrait": "", /*iPad竖屏启动图片，分辨率：768x1004*/
+						"portrait-retina": "",/*iPad高分屏竖屏图片，分辨率：1536x2008*/
+						"landscape": "", /*iPad横屏启动图片，分辨率：1024x748*/
+						"landscape-retina": "", /*iPad高分屏横屏启动图片，分辨率：2048x1496*/
+						"portrait7": "", /*iPad iOS7竖屏启动图片，分辨率：768x1024*/
+						"portrait-retina7": "",/*iPad iOS7高分屏竖屏图片，分辨率：1536x2048*/
+						"landscape7": "", /*iPad iOS7横屏启动图片，分辨率：1024x768*/
+						"landscape-retina7": ""
+					}
+				},
+				"android": {
+					"mdpi": "", /*普通屏启动图片，分辨率：240x282*/
+					"ldpi": "", /*大屏启动图片，分辨率：320x442*/
+					"hdpi": "", /*高分屏启动图片，分辨率：480x762*/
+					"xhdpi": "", /*720P高分屏启动图片，分辨率：720x1242*/
+					"xxhdpi": ""
+				}
+			},
+			"plugins":{
+				"push": {  
+					"igexin": {  
+					    "appid": "r5IeJCl1jI9yObHNWhEEY4",  
+					    "appkey": "C8qC461Y7JAttrc4nWk4R6",  
+					    "appsecret": "YJg6FfdFMpAt27uCxNAxm5"  
+					}  
+				}  
+			}
+	},
+	"fullscreen": true,"adid":"124505060803"
+},
+	"dependencies": {
+		"pages": {
+			"APP_Shop/main.html": {
+				"resources": [
+					"APP_Shop/home.html"
+				],
+				"refer": [
+					"APP_Shop/nearstorelist.html",
+					"APP_Shop/userhome.html",
+					"APP_Shop/categoryTemp4.html",
+					"APP_Shop/storehome1.html",
+					"APP_Shop/shopcart.html",
+					"APP_Shop/storeproduct-detail.html",
+					"APP_Shop/product-detail.html",
+					"APP_Shop/skuProduct.html",
+					"APP_Shop/Fight_sku_Product.html"
+				],
+				"priority": 0
+			},
+			"APP_Shop/index.html": {
+				"resources": [],
+				"refer": [
+					"APP_Shop/guide.html",
+					"APP_Shop/main.html"
+				],
+				"priority": 0
+			},
+			"APP_Shop/guide.html": {
+				"resources": [],
+				"refer": [
+					"APP_Shop/main.html"
+				],
+				"priority": 0
+			},
+			"APP_Shop/userhome.html": {
+				"resources": [],
+				"refer": [
+					"APP_Shop/login.html",
+					"APP_Shop/AccountManagement.html"
+				],
+				"priority": 0
+			},
+			"APP_Shop/home.html": {
+				"resources": [],
+				"refer": [
+					"APP_Shop/achievement/achievement_index.html"
+				],
+				"priority": 0
+			},
+			"APP_Shop/achievement/achievement_index.html": {
+				"resources": [],
+				"refer": [
+					"APP_Shop/achievement/trade_select.html"
+				],
+				"priority": 0
+			}
+		},
+		"idle": {
+			"resources": [
+				"APP_Shop/arealist.html",
+				"APP_Shop/achievement/share_select.html",
+				"APP_Shop/images/img_only_phone.png",
+				"APP_Shop/images/sinaweibo.png",
+				"APP_Shop/images/cxtj.png",
+				"APP_Shop/images/shakedown.png",
+				"APP_Shop/css/style.css",
+				"APP_Shop/achievement/agent_authority_manage.html",
+				"APP_Shop/images/select_rideo.png",
+				"APP_Shop/images/yuantiao.jpg",
+				"APP_Shop/images/icon_message_type_special.png",
+				"APP_Shop/images/failfight.png",
+				"APP_Shop/achievement/css/trade_select.css",
+				"APP_Shop/images/icon-tuan-num1.png",
+				"APP_Shop/appauto.html",
+				"APP_Shop/js/app.js",
+				"APP_Shop/js/delayimg.js",
+				"APP_Shop/images/icon_prepayment.png",
+				"APP_Shop/images/default-photo.png",
+				"APP_Shop/images/icon_wxTimeLine.png",
+				"APP_Shop/SubmitFightSuccess.html",
+				"APP_Shop/images/icon_coupon.png",
+				"APP_Shop/images/Fav_icon13.png",
+				"APP_Shop/images/phone.png",
+				"APP_Shop/images/reduce.png",
+				"APP_Shop/images/qq.png",
+				"APP_Shop/js/mui.poppicker.js",
+				"APP_Shop/images/icon-see.png",
+				"APP_Shop/images/accout-bg.png",
+				"APP_Shop/js/home.js",
+				"APP_Shop/FightGroups.html",
+				"APP_Shop/js/city.data-3.js",
+				"APP_Shop/images/store_02.jpg",
+				"APP_Shop/BindPhone.html",
+				"APP_Shop/images/bg.png",
+				"APP_Shop/search.html",
+				"APP_Shop/images/index_01.jpg",
+				"APP_Shop/meiqia.html",
+				"APP_Shop/images/lottery_bg.png",
+				"APP_Shop/achievement/agent_manage.html",
+				"APP_Shop/achievement/statistics_analysis.html",
+				"APP_Shop/images/nostore-tip.png",
+				"APP_Shop/images/sign_coin.png",
+				"APP_Shop/js/flexible_css.debug.js",
+				"APP_Shop/achievement/terminal_confirm_binding.html",
+				"APP_Shop/images/shouzhi.png",
+				"APP_Shop/css/userhome.css",
+				"APP_Shop/images/icon_bell_new.png",
+				"APP_Shop/images/taobao.png",
+				"APP_Shop/forget_password.html",
+				"APP_Shop/images/SendRedEnvelope.png",
+				"APP_Shop/images/icon14.png",
+				"APP_Shop/images/icon_deposit.png",
+				"APP_Shop/js/jquery.scrollLoading.min.js",
+				"APP_Shop/images/icon_message_type_party.png",
+				"APP_Shop/achievement/css/terminal_select.css",
+				"APP_Shop/achievement/activation_details.html",
+				"APP_Shop/images/success_man.png",
+				"APP_Shop/categoryTemp3.html",
+				"APP_Shop/css/swiper.min.css",
+				"APP_Shop/js/md5.js",
+				"APP_Shop/images/jh.png",
+				"APP_Shop/css/mui.min.css",
+				"APP_Shop/search-result.html",
+				"APP_Shop/aboutus.html",
+				"APP_Shop/images/icon-guize.png",
+				"APP_Shop/Extension.html",
+				"APP_Shop/images/select_rideo2.png",
+				"APP_Shop/achievement/terminal_manage.html",
+				"APP_Shop/images/icon_address.png",
+				"APP_Shop/js/swiper.min.js",
+				"APP_Shop/css/search.css",
+				"APP_Shop/images/all_num.png",
+				"APP_Shop/images/icon_message_type_product.png",
+				"APP_Shop/achievement/css/transaction_stream.css",
+				"APP_Shop/css/mescroll.min.css",
+				"APP_Shop/images/shopcart-empty.png",
+				"APP_Shop/achievement/share_result.html",
+				"APP_Shop/css/index.css",
+				"APP_Shop/achievement/terminal_binding_select.html",
+				"APP_Shop/manifest.json",
+				"APP_Shop/images/headbg.png",
+				"APP_Shop/images/icon_groupbuy.png",
+				"APP_Shop/images/user-bg.png",
+				"APP_Shop/images/fg_user.png",
+				"APP_Shop/js/mescroll.min.js",
+				"APP_Shop/MyFavorites.html",
+				"APP_Shop/images/lottery_result_ticket.png",
+				"APP_Shop/BindEmail.html",
+				"APP_Shop/order-list.html",
+				"APP_Shop/category.html",
+				"APP_Shop/messageList.html",
+				"APP_Shop/storelist.html",
+				"APP_Shop/images/add.png",
+				"APP_Shop/images/noposi-tip.png",
+				"APP_Shop/images/lottery_bottom.png",
+				"APP_Shop/register.html",
+				"APP_Shop/images/icon-tuan-time.png",
+				"APP_Shop/js/mui.js",
+				"APP_Shop/images/icon_fight.png",
+				"APP_Shop/images/terminal_sj.png",
+				"APP_Shop/images/prize.png",
+				"APP_Shop/js/jquery-1.8.3.min.js",
+				"APP_Shop/images/order_null.png",
+				"APP_Shop/images/frcx.png",
+				"APP_Shop/images/icon_commission.png",
+				"APP_Shop/images/icon_prize.png",
+				"APP_Shop/images/dlsgl.png",
+				"APP_Shop/js/LimitTime.js",
+				"APP_Shop/images/ic_history.png",
+				"APP_Shop/images/blank.gif",
+				"APP_Shop/Point.html",
+				"APP_Shop/images/money.png",
+				"APP_Shop/images/lottery_sprite_bg.png",
+				"APP_Shop/achievement/terminal_binding.html",
+				"APP_Shop/images/select_right.png",
+				"APP_Shop/images/xiaoxi.png",
+				"APP_Shop/nearstore.html",
+				"APP_Shop/images/coupicon_03.jpg",
+				"APP_Shop/categoryTemp2.html",
+				"APP_Shop/images/code.png",
+				"APP_Shop/images/lottery_history_btn.png",
+				"APP_Shop/images/coupicon_04.jpg",
+				"APP_Shop/AccountSummaryDetails.html",
+				"APP_Shop/images/icon_wechat.png",
+				"APP_Shop/NoStoreTip.html",
+				"APP_Shop/fonts/iconfont.ttf",
+				"APP_Shop/images/FAB_consult.png",
+				"APP_Shop/images/icon_weibo.png",
+				"APP_Shop/images/icon_about.png",
+				"APP_Shop/images/log.png",
+				"APP_Shop/achievement/activation_select.html",
+				"APP_Shop/storehome.html",
+				"APP_Shop/images/default_img.jpg",
+				"APP_Shop/achievement/terminal_select_result.html",
+				"APP_Shop/unpackage/release/H5C797B22_0301093524.apk",
+				"APP_Shop/images/icon_envelopes.png",
+				"APP_Shop/storelistTag.html",
+				"APP_Shop/images/icon_orders.png",
+				"APP_Shop/images/terminal_gou.png",
+				"APP_Shop/images/tuan.png",
+				"APP_Shop/images/more4.png",
+				"APP_Shop/achievement/terminal_distribution.html",
+				"APP_Shop/rushgrouplist.html",
+				"APP_Shop/images/icon_platform_v.png",
+				"APP_Shop/images/index_03.jpg",
+				"APP_Shop/proStroeInfo.html",
+				"APP_Shop/achievement/withdraw_distribution.html",
+				"APP_Shop/images/icon_point.png",
+				"APP_Shop/js/flexible.debug.js",
+				"APP_Shop/images/indexbg1.png",
+				"APP_Shop/images/icon_like.png",
+				"APP_Shop/css/mui.dtpicker.css",
+				"APP_Shop/wapwebview.html",
+				"APP_Shop/css/mui.picker.css",
+				"APP_Shop/js/mui.pullToRefresh.js",
+				"APP_Shop/achievement/css/terminal_manage.css",
+				"APP_Shop/images/jycx.png",
+				"APP_Shop/js/template.js",
+				"APP_Shop/images/shakeup.png",
+				"APP_Shop/achievement/css/achievement_index.css",
+				"APP_Shop/rushgroupdetail.html",
+				"APP_Shop/achievement/css/share_details.css",
+				"APP_Shop/achievement/stream_details.html",
+				"APP_Shop/images/tjcx.png",
+				"APP_Shop/images/icon_setting.png",
+				"APP_Shop/images/select_input.png",
+				"APP_Shop/images/icon_coupn.png",
+				"APP_Shop/images/headbg1.png",
+				"APP_Shop/images/tuanzhang.png",
+				"APP_Shop/images/icon_bell.png",
+				"APP_Shop/images/activation_money.png",
+				"APP_Shop/css/mui.picker.min.css",
+				"APP_Shop/images/more5.png",
+				"APP_Shop/images/icon_market.png",
+				"APP_Shop/images/store_map.png",
+				"APP_Shop/js/mui.picker.min.js",
+				"APP_Shop/js/delayimg.min.js",
+				"APP_Shop/achievement/agent_select_result.html",
+				"APP_Shop/images/aboutus.png",
+				"APP_Shop/AccountSummary.html",
+				"APP_Shop/images/icon_extension.png",
+				"APP_Shop/images/shake.wav",
+				"APP_Shop/achievement/share_details.html",
+				"APP_Shop/images/index_02.jpg",
+				"APP_Shop/editFavorites.html",
+				"APP_Shop/css/store.css",
+				"APP_Shop/fonts/mui.ttf",
+				"APP_Shop/images/sina.png",
+				"APP_Shop/images/reward.png",
+				"APP_Shop/images/terminal_sj1.png",
+				"APP_Shop/images/icon-tuan-num.png",
+				"APP_Shop/images/coupon_n.png",
+				"APP_Shop/images/all_share.png",
+				"APP_Shop/images/weixin.png",
+				"APP_Shop/images/mescroll-totop.png",
+				"APP_Shop/js/immersed.js",
+				"APP_Shop/images/lottery_sprite.png",
+				"APP_Shop/rushactivedetail.html",
+				"APP_Shop/images/overfight.png",
+				"APP_Shop/achievement/terminal_select.html",
+				"APP_Shop/js/art-template.js",
+				"APP_Shop/images/hongbao.png",
+				"APP_Shop/js/mui.pullToRefresh.material.js",
+				"APP_Shop/achievement/activation_result.html",
+				"APP_Shop/images/null_search.png",
+				"APP_Shop/images/tc.png",
+				"APP_Shop/images/icon_message_type_link.png",
+				"APP_Shop/images/icon_points.png",
+				"APP_Shop/images/activation_num.png",
+				"APP_Shop/css/mui.poppicker.css",
+				"APP_Shop/images/zdbd.png",
+				"APP_Shop/achievement/css/statistics_analysis.css",
+				"APP_Shop/images/select_rideo1.png",
+				"APP_Shop/achievement/css/terminal_binding.css",
+				"APP_Shop/shake.html",
+				"APP_Shop/achievement/transaction_stream.html",
+				"APP_Shop/images/ic_supplier.png",
+				"APP_Shop/images/logo.png",
+				"APP_Shop/css/mui.css",
+				"APP_Shop/images/time_choice.png",
+				"APP_Shop/js/echarts.min.js",
+				"APP_Shop/images/ic_map.png",
+				"APP_Shop/images/icon-tuan-list.png",
+				"APP_Shop/FightGroupDetails.html",
+				"APP_Shop/js/mui.min.js",
+				"APP_Shop/css/account.css",
+				"APP_Shop/images/icon_qq.png",
+				"APP_Shop/images/icon_service_online.png",
+				"APP_Shop/barcode.html",
+				"APP_Shop/images/zdgl.png"
+			]
+		}
+	}
+}

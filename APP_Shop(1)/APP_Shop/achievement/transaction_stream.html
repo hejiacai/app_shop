@@ -1,0 +1,96 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title>交易流水</title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<link href="../css/mui.min.css" rel="stylesheet" />
+		<link rel="stylesheet" href="../css/style.css" />
+		<link rel="stylesheet" href="css/transaction_stream.css" />
+	</head>
+
+	<body>
+		<header class="mui-bar mui-bar-nav" id="header">
+			<div class="home-header">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<h1 class="mui-title">交易流水</h1>
+			</div>
+		</header>
+		<div class="mui-content" id="content">
+		    
+		</div>
+		
+		<script id="text" type="text/html">
+			{{each Result as value i}}
+				<div class="stream_content">
+			    	<div class="stream_content_title">
+			    		{{if user_type==0}}
+			    		<span>个体户-{{value.RealName}}</span>
+			    		{{else user_type==1}}
+			    		<span>代理商-{{value.RealName}}</span>
+			    		{{/if}}
+			    		<span class="stream_content_title_span">+{{value.TransAmount}}元</span>
+			    	</div>
+			    	<div class="machine_num">SN：{{value.PosSnNo}}</div>
+			    	<div class="stream_content_time">
+			    		<span>{{value.StartingTime}}-{{value.EndTime}}</span>
+			    		<span class="stream_content_time_span" data-user = "{{value.UserId}}" data-name = "{{value.RealName}}" data-id = "{{value.TerminalId}}">查看详情</span>
+			    	</div>
+			    </div>
+		    {{/each}}
+		</script>
+		<script type="text/javascript" src="../js/jquery-1.8.3.min.js" ></script>
+		<script src="../js/mui.min.js"></script>
+		<script type="text/javascript" src="../js/art-template.js" ></script>
+		<script type="text/javascript" src="../js/app.js" ></script>
+		<script type="text/javascript" src="../js/flexible.debug.js" ></script>
+		<script type="text/javascript" src="../js/flexible_css.debug.js" ></script>
+		<script type="text/javascript">
+			mui.init();
+			var data;
+			mui.plusReady(function(){
+				var self=plus.webview.currentWebview();
+				data=self.data;
+				console.info(JSON.stringify(data));
+				if(data.Result.length==0){
+					mui.toast('暂无数据~');
+				}else{
+					var html=template("text",data);
+					document.getElementById("content").innerHTML=html;
+				}
+				
+				mui(".stream_content_time").on('tap','.stream_content_time_span',function(){
+					var TerminalId=$(this).data('id');
+					var UserId=$(this).data('user');
+					var user_name=$(this).data('name');
+					mui.ajax('http://pos.wulilu.cn/AppShop/PostApi.ashx?action=GetTransactionDetails',{
+						dataType: 'json',
+						type: 'post',
+						timeout: 10000,
+						data:{
+							sessionid:'c2a0c65fdd414216bf3ae93b79cddb25',
+							TerminalId:TerminalId,
+							UserId:UserId,
+							StartingTime:data.StartingTime,
+							EndTime:data.EndTime,
+							pageIndex:1
+						},
+						success:function(datas){
+							datas['user_type']=data.user_type;
+							datas['user_name']=user_name;
+							console.info(JSON.stringify(datas));
+							fxshop.openVW('stream_details',{datas:datas});
+						},
+						error:function(xhr,type,errorThrown){
+							mui.toast("网络请求超时，请重新加载");
+						}
+					})
+				})
+			})
+		</script>
+	</body>
+
+</html>

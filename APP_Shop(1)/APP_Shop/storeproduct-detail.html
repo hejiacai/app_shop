@@ -1,0 +1,979 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<meta name="format-detection" content="telephone=no,email=no" />
+		<title>商品详情</title>
+
+		<link rel="stylesheet" href="css/mui.min.css">
+		<link rel="stylesheet" href="css/swiper.min.css">
+		<link rel="stylesheet" href="css/style.css" />
+ 
+	</head>
+
+	<style>
+		.mui-control-content {
+			margin-bottom: 1.3066rem;
+			overflow: hidden;
+		}
+		
+		#productframe img {
+			width: 100%;
+		}
+		
+		.mui-content {
+			height: auto;
+		}
+		
+		body {
+			padding: 0;
+			margin: 0;
+		}
+	</style>
+
+	<body>
+		<header class="mui-bar mui-bar-nav" id="header">
+			<div class="home-header">
+				<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+				<h1 class="mui-title">商品详情</h1>
+				<a id="menu" class="mui-icon mui-icon-upload mui-pull-right" onclick="ShareProductDetail(temppid,productInfo,storeid)"></a>
+			</div>
+		</header>
+
+		<div class="mui-content bg-gray protransparent" id="mui-content">
+			<div class="swiper-container" id="swiper1">
+
+			</div>
+
+		</div>
+
+		<div id="footer">
+			<div id="productcontent">
+
+			</div>
+
+			<div class="has-fixed-bottom mui-row mui-text-center bg-white protransparent borderTop">
+				<div class="mui-col-xs-4 overflow">
+					<div class="mui-row">
+						<div id="cartlist" class="mui-col-xs-6 mui-pull-left bd-r font20 shop-cart">
+							<div class="iconfont icon__cart font48"></div>
+							<div>购物车</div>
+						</div>
+						<div class="mui-col-xs-6 mui-pull-right font20 collection">
+							<div class="iconfont icon_favorate1 font48"></div>
+							<div>收藏</div>
+						</div>
+					</div>
+				</div>
+				<div class="mui-col-xs-8 overflow" id="bottomebox">
+
+					<div id="divcart" class="mui-row">
+						<div class="mui-col-xs-6 join-shop addcart">加入购物车</div>
+						<div class="mui-col-xs-6 buy-now" id="gobuy">立即购买</div>
+					</div>
+
+					<div id="divclose" class="mui-row bg-gray mui-hidden">
+						<div class="mui-col-xs-12 out-bus">
+							<div>歇业中</div>营业时间：<span id="spOpentime">2017年1月18号 8:00 AM</span></div>
+					</div>
+					<div id="divnopro" class="mui-row bg-gray mui-hidden">
+						<div class="mui-col-xs-12 sell-out">
+							<div>已售罄</div>
+						</div>
+					</div>
+					<div id="divouttime" class="mui-row bg-gray mui-hidden">
+						<div class="mui-col-xs-6 join-shop addcart">加入购物车</div>
+						<div class="mui-col-xs-6 sell-out">
+							<div id="exstatus">非营业时间</div>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<!--添加咨询-->
+			<div class="coupinfo-show mui-hidden" id="userconsolute">
+				<div class="coupinfo-bd">
+					<div class="mui-coupinfo-title mui-row overflow mui-clearfix">
+						<div class="mui-col-xs-8 mui-text-left">商品咨询</div>
+						<div class="mui-text-right closebox">
+							<span class="close"><i class="iconfont icon__close"></i></span>
+						</div>
+					</div>
+					<div class="pre-activi overflow">
+						<ul class="mui-table-view">
+							<li class="mui-table-view-cell Discount_img">
+								手机/邮箱：<input type="text" id="txtcellphone" />
+							</li>
+							<li class="mui-table-view-cell Discount_img">
+								咨询内容：<textarea rows="4" id="txtareacontent"></textarea>
+							</li>
+						</ul>
+					</div>
+					<div class="has-fixed-bottom  mui-row mui-text-center bg-orage">
+						<div id="btnAddconsolute">添加咨询</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<ul class="mui-share mui-list-inline" id="share">
+			<li data-id="weixin" data-scene="WXSceneSession">
+				<img src="images/icon_wechat.png" />
+				<span class="mui-subtitle">微信</span>
+			</li>
+			<li data-id="weixin" data-scene="WXSceneTimeline">
+				<img src="images/icon_wxTimeLine.png" />
+				<span class="mui-subtitle">朋友圈</span>
+			</li>
+			<li data-id="qq">
+				<img src="images/icon_qq.png" />
+				<span class="mui-subtitle">QQ</span>
+			</li>
+			<li data-id="sinaweibo">
+				<img src="images/icon_weibo.png" />
+				<span class="mui-subtitle">新浪微博</span>
+			</li>
+			<div id="cancel">
+				<a class="cancel">取消</a>
+			</div>
+
+		</ul>
+
+	</body>
+	
+	<script src="js/mui.js" type="text/javascript"></script>
+	<script src="js/app.js" type="text/javascript"></script>
+	<script type="text/javascript" src="js/template.js"></script>
+	<script src="js/swiper.min.js" type="text/javascript"></script>
+	<script src="js/delayimg.min.js"></script>
+	<script src="https://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>
+	<script src="js/flexible.debug.js" type="text/javascript"></script>
+	<script src="js/flexible_css.debug.js" type="text/javascript"></script>
+	<script src="js/jquery-1.8.3.min.js" type="text/javascript"></script>
+	<script src="js/jquery.scrollLoading.min.js" type="text/javascript"></script>	
+	
+	
+	<script id="tempswiper" type="text/html">
+		<div class="swiper-wrapper">
+			{{each Result as item}}
+			<div class="swiper-slide editeCss"><img class="guide-img" src="{{item}}" /></div>
+			{{/each}}
+		</div>
+		<div class="swiper-pagination"></div>
+	</script>
+
+	<script type="text/html" id="tempproduct">
+		<div class="product-group bg-white bd-e">
+			<div class="product-group-title">
+				{{ProductInfo.ProductName}}
+			</div>
+			<!--<div class="product-group-title des">{{ProductInfo.MetaDescription}}</div>-->
+			<div class="product-group-price">
+				<span>¥</span>{{ShowPrice(ProductInfo.MinSalePrice,ProductInfo.MaxSalePrice)}}
+			</div>
+			<div class="product-group-txt mui-row">
+				{{if ProductInfo.MarketPrice > 0}}
+				<div id="marketPrice" class="mui-col-xs-4" style="text-decoration: line-through;">
+					<span>¥</span>{{ProductInfo.MarketPrice}}
+				</div>
+				{{/if}} {{if ProductInfo.productReduce}}
+				<div id="productReduce" class="mui-col-xs-4 mui-text-center mui-hidden">
+					分销佣金:<span>¥{{ProductInfo.productReduce}}</span>
+				</div>
+				{{/if}}
+				<div class="mui-col-xs-4">
+					销量:{{ProductInfo.ShowSaleCounts}}
+				</div>
+			</div>
+		</div>
+		<div class="height32"></div>
+
+		<div class="bg-white bd-e overflow">
+			<div class="pd24-horizontal mui-row storeMap">
+				<div class="mui-col-xs-10 mui-text-left storepro-address" id="storeinfo">
+					<h3>{{ProductInfo.StoreInfo.StoreName}}</h3>
+					<div class="storedetial-address">
+						<div class="fl prostorename mr8">
+							<i class="iconfont location mr8 addressColor font24"></i> {{ProductInfo.StoreInfo.Address}}
+						</div>
+						<em class="stroe-km"> | {{ProductInfo.StoreInfo.Distance}}</em>
+					</div>
+				</div>
+				<div class="right-map" id="map">
+					<img src="images/ic_map.png">
+					<span>地图</span>
+				</div>
+			</div>
+			<div class="mui-row product-group-p bg-blue Delivery-stylebox">
+				<div class="margin-horizontal24 left-delivery mui-pull-left">
+					{{if ProductInfo.StoreInfo.Delivery.IsPickeupInStore}}
+					<span>
+									<b class="iconfont right"></b>
+									<i>自提</i>
+								</span> {{/if}} {{if ProductInfo.StoreInfo.Delivery.IsSupportExpress}}
+					<span>
+									<b class="iconfont right"></b>
+									<i>快递</i>
+								</span> {{/if}} {{if ProductInfo.StoreInfo.Delivery.IsStoreDelive}}
+					<span>
+									<b class="iconfont right"></b>
+									<i>门店配送</i>
+								</span> {{/if}}
+				</div>
+				<div class="mui-text-right" style="font-size: 0.32rem;line-height: none;float: right;margin-right: 0.32rem;">
+					<span id="minorderprice">满 <em class="color-red">¥{{ProductInfo.StoreInfo.Delivery.MinOrderPrice}}</em></span>
+					<span id="qisong">起送，配送费</span>
+					<span id="freight" class="color-red">{{ProductInfo.StoreInfo.Delivery.StoreFreight}}</span>
+				</div>
+			</div>
+		</div>
+
+		<div class="height32"></div>
+
+		{{if ProductInfo.Coupons.length>0}}
+		<div class="pbColor24">
+			<div class="pd24-horizontal bg-white bd-e overflow" id="userCoupon">
+				<div class="mui-row product-group-p">
+					<div class="mui-col-xs-10 mui-text-left Discount_img"><i class="iconfont badge_quan_ juan youhui-icon"></i>领取优惠券</div>
+					<div class="mui-col-xs-2 mui-text-right iconfont arrow_right arrow_color"></div>
+				</div>
+			</div>
+		</div>
+		{{/if}} {{if ProductInfo.StoreActivityEntityList.FullAmountReduceList.length>0}} {{each ProductInfo.StoreActivityEntityList.FullAmountReduceList as active}}
+		<div class="pbColor24">
+			<div class="pd24-horizontal bg-white bd-e overflow" id="userPromotion">
+				<div class="mui-row product-group-p">
+					<div class="mui-col-xs-10 mui-text-left Discount_img pro_detail_width"><i class="iconfont badge_jian_ jian-icon youhui-icon"></i>{{active.ActivityName}}</div>
+					<div class="mui-col-xs-2 mui-text-right iconfont arrow_right arrow_color"></div>
+				</div>
+			</div>
+		</div>
+		{{/each}} {{/if}}
+
+		<!--
+        	作者：419634501@qq.com
+        	时间：2017-10-23
+        	描述：满免运费-->
+
+		{{if ProductInfo.StoreActivityEntityList.FullAmountSentGiftList.length>0}} {{each ProductInfo.StoreActivityEntityList.FullAmountSentGiftList as active}}
+		<div class="pbColor24">
+			<div class="pd24-horizontal bg-white bd-e overflow" id="userSentfreight">
+				<div class="mui-row product-group-p">
+					<div class="mui-col-xs-10 mui-text-left Discount_img pro_detail_width"><i class="iconfont badge_song_ song youhui-icon"></i>{{active.ActivityName}}</div>
+					<div class="mui-col-xs-2 mui-text-right iconfont arrow_right arrow_color"></div>
+				</div>
+			</div>
+		</div>
+		{{/each}} {{/if}}
+
+		<!--
+        	作者：419634501@qq.com
+        	时间：2017-10-23
+        	描述：买就送-->
+
+		{{if ProductInfo.StoreActivityEntityList.FullAmountSentFreightList.length>0}} {{each ProductInfo.StoreActivityEntityList.FullAmountSentFreightList as active}}
+		<div class="pbColor24">
+			<div class="pd24-horizontal bg-white bd-e overflow" id="userbuy">
+				<div class="mui-row product-group-p">
+					<div class="mui-col-xs-10 mui-text-left Discount_img pro_detail_width"><i class="iconfont badge_mian_ mian youhui-icon"></i>{{active.ActivityName}}</div>
+					<div class="mui-col-xs-2 mui-text-right iconfont arrow_right arrow_color"></div>
+				</div>
+			</div>
+		</div>
+		{{/each}} {{/if}} {{if ProductInfo.RecommendStore&&ProductInfo.RecommendStore.length>0}}
+		<div class="pbColor24">
+			<div class="pd24-horizontal bg-white bd-e overflow">
+				<div class="mui-row product-group-p">
+					<div class="mui-col-xs-10 mui-text-left">商品已售罄，不过以下门店还有货</div>
+
+				</div>
+				<div class="swiper-container swiper-container-horizontal swiper-container-free-mode swiper-container-android" id="swiperrecommendstores">
+					<div class="swiper-wrapper  stores-available">
+						{{each ProductInfo.RecommendStore as stroeitem}}
+						<div class="swiper-slide storename" data-storeid="{{stroeitem.StoreId}}">
+							<div class="con overflow">
+								<div class="name">{{stroeitem.StoreName}}</div>
+								<div class="kilo"><i class="iconfont location addressColor"></i>&nbsp;{{stroeitem.Distance}}</div>
+							</div>
+						</div>
+						{{/each}}
+					</div>
+				</div>
+			</div>
+		</div>
+		{{/if}}
+
+		<div class="pd24-horizontal bg-white bd-e overflow">
+			<div class="mui-row product-group-p" id="selectsku" onclick="ClickCart({{ProductInfo.ProductId}},4,{{ProductInfo.StoreId}})">
+				<div class="mui-col-xs-10 mui-text-left">选择规格</div>
+				<div class="mui-col-xs-2 mui-text-right iconfont arrow_right arrow_color"></div>
+			</div>
+		</div>
+
+		<div class="height32"></div>
+
+		<div class="pd24-horizontal bg-white bd-e overflow" id="productreview">
+
+			<div class="mui-row product-group-p">
+				<div class="mui-col-xs-10 mui-text-left">商品评价（{{ProductInfo.ReviewCount}}）</div>
+				<div class="mui-col-xs-2 mui-text-right iconfont arrow_right arrow_color"></div>
+			</div>
+
+		</div>
+
+		{{if ProductInfo.ProductYouLikeModel.length>0}}
+		<div class="height32"></div>
+
+		<div class="pd24-horizontal bg-white bd-e overflow">
+			<div class="product-group-p mui-text-left">
+				猜你喜欢
+			</div>
+			<div class="swiper-container swiper-container-horizontal swiper-container-free-mode swiper-container-android" id="swiperlikeproduct">
+				<div class="swiper-wrapper">
+					{{each ProductInfo.ProductYouLikeModel as proitem}}
+					<div class="swiper-slide like-pro" onclick="OpenProduct({{proitem.ProductId}},{{proitem.StoreId}})">
+						<div class="like-pro-img"><img src="{{proitem.ProdImg}}" /></div>
+						<div class="like-pro-name">{{proitem.ProductName}}</div>
+						<div class="like-pro-price">¥{{proitem.SalePrice}}</div>
+					</div>
+					{{/each}}
+				</div>
+			</div>
+		</div>
+
+		<div class="height32"></div>
+		{{/if}}
+
+		<div class="view-description pd24-horizontal">
+			<div class="bg-white">继续拖动，查看商品描述</div>
+		</div>
+		<div class="height32"></div>
+		<div class="height32"></div>
+
+		<div class="mui-tab-frame bg-white overflow mui-text-left ">
+			<div id="segmentedControl" class="mui-segmented-control bg-white">
+				<a class="mui-control-item mui-active" href="#item1">图文详情</a>
+				<a class="mui-control-item mui-hidden" href="#item3" id="extendAttribute">产品参数 </a>
+				<a class="mui-control-item" href="#item2">商品咨询 </a>
+			</div>
+			<div class="mui-tab-content">
+				<div id="item1" class="mui-control-content mui-active">
+					<!--图文详情-->
+					<div class="mui-content-bd mui-control-details">
+						{{ProductInfo.Description}}							
+					</div>
+				</div>
+				<div id="item2" class="mui-control-content">
+					<div id="proconsulationicon" class="zixun">
+
+					</div>
+					<!--商品咨询-->
+					<div class=" mui-content-bd mui-control-consul">
+						<iframe id="productconsultations" style="width:100%;" frameborder="0" onload="CalculationFrame(this)"></iframe>
+					</div>
+				</div>
+				<div id="item3" class="mui-control-content">
+					<div class="mui-control-attr">
+						{{each ProductInfo.ExtendAttribute as item}}
+						<p><b>{{item.ExtAttrName}}：</b><span>{{item.ExtAttrValue}}</span></p>
+						{{/each}}
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<!--领取优惠券-->
+		<div class="coupinfo-show mui-hidden" id="coupslist">
+			<div class="coupinfo-bd">
+				<div class="mui-coupinfo-title mui-row overflow mui-clearfix">
+					<div class="mui-col-xs-8 mui-text-left">领取优惠券</div>
+					<div class="mui-text-right closebox">
+						<span class="close"><i class="iconfont icon__close"></i></span>
+					</div>
+				</div>
+				{{each ProductInfo.Coupons as coupinfo}}
+				<div class="couponinfo overflow">
+					<div class="coupons_price"><i>¥</i>{{coupinfo.Price}}</div>
+
+					<div class="coupons_tips mui-row">
+						<div class="mui-col-xs-8">
+							<div class="coup_list"><i class="dian">■</i>{{coupinfo.CouponName}}</div>
+							<div class="coup_list"><i class="dian">■</i>{{coupinfo.StartTimeText}}-{{coupinfo.ClosingTimeText}}</div>
+						</div>
+						<div class="mui-col-xs-4 mui-text-right">
+							<button type="button" class="mui-btn mui-btn-receive btncoupinfo" data-coupid="{{coupinfo.CouponId}}">领取</button>
+						</div>
+					</div>
+				</div>
+				{{/each}}
+			</div>
+		</div>
+
+		<!--优惠活动-->
+		<div class="coupinfo-show mui-hidden" id="promotionlist">
+			<div class="coupinfo-bd">
+				<div class="mui-coupinfo-title mui-row overflow mui-clearfix">
+					<div class="mui-col-xs-8 mui-text-left">优惠活动</div>
+					<div class="mui-text-right closebox">
+						<span class="close"><i class="iconfont icon__close"></i></span>
+					</div>
+				</div>
+				<div class="pre-activi overflow">
+					<ul class="mui-table-view">
+						{{ if ProductInfo.StoreActivityEntityList.FullAmountReduceList!=null}} {{each ProductInfo.StoreActivityEntityList.FullAmountReduceList as active}}
+						<li class="mui-table-view-cell Discount_img"><i class="iconfont badge_jian_ jian-icon youhui-icon"></i>{{active.ActivityName}}</li>
+						{{/each}} {{/if}} {{ if ProductInfo.StoreActivityEntityList.FullAmountSentGiftList!=null}} {{each ProductInfo.StoreActivityEntityList.FullAmountSentGiftList as active}}
+						<li class="mui-table-view-cell Discount_img"><i class="iconfont badge_song_ song youhui-icon"></i>{{active.ActivityName}}</li>
+						{{/each}} {{/if}} {{ if ProductInfo.StoreActivityEntityList.FullAmountSentFreightList!=null}} {{each ProductInfo.StoreActivityEntityList.FullAmountSentFreightList as active}}
+						<li class="mui-table-view-cell Discount_img"><i class="iconfont badge_mian_ mian youhui-icon"></i>{{active.ActivityName}}</li>
+						{{/each}} {{/if}}
+
+					</ul>
+				</div>
+			</div>
+		</div>
+
+	</script>
+
+	<script>
+		mui.init({
+			beforeback: function() {
+				if(!fxshop.hasClass(content, 'protransparent')) {
+					content.className += ' protransparent';
+					hasbottom.className += ' protransparent';
+					mui.scrollTo(0, 1);
+				}
+			}
+		});
+		var temppid = 0,
+			controltop = 0;
+		var sessionid = "";
+		var storeid = "";
+		var content = document.querySelector('.mui-content');
+		var hasbottom = document.querySelector(".has-fixed-bottom");
+		var productInfo;
+		var source = "";
+		var immersedIos=isIphoneX();
+		mui.plusReady(function() {
+			//判断是否是iphone X 
+				if(immersedIos){
+					document.getElementById("header").className+=" Xheader"; 
+					document.getElementById("mui-content").className+=" Xmui-content";
+				} 	 
+			var self = plus.webview.currentWebview();
+			temppid = self.productid;
+			storeid = self.storeid;
+			BindStaticEvent();
+			showPreviewImage();
+			if(temppid > 0 && storeid > 0) {
+				loadProduct(temppid);
+				setTimeout(function() {
+					likesproductwiper();
+				}, 300);
+				setTimeout(function() {
+					BindEvent(); //绑定事件
+					CalculationFrame();
+				}, 2000);
+			}
+
+			CurrentView = plus.webview.currentWebview();
+
+		});
+
+		function showPreviewImage() {
+			var imgsurl = [];
+			var nowurl = '';
+			var imgObj = document.getElementsByClassName(".mui-tab-content img");
+			for(var i = 0; i < imgObj.length; i++) {
+				imgsurl[i] = getFullPath(imgObj.eq(i).attr("data-url"));
+				imgObj[i].onclick = function() {
+					nowurl = this.src;
+					wx.previewImage({
+						current: nowurl,
+						urls: imgsurl
+					});
+				}
+			}
+		}
+
+		template.helper('ShowPrice', function(minprice, maxprice) {
+			var saleprice = toFixed(minprice);
+			if(minprice != maxprice) {
+				saleprice = toFixed(minprice) + '~' + toFixed(maxprice);
+			}
+			return saleprice;
+		});
+
+		template.helper('FormatTime', function(time, format) {
+			return fxshop.timeFormat(time);
+		});
+
+		function CalculationFrame(iframe) {
+			if(iframe) {
+				outerheight = iframe.contentWindow.document.body.scrollHeight;
+				iframe.setAttribute("height", outerheight);
+			}
+		}
+		//绑定喜欢商品点击事件
+		function OpenProduct(pid, sid) {
+			storeid = sid;
+			temppid = pid;
+			loadProduct(temppid);
+			setTimeout(function() {
+				likesproductwiper();
+			}, 300);
+			setTimeout(function() {
+				BindEvent(); //绑定事件
+				CalculationFrame();
+			}, 2000);
+			mui.scrollTo(0, 0);
+		}
+
+		function BindStaticEvent() {
+			//收藏夹
+			document.getElementsByClassName("collection")[0].addEventListener("tap", function() {
+				if(!fxshop.isLogin()) {
+					mui.toast("您还未登录！");
+					return;
+				}
+				var doc = this;
+				var action = fxshop.hasClass(doc, "selected") ? "DeleteFavorite" : "AddProductToFavorite";
+				mui.ajax(fxshop.goUrl(action), {
+					datatype: "json",
+					type: "post",
+					data: {
+						"ProductId": temppid,
+						"StoreId": storeid,
+						"sessionid": sessionid
+					},
+					success: function(res) {
+						if(res["ErrorResponse"] != undefined) {
+							mui.toast(res.ErrorResponse.ErrorMsg);
+							return;
+						}
+						if(res.Success.Status) {
+							if(action == "AddProductToFavorite") {
+								mui.toast("收藏成功！");
+								fxshop.addClass(doc, "selected");
+							} else {
+								mui.toast("取消收藏成功！");
+								fxshop.removeClass(doc, "selected");
+							}
+						}
+
+					},
+					error: function(ex) {
+						mui.toast(ex);
+					}
+				});
+			});
+
+			//购物车列表
+			document.getElementById("cartlist").addEventListener("tap", function() {
+				mui.fire(plus.webview.getWebviewById(plus.webview.getLaunchWebview().id), "gohome", {
+					'pagename': 'shopcart'
+				});
+				fxshop.openVW(plus.webview.getLaunchWebview().id);
+			});
+
+			//加入购物车
+			mui("#bottomebox").on("tap", ".addcart", function(event) {
+				ClickCart(temppid, 4, storeid);
+			});
+
+			//立即购买
+			document.getElementById("gobuy").addEventListener("tap", function() {
+				ClickCart(temppid, 6, storeid);
+			});
+
+			mui("#footer").on("tap", ".close", function() {
+				document.getElementById("mui-content").setAttribute('style', 'overflow-y:scroll');
+				fxshop.addClass(document.getElementById("coupslist"), "mui-hidden");
+				fxshop.addClass(document.getElementById("promotionlist"), "mui-hidden");
+				fxshop.addClass(document.getElementById("userconsolute"), "mui-hidden");
+
+			});
+			//点击添加商品咨询按钮
+			if(document.getElementById("btnAddconsolute")) {
+				document.getElementById("btnAddconsolute").addEventListener("tap", function() {
+					var cellphone = document.getElementById("txtcellphone").value.trim();
+					var areacontent = document.getElementById("txtareacontent").value.trim();
+
+					if(cellphone.length <= 0 || areacontent.length <= 0) {
+						mui.toast("手机/邮箱或咨询内容不允许为空！");
+						return;
+					}
+					if(!fxshop.checkEmail(cellphone) && !fxshop.checkPhone(cellphone)) {
+						mui.toast("手机/邮箱格式不正确！");
+						return;
+					}
+					if(!fxshop.isLogin()) {
+						mui.toast("您还没有登录，请先登录");
+						showLogin();
+						return;
+					}
+					sessionid = SiteSetting.getSiteInfo().UserInfo.sessionid;
+
+					mui.ajax(fxshop.goUrl("ProductConsultations"), {
+						dataType: "json",
+						type: "post",
+						data: {
+							'sessionid': sessionid,
+							'productId': temppid,
+							'userName': cellphone,
+							'consultationText': areacontent
+						},
+						success: function(res) {
+
+							if(res["ErrorResponse"] != undefined) {
+								mui.toast(res.ErrorResponse.ErrorMsg);
+								return;
+							}
+
+							mui.toast("商品咨询成功！");
+							fxshop.addClass(document.getElementById("userconsolute"), "mui-hidden");
+
+						},
+						error: function(ex) {
+							mui.toast(ex);
+						}
+					});
+				});
+
+			}
+		}
+
+		function BindEvent() {
+			//门店信息
+			if(document.getElementById("storeinfo")) {
+				document.getElementById("storeinfo").addEventListener("tap", function() {
+					openStore(storeid);
+				});
+			}
+
+			if(document.getElementById("map")) {
+				//查看地图
+				document.getElementById("map").addEventListener("tap", function() {
+					var requesturl = "https://apis.map.qq.com/tools/routeplan/eword=" + productInfo.StoreInfo.Address + "&epointx=" + productInfo.StoreInfo.Position.Longitude + "&epointy=" + productInfo.StoreInfo.Position.Latitude + "?referer=myapp&key=" + qqKey;
+					fxshop.OpenWapWeb(requesturl, '查看地图');
+				});
+			}
+
+			//点击商品评价
+			if(document.getElementById("productreview")) {
+				document.getElementById("productreview").addEventListener("tap", function() {
+					var reviewurl = apiURL + "Appshop/ProductReview.aspx?productId=" + temppid;
+					fxshop.OpenWapWeb(reviewurl, '商品评价');
+				});
+			}
+
+			//点击促销
+			if(document.getElementById("userPromotion")) {
+				document.getElementById("userPromotion").addEventListener("tap", function() {
+					fxshop.removeClass(document.getElementById("promotionlist"), "mui-hidden");
+					document.getElementById("mui-content").setAttribute('style', 'overflow-y: hidden');
+				});
+			}
+
+			if(document.getElementById("userbuy")) {
+				document.getElementById("userbuy").addEventListener("tap", function() {
+					fxshop.removeClass(document.getElementById("promotionlist"), "mui-hidden");
+					document.getElementById("mui-content").setAttribute('style', 'overflow-y: hidden');
+				});
+			}
+
+			if(document.getElementById("userSentfreight")) {
+				document.getElementById("userSentfreight").addEventListener("tap", function() {
+					fxshop.removeClass(document.getElementById("promotionlist"), "mui-hidden");
+					document.getElementById("mui-content").setAttribute('style', 'overflow-y: hidden');
+				});
+			}
+
+			//点击优惠券
+			if(document.getElementById("userCoupon")) {
+				document.getElementById("userCoupon").addEventListener("tap", function() {
+					fxshop.removeClass(document.getElementById("coupslist"), "mui-hidden");
+					document.getElementById("mui-content").setAttribute('style', 'overflow-y: hidden');
+				});
+			}
+
+			//绑定领取优惠券
+			mui("#coupslist").on("tap", ".btncoupinfo", function() {
+				var coupid = this.dataset.coupid;
+				if(isNaN(coupid) || parseInt(coupid) <= 0) {
+					mui.toast("请选择要领取的优惠券");
+					return;
+				}
+				if(!fxshop.isLogin()) {
+					mui.toast("您还未登录,无法领取");
+					return;
+				}
+				sessionid = SiteSetting.getSiteInfo().UserInfo.sessionid;
+				mui.ajax(fxshop.goUrl("GetCoupon"), {
+					dataType: "json",
+					type: "post",
+					data: {
+						'sessionid': sessionid,
+						'CouponId': coupid
+					},
+					success: function(res) {
+
+						if(res["ErrorResponse"] != undefined) {
+							mui.toast(res.ErrorResponse.ErrorMsg);
+							return;
+						}
+
+						mui.toast("领取成功！");
+						fxshop.addClass(document.getElementById('coupslist'), "mui-hidden");
+						//	document.getElementById("mui-content").setAttribute('style','overflow-y:scroll');
+					},
+					complete: function() {
+						document.getElementById("mui-content").setAttribute('style', 'overflow-y:scroll');
+					},
+					error: function(ex) {
+						mui.toast(ex);
+					}
+				});
+
+			});
+
+			//显示商品咨询
+			if(document.getElementById("proconsulationicon")) {
+				document.getElementById("proconsulationicon").addEventListener("tap", function() {
+					fxshop.removeClass(document.getElementById("userconsolute"), "mui-hidden");
+				});
+			}
+
+			mui("#productcontent").on("tap", ".storename", function() {
+				storeid = this.dataset.storeid;
+				loadProduct(temppid);
+				setTimeout(function() {
+					likesproductwiper();
+				}, 300);
+				setTimeout(function() {
+					BindEvent(); //绑定事件
+					CalculationFrame();
+				}, 2000);
+				mui.scrollTo(0, 0);
+
+			});
+		}
+
+		function openStore(storeid) {
+			plus.webview.currentWebview().hide();
+			mui.scrollTo(0, 0);
+			mui.fire(plus.webview.getWebviewById(plus.webview.getLaunchWebview().id), "updateMenu", {
+				"href": "storehome1.html",
+				"storeid": storeid
+			});
+			if(source) {
+				fxshop.openVW(plus.webview.getLaunchWebview().id);
+			}
+		}
+
+		function loadProduct(productid) {
+			var w = plus.nativeUI.showWaiting('', {
+				padlock: true
+			});
+			gradeid = 0;
+			sessionid = "";
+			if(fxshop.isLogin()) {
+				sessionid = SiteSetting.getSiteInfo().UserInfo.sessionid;
+				gradeid = SiteSetting.getSiteInfo().UserInfo.gradeId;
+
+			}
+			var lat = SiteSetting.getSiteInfo().Location.lat;
+			var lng = SiteSetting.getSiteInfo().Location.lng;
+			mui.ajax(fxshop.goUrl('getStoreProductDetail'), {
+				dataType: "json",
+				type: "post",
+				data: {
+					"ProductID": productid,
+					"GradeId": gradeid,
+					"SessionID": sessionid,
+					"StoreId": storeid,
+					"Lan": lat,
+					"Lng": lng
+				},
+				success: function(res) {
+					if(res["ErrorResponse"]) {
+						if(res.ErrorResponse.ErrorCode == 1) { //限时抢购
+							var countdownurl = res.ErrorResponse.ErrorMsg;
+							fxshop.OpenWapWeb(countdownurl, '限时抢购');
+							mui.currentWebview.hide('none');
+							return;
+						} else {
+							mui.toast(res.ErrorResponse.ErrorMsg);
+							return;
+						}
+					}
+					productInfo = res;
+
+					//轮播图	
+					var slider = document.getElementById('swiper1');
+						slider.style.height = slider.offsetWidth + 'px';
+						ShowBanner(res.ImgUrlList);
+ 
+ 					template.config("escape", false);
+ 
+					document.getElementById("productcontent").innerHTML = template("tempproduct", {
+						"ProductInfo": res
+					});
+ 
+					delayimg.init({
+						offset: 300,
+						throttle: 0
+					});
+					likesproductwiper();
+
+					if(!res.StoreInfo.Delivery.IsStoreDelive) {
+						document.getElementById("minorderprice").innerHTML = "";
+						document.getElementById("freight").innerHTML = "";
+						document.getElementById("qisong").innerHTML = "";
+					} else if(res.StoreInfo.Delivery.MinOrderPrice <= 0 && res.StoreInfo.Delivery.StoreFreight <= 0) {
+						document.getElementById("minorderprice").innerHTML = "";
+						document.getElementById("freight").innerHTML = "";
+						document.getElementById("qisong").innerHTML = "免配送费";
+					} else if(res.StoreInfo.Delivery.MinOrderPrice > 0 && res.StoreInfo.Delivery.StoreFreight <= 0) {
+						document.getElementById("freight").innerHTML = "";
+						document.getElementById("qisong").innerHTML = "起送，免配送费";
+					} else if(res.StoreInfo.Delivery.MinOrderPrice <= 0 && res.StoreInfo.Delivery.StoreFreight <= 0) {
+						document.getElementById("minorderprice").innerHTML = "";
+						document.getElementById("qisong").innerHTML = "配送费";
+					}
+
+					if(res.IsFavorite) {
+						fxshop.addClass(document.getElementsByClassName("collection")[0], "selected");
+					} else {
+						fxshop.removeClass(document.getElementsByClassName("collection")[0], "selected");
+					}
+
+					switch(res.ExStatus) {
+						case 1: //歇业中
+							fxshop.addClass(document.getElementById("divouttime"), "mui-hidden");
+							fxshop.addClass(document.getElementById("divnopro"), "mui-hidden");
+							fxshop.addClass(document.getElementById("divcart"), "mui-hidden");
+							fxshop.removeClass(document.getElementById("divclose"), "mui-hidden");
+							break;
+						case 2: //已售罄
+							fxshop.addClass(document.getElementById("divouttime"), "mui-hidden");
+							fxshop.addClass(document.getElementById("divclose"), "mui-hidden");
+							fxshop.addClass(document.getElementById("divcart"), "mui-hidden");
+							fxshop.removeClass(document.getElementById("divnopro"), "mui-hidden");
+							break;
+						case 3: //服务超区
+							fxshop.removeClass(document.getElementById("divouttime"), "mui-hidden");
+							fxshop.addClass(document.getElementById("divclose"), "mui-hidden");
+							fxshop.addClass(document.getElementById("divcart"), "mui-hidden");
+							fxshop.addClass(document.getElementById("divnopro"), "mui-hidden");
+							document.getElementById("exstatus").innerText = "服务范围超区";
+							break;
+						case 4: //非营业时间
+							fxshop.removeClass(document.getElementById("divouttime"), "mui-hidden");
+							fxshop.addClass(document.getElementById("divclose"), "mui-hidden");
+							fxshop.addClass(document.getElementById("divcart"), "mui-hidden");
+							fxshop.addClass(document.getElementById("divnopro"), "mui-hidden");
+							document.getElementById("exstatus").innerText = "非营业时间";
+							break;
+						default:
+							fxshop.removeClass(document.getElementById("divcart"), "mui-hidden");
+							fxshop.addClass(document.getElementById("divnopro"), "mui-hidden");
+							fxshop.addClass(document.getElementById("divclose"), "mui-hidden");
+							fxshop.addClass(document.getElementById("divouttime"), "mui-hidden");
+							break;
+					}
+					document.getElementById("spOpentime").innerText = res.StoreInfo.CloseEndTime;
+
+					controltop = document.getElementById("segmentedControl").offsetTop;
+
+					document.getElementById("productconsultations").src = apiURL + "Appshop/ProductDetailsConsultations.aspx?productId=" + productid;
+
+					w.close();
+
+					var extendAttribute = res.ExtendAttribute;
+					var extentAttContent = document.getElementById('extendAttribute');
+					if(extendAttribute.length > 0) fxshop.removeClass(extentAttContent, 'mui-hidden');
+					else fxshop.addClass(extentAttContent, 'mui-hidden');
+				},
+				error: function(ex) {
+					mui.toast(ex);
+				},
+				complete: function() {
+					w.close();
+					fxshop.removeClass(content, 'protransparent');
+					fxshop.removeClass(hasbottom, 'protransparent');
+				}
+			});
+		}
+
+		window.onscroll = function() {
+			setScrollLoading();
+			var top = document.documentElement.scrollTop || document.body.scrollTop;
+			if(top > controltop) {
+				fxshop.addClass(document.getElementById("segmentedControl"), "active");
+			} else {
+				fxshop.removeClass(document.getElementById("segmentedControl"), "active");
+			}
+		};
+		
+		function setScrollLoading() {
+			$("img").scrollLoading();
+			$("iframe").each(function() {
+				if(!$(this).attr("src")) {
+					$(this).attr("src", $(this).attr("data-url"));
+				}
+			})
+		}
+
+		function ShowBanner(strimg) {
+
+			document.getElementById("swiper1").innerHTML = template("tempswiper", {
+				"Result": strimg
+			});
+
+		}
+
+		function likesproductwiper() {
+			var swiperbanner = new Swiper('#swiper1', {
+				loop: true,
+				autoplay: 3000,
+				pagination: '.swiper-pagination'
+			});
+			var swiperlikeproduct = new Swiper('#swiperlikeproduct', {
+				slidesPerView: 3,
+				paginationClickable: true,
+				spaceBetween: 20,
+				freeMode: true,
+				allowSwipeToPrev:true
+			});
+
+			var swiperrecommendstores = new Swiper('#swiperrecommendstores', {
+				slidesPerView: 3,
+				paginationClickable: true,
+				spaceBetween: 10,
+				freeMode: true
+			});
+		}
+
+		document.addEventListener("UpdateProductData", function(e) {
+			document.getElementById('share').style.display = "none";
+			document.getElementById("mui-content").setAttribute('style', 'overflow-y:scroll');
+			storeid = e.detail.storeid; //店铺iD
+			temppid = e.detail.productid;
+			source = e.detail.source;
+			loadProduct(temppid);
+			setTimeout(function() {
+				likesproductwiper();
+			}, 300);
+			setTimeout(function() {
+				BindEvent(); //绑定事件
+				CalculationFrame();
+			}, 2000);
+		});
+	</script>
+
+</html>

@@ -1,0 +1,62 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title>交易流水-详情</title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<link href="../css/mui.min.css" rel="stylesheet" />
+		<link rel="stylesheet" href="../css/style.css" />
+		<link rel="stylesheet" href="css/transaction_stream.css" />
+	</head>
+
+	<body>
+		<header class="mui-bar mui-bar-nav" id="header">
+			<div class="home-header">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<h1 class="mui-title"></h1>
+			</div>
+		</header>
+		<div class="mui-content" id="content">
+		    
+		</div>
+		<script id="text" type="text/html">
+			{{each Result as value i}}
+				<div class="stream_details">
+			    	<div class="stream_details_title">
+			    		<span>实时收款</span>
+			    		<span class="stream_details_title_span">+{{value.TransAmount}}元</span>
+			    	</div>
+			    	<div class="stream_details_time">
+			    		<span>{{value.TransDateTime}}</span>
+			    		<span>{{value.TransResult}}</span>
+			    	</div>
+			    </div>
+			{{/each}}
+		</script>
+		<script type="text/javascript" src="../js/jquery-1.8.3.min.js" ></script>
+		<script src="../js/mui.min.js"></script>
+		<script type="text/javascript" src="../js/art-template.js" ></script>
+		<script type="text/javascript" src="../js/app.js" ></script>
+		<script type="text/javascript" src="../js/flexible.debug.js" ></script>
+		<script type="text/javascript" src="../js/flexible_css.debug.js" ></script>
+		<script type="text/javascript">
+			mui.init();
+			mui.plusReady(function(){
+				var self=plus.webview.currentWebview();
+				var datas=self.datas;
+				var html=template("text",datas);
+				document.getElementById("content").innerHTML=html;
+				if(datas.user_type==0){
+					$('.mui-title').html('个体户-'+datas.user_name);
+				}else if(datas.user_type==1){
+					$('.mui-title').html('代理商-'+datas.user_name);
+				}
+			})
+		</script>
+		
+	</body>
+
+</html>
